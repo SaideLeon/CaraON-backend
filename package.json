@@ -1,0 +1,36 @@
+{
+  "name": "caraon-backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon src/server.js"
+  },
+  "keywords": [],
+  "author": "Saíde Omar Saíde",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@asteasolutions/zod-to-openapi": "^7.3.4",
+    "@genkit-ai/ai": "^1.14.0",
+    "@genkit-ai/core": "^1.14.0",
+    "@genkit-ai/flow": "^0.5.17",
+    "@genkit-ai/vertexai": "^1.14.0",
+    "@prisma/client": "^6.11.1",
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^17.0.1",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.16.1",
+    "prisma": "^6.11.1",
+    "qrcode": "^1.5.4",
+    "swagger-ui-express": "^5.0.1",
+    "whatsapp-web.js": "^1.31.0",
+    "ws": "^8.18.3",
+    "wwebjs-mongo": "^1.1.0",
+    "zod": "^3.5.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
