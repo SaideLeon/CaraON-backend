@@ -40,7 +40,7 @@ Siga estas instruções para obter uma cópia do projeto em funcionamento na sua
 
 1. **Clone o repositório:**
    ```sh
-   https://github.com/SaideLeon/CaraON-backend.git
+   git clone https://github.com/SaideLeon/CaraON-backend.git
    cd CaraON-backend
    ```
 

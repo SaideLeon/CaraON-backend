@@ -7,11 +7,13 @@ const webSocketService = require('./websocket.service');
 const agentSelectionService = require('./agent.selection.service');
 const agentExecutionService = require('./agent.execution.service');
 const { PrismaClient } = require('@prisma/client');
+const puppeteer = require('puppeteer');
+
 const prisma = new PrismaClient();
 
 const activeClients = {};  // Para armazenar as instâncias em execução
 
-// A conexão com o MongoDB já é feita no server.js
+ 
 mongoose.connect(process.env.MONGODB_SESSION_URI);
 
 const store = new MongoStore({ mongoose });
@@ -75,8 +77,10 @@ async function startInstance(clientId) {
       clientId,
       backupSyncIntervalMs: 300000,
     }),
-    puppeteer: {
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+     puppeteer: {
+        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        headless: true,
+        executablePath: puppeteer.executablePath()
     },
   });
 
