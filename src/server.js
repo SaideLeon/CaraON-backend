@@ -17,14 +17,20 @@ const prisma = new PrismaClient();
 app.use(cors());
 app.use(express.json());
 
+// Endpoint para health check (adicione aqui)
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
 mongoose.connect(process.env.MONGODB_SESSION_URI).then(() => {
   console.log('✅ Conectado ao MongoDB para sessões WhatsApp');
 });
+
 
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1', instanceRoutes);
 app.use('/api/v1', organizationRoutes);
 app.use('/api/v1', agentRoutes);
+ 
 
 generateOpenApi(app);
 
