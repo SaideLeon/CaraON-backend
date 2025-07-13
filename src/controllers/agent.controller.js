@@ -91,3 +91,53 @@ exports.updateAgentPersona = async (req, res) => {
         res.status(500).json({ error: 'Falha ao atualizar a persona do agente.' });
     }
 };
+
+registry.registerPath({
+    method: 'get',
+    path: '/agents',
+    summary: 'Lista todos os agentes de uma instância',
+    tags: ['Agents'],
+    security: [{ bearerAuth: [] }],
+    request: {
+        query: z.object({
+            instanceId: z.string().openapi({ description: 'ID da instância para filtrar os agentes' }),
+        }),
+    },
+    responses: {
+        200: {
+            description: 'Lista de agentes',
+            content: {
+                'application/json': {
+                    schema: z.array(z.object({
+                        id: z.string(),
+                        name: z.string(),
+                        flowId: z.string(),
+                        persona: z.string().nullable(),
+                        instanceId: z.string(),
+                        organizationId: z.string().nullable(),
+                    })),
+                },
+            },
+        },
+        404: { description: 'Instância não encontrada' },
+    },
+});
+
+exports.listAgents = async (req, res) => {
+    const { instanceId } = req.query;
+
+    try {
+        const instance = await prisma.instance.findUnique({ where: { id: instanceId } });
+        if (!instance) {
+            return res.status(404).json({ error: 'Instância não encontrada' });
+        }
+
+        const agents = await prisma.agent.findMany({
+            where: { instanceId },
+        });
+
+        res.status(200).json(agents);
+    } catch (error) {
+        res.status(500).json({ error: 'Falha ao listar os agentes.' });
+    }
+};

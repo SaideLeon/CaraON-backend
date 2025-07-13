@@ -19,7 +19,14 @@ const updateAgentPersonaSchema = z.object({
     })
 });
 
+const listAgentsSchema = z.object({
+    query: z.object({
+        instanceId: z.string().openapi({ description: 'ID da instância para filtrar os agentes' }),
+    }),
+});
+
 module.exports = {
   createAgentSchema,
   updateAgentPersonaSchema,
+  listAgentsSchema,
 };
