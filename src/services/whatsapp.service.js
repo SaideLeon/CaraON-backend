@@ -127,7 +127,29 @@ async function startInstance(clientId) {
   return client;
 }
 
+/**
+ * Desconecta uma instância do WhatsApp.
+ * @param {string} clientId - ID único da instância.
+ */
+async function disconnectInstance(clientId) {
+  const client = activeClients[clientId];
+  if (client) {
+    await client.logout();
+    delete activeClients[clientId];
+    console.log(`🔌 Instância ${clientId} desconectada com sucesso.`);
+    webSocketService.broadcast({
+      type: 'instance_status',
+      clientId,
+      status: 'disconnected',
+      message: `Instância ${clientId} foi desconectada.`,
+    });
+    return true;
+  }
+  return false;
+}
+
 module.exports = {
   startInstance,
   activeClients,
+  disconnectInstance,
 };
