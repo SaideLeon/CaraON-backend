@@ -188,5 +188,4 @@ exports.getInstanceStatus = async (req, res) => {
         console.error('Erro ao obter status da instância:', error);
         res.status(500).json({ error: 'Falha ao obter o status da instância.' });
     }
-};
-};
+}; 
