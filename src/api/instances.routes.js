@@ -10,6 +10,6 @@ router.get('/user/instances', auth, instanceController.listInstances);
 
 router.post('/instances/:instanceId/reconnect', auth, validate(instanceActionSchema), instanceController.reconnectInstance);
 router.post('/instances/:instanceId/disconnect', auth, validate(instanceActionSchema), instanceController.disconnectInstance);
-
+router.get('/instances/:instanceId/status', auth, validate(instanceActionSchema), instanceController.getInstanceStatus);
 
 module.exports = router;

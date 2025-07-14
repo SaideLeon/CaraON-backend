@@ -19,6 +19,7 @@ model Instance {
   id            String         @id @default(auto()) @map("_id") @db.ObjectId
   name          String
   clientId      String         @unique
+  status        String         @default("DISCONNECTED")
   userId        String         @db.ObjectId
   user          User           @relation(fields: [userId], references: [id])
   organizations Organization[]

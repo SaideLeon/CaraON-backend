@@ -13,6 +13,21 @@ const prisma = new PrismaClient();
 
 const activeClients = {};  // Para armazenar as instâncias em execução
 
+async function updateInstanceStatus(clientId, status, message = null) {
+    try {
+        await prisma.instance.update({ where: { clientId }, data: { status } });
+        webSocketService.broadcast({
+            type: 'instance_status',
+            clientId,
+            status,
+            message: message || `Instância ${clientId} agora está ${status}`,
+        });
+        console.log(`Status da instância ${clientId} atualizado para: ${status}`);
+    } catch (error) {
+        console.error(`Falha ao atualizar o status da instância ${clientId}:`, error);
+    }
+}
+
  
 mongoose.connect(process.env.MONGODB_SESSION_URI);
 
@@ -84,6 +99,8 @@ async function startInstance(clientId) {
     },
   });
 
+  updateInstanceStatus(clientId, 'PENDING_QR', `Aguardando leitura do QR Code para a instância ${clientId}.`);
+
   client.on('qr', async (qr) => {
     const qrImage = await qrcode.toDataURL(qr);
     console.log(`🔑 QR Code gerado para ${clientId}. Enviando via WebSocket.`);
@@ -96,12 +113,7 @@ async function startInstance(clientId) {
 
   client.on('ready', () => {
     console.log(`✅ Instância WhatsApp ${clientId} conectada!`);
-    webSocketService.broadcast({
-      type: 'instance_status',
-      clientId,
-      status: 'connected',
-      message: `Instância ${clientId} conectada com sucesso.`,
-    });
+    updateInstanceStatus(clientId, 'CONNECTED', `Instância ${clientId} conectada com sucesso.`);
   });
 
   client.on('message', (message) => _handleIncomingWhatsAppMessage(client, message));
@@ -109,12 +121,7 @@ async function startInstance(clientId) {
   client.on('disconnected', (reason) => {
     console.log(`🔌 Instância WhatsApp ${clientId} desconectada. Razão: ${reason}`);
     delete activeClients[clientId];
-    webSocketService.broadcast({
-        type: 'instance_status',
-        clientId,
-        status: 'disconnected',
-        message: `Instância ${clientId} foi desconectada.`,
-    });
+    updateInstanceStatus(clientId, 'DISCONNECTED', `Instância ${clientId} foi desconectada.`);
   });
 
   client.on('remote_session_saved', () => {
@@ -135,15 +142,13 @@ async function disconnectInstance(clientId) {
   const client = activeClients[clientId];
   if (client) {
     await client.logout();
-    delete activeClients[clientId];
-    console.log(`🔌 Instância ${clientId} desconectada com sucesso.`);
-    webSocketService.broadcast({
-      type: 'instance_status',
-      clientId,
-      status: 'disconnected',
-      message: `Instância ${clientId} foi desconectada.`,
-    });
+    // O evento 'disconnected' vai lidar com a limpeza e atualização de status
     return true;
+  }
+  // Se o cliente não estiver ativo, mas o status no banco de dados for diferente de desconectado, atualize-o
+  const instance = await prisma.instance.findUnique({ where: { clientId } });
+  if (instance && instance.status !== 'DISCONNECTED') {
+      updateInstanceStatus(clientId, 'DISCONNECTED', `Instância ${clientId} foi desconectada.`);
   }
   return false;
 }

@@ -65,6 +65,7 @@ registry.registerPath({
                         name: z.string(),
                         clientId: z.string(),
                         userId: z.string(),
+                        status: z.string(),
                     }))
                 }
             }
@@ -146,4 +147,46 @@ exports.disconnectInstance = async (req, res) => {
         console.error('Erro ao desconectar instância:', error);
         res.status(500).json({ error: 'Falha ao desconectar a instância.' });
     }
+};
+
+registry.registerPath({
+    method: 'get',
+    path: '/instances/{instanceId}/status',
+    summary: 'Obtém o status de uma instância do WhatsApp',
+    tags: ['Instances'],
+    security: [{ bearerAuth: [] }],
+    request: {
+        params: z.object({ instanceId: z.string() }),
+    },
+    responses: {
+        200: {
+            description: 'Status da instância',
+            content: {
+                'application/json': {
+                    schema: z.object({
+                        status: z.string(),
+                        message: z.string().optional(),
+                    }),
+                },
+            },
+        },
+        404: { description: 'Instância não encontrada' },
+        500: { description: 'Falha ao obter o status da instância' },
+    },
+});
+
+exports.getInstanceStatus = async (req, res) => {
+    const { instanceId } = req.params;
+    try {
+        const instance = await prisma.instance.findUnique({ where: { id: instanceId } });
+        if (!instance || instance.userId !== req.user.userId) {
+            return res.status(404).json({ error: 'Instância não encontrada' });
+        }
+
+        res.status(200).json({ status: instance.status });
+    } catch (error) {
+        console.error('Erro ao obter status da instância:', error);
+        res.status(500).json({ error: 'Falha ao obter o status da instância.' });
+    }
+};
 };
