@@ -8,7 +8,17 @@
     "pm2-start": "pm2 start src/server.js --name caraon-api",
     "start": "node src/server.js"
   },
-  "keywords": ["backend", "whatsapp", "express", "api", "caraon", "puppeteer", "genkit", "zod", "prisma"],
+  "keywords": [
+    "backend",
+    "whatsapp",
+    "express",
+    "api",
+    "caraon",
+    "puppeteer",
+    "genkit",
+    "zod",
+    "prisma"
+  ],
   "author": "Saíde Omar Saíde",
   "license": "ISC",
   "engines": {
@@ -22,6 +32,7 @@
     "@genkit-ai/vertexai": "^1.14.0",
     "@prisma/client": "^6.11.1",
     "bcryptjs": "^3.0.2",
+    "chromium": "^3.0.3",
     "cors": "^2.8.5",
     "dotenv": "^17.0.1",
     "express": "^5.1.0",
