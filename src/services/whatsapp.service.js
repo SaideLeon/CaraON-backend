@@ -7,7 +7,7 @@ const webSocketService = require('./websocket.service');
 const agentSelectionService = require('./agent.selection.service');
 const agentExecutionService = require('./agent.execution.service');
 const { PrismaClient } = require('@prisma/client'); 
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-core');
 const prisma = new PrismaClient();
 const activeClients = {};
 
@@ -70,7 +70,7 @@ async function startInstance(clientId) {
     puppeteer: {
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
       headless: true,
-      executablePath: '/bin/chromium',
+       executablePath: '/bin/chromium-browser'
     },
   });
 
