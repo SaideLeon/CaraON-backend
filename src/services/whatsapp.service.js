@@ -6,9 +6,7 @@ const qrcode = require('qrcode');
 const webSocketService = require('./websocket.service');
 const agentSelectionService = require('./agent.selection.service');
 const agentExecutionService = require('./agent.execution.service');
-const { PrismaClient } = require('@prisma/client');
-const puppeteer = require('puppeteer-core'); // ✅ use puppeteer-core
-
+const { PrismaClient } = require('@prisma/client'); 
 const prisma = new PrismaClient();
 const activeClients = {};
 
@@ -71,7 +69,7 @@ async function startInstance(clientId) {
     puppeteer: {
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
       headless: true,
-      executablePath: '/snap/bin/chromium', // ✅ caminho fixo do Chromium no Snap
+      executablePath: '/usr/bin/chromium',
     },
   });
 
