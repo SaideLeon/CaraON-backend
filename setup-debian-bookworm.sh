@@ -2,7 +2,12 @@
 set -e
 
 echo "🔧 Atualizando APT e instalando dependências básicas..."
-apt-get update && apt-get install -y curl gnupg ca-certificates
+apt-get update && apt-get install -y \
+  curl \
+  gnupg \
+  ca-certificates \
+  wget \
+  software-properties-common
 
 echo "📦 Criando arquivo do repositório Debian Bookworm..."
 cat <<EOF > /etc/apt/sources.list.d/debian-bookworm.list
@@ -32,6 +37,7 @@ rm /etc/apt/sources.list.d/debian-bookworm.list
 apt-get update
 
 echo "📦 Instalando pacotes Node.js (omitindo dev)..."
-npm install --omit=dev
+npm install --omit=dev || npm ci --omit=dev
 
 echo "✅ Setup concluído com sucesso!"
+
