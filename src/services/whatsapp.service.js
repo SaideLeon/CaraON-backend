@@ -70,7 +70,7 @@ async function startInstance(clientId) {
     puppeteer: {
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
       headless: true,
-       executablePath: '/bin/chromium-browser'
+       executablePath: '/snap/bin/chromium'
     },
   });
 
