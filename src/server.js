@@ -47,7 +47,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1', instanceRoutes);
 app.use('/api/v1', organizationRoutes);
-app.use('/api/v1', agentRoutes);
+app.use('/api/v1/agents', agentRoutes);
 app.use('/api/v1', productRoutes);
 app.use('/api/v1', cartRoutes);
 app.use('/api/v1/templates', templateRoutes);

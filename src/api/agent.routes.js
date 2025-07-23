@@ -7,66 +7,6 @@ const auth = require('../middlewares/auth.middleware');
 
 /**
  * @swagger
- * components:
- *   securitySchemes:
- *     bearerAuth:
- *       type: http
- *       scheme: bearer
- *       bearerFormat: JWT
- *   schemas:
- *     CreateParentAgentBody:
- *       type: object
- *       properties:
- *         name:
- *           type: string
- *           description: O nome do agente pai.
- *         persona:
- *           type: string
- *           description: A persona (personalidade e instruções) do agente.
- *       required:
- *         - name
- *         - persona
- *     CreateChildAgentFromTemplateBody:
- *       type: object
- *       properties:
- *         name:
- *           type: string
- *           description: O nome do agente filho.
- *         templateId:
- *           type: string
- *           description: O ID do template a ser usado.
- *         customPersona:
- *           type: string
- *           description: (Opcional) Uma persona customizada para sobrescrever a do template.
- *       required:
- *         - name
- *         - templateId
- *     CreateCustomChildAgentBody:
- *       type: object
- *       properties:
- *         name:
- *           type: string
- *           description: O nome do agente filho.
- *         persona:
- *           type: string
- *           description: A persona (personalidade e instruções) do agente.
- *         toolIds:
- *           type: array
- *           items:
- *             type: string
- *           description: (Opcional) Lista de IDs das ferramentas a serem associadas.
- *       required:
- *         - name
- *         - persona
- *     UpdateAgentPersonaBody:
- *       type: object
- *       properties:
- *         persona:
- *           type: string
- *           description: A nova persona do agente.
- *       required:
- *         - persona
- *
  * tags:
  *   name: Agentes
  *   description: Gerenciamento da hierarquia e configuração de agentes de IA.
@@ -103,7 +43,7 @@ const auth = require('../middlewares/auth.middleware');
  *       500:
  *         description: Falha ao criar o agente pai.
  */
-router.post('/agents/parent/:instanceId', auth, validate(createParentAgentSchema), agentController.createParentAgent);
+router.post('/parent/:instanceId', auth, validate(createParentAgentSchema), agentController.createParentAgent);
 
 /**
  * @swagger
@@ -140,7 +80,7 @@ router.post('/agents/parent/:instanceId', auth, validate(createParentAgentSchema
  *       500:
  *         description: Falha ao criar o agente pai.
  */
-router.post('/agents/parent/:instanceId/:organizationId', auth, validate(createParentAgentSchema), agentController.createParentAgent);
+router.post('/parent/:instanceId/:organizationId', auth, validate(createParentAgentSchema), agentController.createParentAgent);
 
 /**
  * @swagger
@@ -165,7 +105,7 @@ router.post('/agents/parent/:instanceId/:organizationId', auth, validate(createP
  *       500:
  *         description: Falha ao listar os agentes pais.
  */
-router.get('/agents/parent/:instanceId', auth, validate(listParentAgentsSchema), agentController.listParentAgents);
+router.get('/parent/:instanceId', auth, validate(listParentAgentsSchema), agentController.listParentAgents);
 
 /**
  * @swagger
@@ -183,7 +123,7 @@ router.get('/agents/parent/:instanceId', auth, validate(listParentAgentsSchema),
  *       500:
  *         description: Falha ao listar os agentes pais.
  */
-router.get('/agents/user/parents', auth, agentController.listUserParentAgents);
+router.get('/user/parents', auth, agentController.listUserParentAgents);
 
 /**
  * @swagger
@@ -216,7 +156,7 @@ router.get('/agents/user/parents', auth, agentController.listUserParentAgents);
  *       500:
  *         description: Falha ao criar o agente filho.
  */
-router.post('/agents/child/from-template/:parentAgentId', auth, validate(createChildAgentFromTemplateSchema), agentController.createChildAgentFromTemplate);
+router.post('/child/from-template/:parentAgentId', auth, validate(createChildAgentFromTemplateSchema), agentController.createChildAgentFromTemplate);
 
 /**
  * @swagger
@@ -249,7 +189,7 @@ router.post('/agents/child/from-template/:parentAgentId', auth, validate(createC
  *       500:
  *         description: Falha ao criar o agente filho.
  */
-router.post('/agents/child/custom/:parentAgentId', auth, validate(createCustomChildAgentSchema), agentController.createCustomChildAgent);
+router.post('/child/custom/:parentAgentId', auth, validate(createCustomChildAgentSchema), agentController.createCustomChildAgent);
 
 /**
  * @swagger
@@ -274,7 +214,7 @@ router.post('/agents/child/custom/:parentAgentId', auth, validate(createCustomCh
  *       500:
  *         description: Falha ao listar os agentes filhos.
  */
-router.get('/agents/child/:parentAgentId', auth, validate(listChildAgentsSchema), agentController.listChildAgents);
+router.get('/child/:parentAgentId', auth, validate(listChildAgentsSchema), agentController.listChildAgents);
 
 /**
  * @swagger
@@ -299,7 +239,7 @@ router.get('/agents/child/:parentAgentId', auth, validate(listChildAgentsSchema)
  *       500:
  *         description: Falha ao obter o agente.
  */
-router.get('/agents/:agentId', auth, validate(getAgentByIdSchema), agentController.getAgentById);
+router.get('/:agentId', auth, validate(getAgentByIdSchema), agentController.getAgentById);
 
 /**
  * @swagger
@@ -332,7 +272,7 @@ router.get('/agents/:agentId', auth, validate(getAgentByIdSchema), agentControll
  *       500:
  *         description: Falha ao atualizar a persona do agente.
  */
-router.patch('/agents/:agentId/persona', auth, validate(updateAgentPersonaSchema), agentController.updateAgentPersona);
+router.patch('/:agentId/persona', auth, validate(updateAgentPersonaSchema), agentController.updateAgentPersona);
 
 
 // ========== Rotas de Análise de Agentes ==========
@@ -365,7 +305,7 @@ router.patch('/agents/:agentId/persona', auth, validate(updateAgentPersonaSchema
  *       500:
  *         description: Falha ao exportar a análise.
  */
-router.get('/agents/analytics/export', auth, validate(exportAgentAnalyticsSchema), agentController.exportAgentAnalytics);
+router.get('/analytics/export', auth, validate(exportAgentAnalyticsSchema), agentController.exportAgentAnalytics);
 
 /**
  * @swagger
@@ -399,7 +339,7 @@ router.get('/agents/analytics/export', auth, validate(exportAgentAnalyticsSchema
  *       500:
  *         description: Falha ao exportar a análise em CSV.
  */
-router.get('/agents/analytics/export/csv', auth, validate(exportAgentAnalyticsSchema), agentController.exportAgentAnalyticsCsv);
+router.get('/analytics/export/csv', auth, validate(exportAgentAnalyticsSchema), agentController.exportAgentAnalyticsCsv);
 
 
 module.exports = router;
