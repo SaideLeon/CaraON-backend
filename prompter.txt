@@ -1,0 +1,30 @@
+Erro ao listar produtos: PrismaClientValidationError: 
+[0] Invalid `prisma.product.findMany()` invocation in
+[0] C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\src\controllers\products.controller.js:84:43
+[0]
+[0]   81
+[0]   82 const totalProducts = await prisma.product.count({ where });     
+[0]   83
+[0] → 84 const products = await prisma.product.findMany({
+[0]        where: {},
+[0]        skip: 0,
+[0]        take: "10",
+[0]              ~~~~
+[0]        orderBy: {
+[0]          createdAt: "desc"
+[0]        },
+[0]        include: {
+[0]          category: true,
+[0]          brand: true
+[0]        }
+[0]      })
+[0]
+[0] Argument `take`: Invalid value provided. Expected Int, provided String.
+[0]     at kn (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:29:1363)
+[0]     at Xn.handleRequestError (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:121:7102)
+[0]     at Xn.handleAndLogRequestError (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:121:6784)
+[0]     at Xn.request (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:121:6491)        
+[0]     at async l (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:130:9812)
+[0]     at async exports.getProducts (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\src\controllers\products.controller.js:84:22) {  
+[0]   clientVersion: '6.11.1'
+[0] }

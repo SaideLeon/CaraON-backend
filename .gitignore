@@ -1,0 +1,84 @@
+
+node_modules/
+.DS_Store
+.env
+dist/
+coverage/
+.vscode/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+# Optional npm cache directory
+.npm/
+# Optional eslint cache
+.eslintcache
+# Optional stylelint cache
+.stylelintcache
+# Optional cache directory for prettier
+.prettiercache
+# Optional cache directory for rollup
+.rollup.cache
+# Optional cache directory for webpack
+.webpack-cache/
+# Optional cache directory for babel
+.babel-cache/
+# Optional cache directory for parcel
+.parcel-cache/
+# Optional cache directory for snowpack
+.snowpack/
+# Optional cache directory for vite 
+.vite/
+# Optional cache directory for esbuild
+.esbuild/
+# Optional cache directory for swc
+.swc/
+# Optional cache directory for turbo
+.turbo/
+# Optional cache directory for pnpm
+.pnpm-store/
+# Optional cache directory for bun
+.bun/   
+.wwebjs_auth/
+.wwebjs_cache/
+# Optional cache directory for playwright
+.playwright/
+# Optional cache directory for cypress  
+.cypress/
+# Optional cache directory for jest
+.jest/
+# Optional cache directory for mocha
+.mocha/
+# Optional cache directory for ava
+.ava/
+# Optional cache directory for vitest
+.vitest/
+# Optional cache directory for karma    
+.karma/
+# Optional cache directory for rollup-plugin-terser 
+.rollup-plugin-terser/
+# Optional cache directory for webpack-bundle-analyzer
+.webpack-bundle-analyzer/
+# Optional cache directory for postcss  
+.postcss-cache/
+# Optional cache directory for tailwindcss
+.tailwindcss-cache/
+# Optional cache directory for stylus
+.stylus-cache/
+# Optional cache directory for less
+.less-cache/
+# Optional cache directory for sass
+.sass-cache/
+# Optional cache directory for cssnano  
+.cssnano-cache/
+# Optional cache directory for autoprefixer
+.autoprefixer-cache/
+
+This completes the implementation of the Cart API.
+
+  I have now completed the initial implementation for Phase 1 - Básico (Essencial), which includes:   
+
+   * Product Management: CRUD APIs for products.
+   * Cart Management: APIs to get, add, update, and remove items from the cart.
+
+  What would you like me to do next? I can proceed with Phase 2 - Vendas (Core Business) and start    
+  implementing the Order System, or I can work on another task.

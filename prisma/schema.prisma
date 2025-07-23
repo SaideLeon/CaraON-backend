@@ -1,0 +1,803 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// ========== MODELOS EXISTENTES ==========
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  instances Instance[]
+  // Relacionamentos com ecommerce
+  customer  Customer?
+  addresses Address[]
+  orders    Order[]
+  reviews   Review[]
+  wishlist  WishlistItem[]
+  cart      CartItem[]
+  mobileWallets MobileWallet[]
+
+  @@map("users")
+}
+
+model Instance {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  clientId  String   @unique
+  status    String   @default("PENDING_QR")
+  userId    String   @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user          User             @relation(fields: [userId], references: [id])
+  organizations Organization[]
+  agents        Agent[]
+  executions    AgentExecution[]
+
+  @@map("instances")
+}
+
+model Organization {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  name       String
+  instanceId String   @db.ObjectId
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  instance Instance @relation(fields: [instanceId], references: [id])
+  agents   Agent[]
+
+  @@map("organizations")
+}
+
+model Agent {
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId
+  name           String
+  type           AgentType
+  persona        String?
+  instanceId     String    @db.ObjectId
+  organizationId String?   @db.ObjectId
+  parentAgentId  String?   @db.ObjectId
+  templateId     String?   @db.ObjectId
+  isActive       Boolean   @default(true)
+  priority       Int       @default(0)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  instance      Instance        @relation(fields: [instanceId], references: [id])
+  organization  Organization?   @relation(fields: [organizationId], references: [id])
+  parentAgent   Agent?          @relation("AgentHierarchy", fields: [parentAgentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  childAgents   Agent[]         @relation("AgentHierarchy")
+  template      AgentTemplate?  @relation(fields: [templateId], references: [id])
+  tools         AgentTool[]
+  config        AgentConfig?
+  executions    AgentExecution[]
+
+  @@map("agents")
+}
+
+model AgentTemplate {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  name           String
+  description    String
+  category       String
+  defaultPersona String
+  isSystem       Boolean  @default(false)
+  userId         String?  @db.ObjectId
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  agents       Agent[]
+  defaultTools AgentTemplateTools[]
+
+  @@map("agent_templates")
+}
+
+model Tool {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  name          String   @unique
+  description   String
+  type          ToolType
+  config        Json
+  isSystem      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  agentTools    AgentTool[]
+  templateTools AgentTemplateTools[]
+
+  @@map("tools")
+}
+
+model AgentTool {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  agentId  String  @db.ObjectId
+  toolId   String  @db.ObjectId
+  config   Json?
+  isActive Boolean @default(true)
+
+  agent Agent @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  tool  Tool  @relation(fields: [toolId], references: [id])
+
+  @@unique([agentId, toolId])
+  @@map("agent_tools")
+}
+
+model AgentTemplateTools {
+  id         String @id @default(auto()) @map("_id") @db.ObjectId
+  templateId String @db.ObjectId
+  toolId     String @db.ObjectId
+  config     Json?
+
+  template AgentTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  tool     Tool          @relation(fields: [toolId], references: [id])
+
+  @@unique([templateId, toolId])
+  @@map("agent_template_tools")
+}
+
+model AgentConfig {
+  id              String  @id @default(auto()) @map("_id") @db.ObjectId
+  agentId         String  @unique @db.ObjectId
+  maxTokens       Int     @default(1000)
+  temperature     Float   @default(0.7)
+  model           String  @default("gemini-pro")
+  systemPrompt    String?
+  fallbackMessage String?
+  timeoutSeconds  Int     @default(30)
+  maxRetries      Int     @default(3)
+
+  agent Agent @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  @@map("agent_configs")
+}
+
+model AgentExecution {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  agentId       String?  @db.ObjectId
+  instanceId    String   @db.ObjectId
+  userMessage   String
+  agentResponse String?
+  executionTime Int?
+  success       Boolean
+  errorMessage  String?
+  toolsUsed     Json?
+  createdAt     DateTime @default(now())
+
+  agent    Agent?   @relation(fields: [agentId], references: [id])
+  instance Instance @relation(fields: [instanceId], references: [id])
+
+  @@map("agent_executions")
+}
+
+// ========== MODELOS DE ECOMMERCE ==========
+
+// Informações adicionais do cliente
+model Customer {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String    @unique @db.ObjectId
+  phone       String?
+  birthDate   DateTime?
+  gender      Gender?
+  cpf         String?   @unique
+  isActive    Boolean   @default(true)
+  customerSince DateTime @default(now())
+  totalOrders   Int      @default(0)
+  totalSpent    Float    @default(0)
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("customers")
+}
+
+// Endereços dos usuários
+model Address {
+  id           String      @id @default(auto()) @map("_id") @db.ObjectId
+  userId       String      @db.ObjectId
+  type         AddressType @default(HOME)
+  street       String
+  number       String
+  complement   String?
+  neighborhood String
+  city         String
+  state        String
+  zipCode      String
+  country      String      @default("Brasil")
+  isDefault    Boolean     @default(false)
+  isActive     Boolean     @default(true)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orders Order[]
+
+  @@map("addresses")
+}
+
+// Categorias de produtos
+model Category {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  image       String?
+  parentId    String?  @db.ObjectId
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  parent      Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  children    Category[] @relation("CategoryHierarchy")
+  products    Product[]
+  attributes  CategoryAttribute[]
+
+  @@map("categories")
+}
+
+// Atributos das categorias (ex: cor, tamanho, peso)
+model Attribute {
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+  name        String      @unique
+  type        AttributeType
+  isRequired  Boolean     @default(false)
+  sortOrder   Int         @default(0)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  categories    CategoryAttribute[]
+  productValues ProductAttribute[]
+
+  @@map("attributes")
+}
+
+// Relacionamento entre categorias e atributos
+model CategoryAttribute {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  categoryId  String @db.ObjectId
+  attributeId String @db.ObjectId
+
+  category  Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  attribute Attribute @relation(fields: [attributeId], references: [id], onDelete: Cascade)
+
+  @@unique([categoryId, attributeId])
+  @@map("category_attributes")
+}
+
+// Produtos
+model Product {
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  slug        String        @unique
+  description String?
+  shortDescription String?
+  sku         String        @unique
+  price       Float
+  comparePrice Float?
+  cost        Float?
+  weight      Float?
+  length      Float?
+  width       Float?
+  height      Float?
+  status      ProductStatus @default(DRAFT)
+  isDigital   Boolean       @default(false)
+  trackStock  Boolean       @default(true)
+  stock       Int           @default(0)
+  minStock    Int           @default(0)
+  maxStock    Int?
+  featured    Boolean       @default(false)
+  categoryId  String        @db.ObjectId
+  brandId     String?       @db.ObjectId
+  tags        String[]
+  seoTitle    String?
+  seoDescription String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  category   Category           @relation(fields: [categoryId], references: [id])
+  brand      Brand?             @relation(fields: [brandId], references: [id])
+  images     ProductImage[]
+  variants   ProductVariant[]
+  attributes ProductAttribute[]
+  reviews    Review[]
+  wishlist   WishlistItem[]
+  cartItems  CartItem[]
+  orderItems OrderItem[]
+
+  @@map("products")
+}
+
+// Marcas
+model Brand {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  logo        String?
+  website     String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  products Product[]
+
+  @@map("brands")
+}
+
+// Imagens dos produtos
+model ProductImage {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  productId String   @db.ObjectId
+  url       String
+  alt       String?
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("product_images")
+}
+
+// Variantes dos produtos (ex: diferentes cores/tamanhos)
+model ProductVariant {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  productId   String  @db.ObjectId
+  name        String
+  sku         String  @unique
+  price       Float?
+  stock       Int     @default(0)
+  image       String?
+  isDefault   Boolean @default(false)
+  isActive    Boolean @default(true)
+  attributes  Json    // Armazena os valores dos atributos desta variante
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("product_variants")
+}
+
+// Valores dos atributos para cada produto
+model ProductAttribute {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  productId   String @db.ObjectId
+  attributeId String @db.ObjectId
+  value       String
+
+  product   Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  attribute Attribute @relation(fields: [attributeId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, attributeId])
+  @@map("product_attributes")
+}
+
+// Avaliações dos produtos
+model Review {
+  id        String      @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String      @db.ObjectId
+  productId String      @db.ObjectId
+  rating    Int         // 1 a 5
+  title     String?
+  comment   String?
+  status    ReviewStatus @default(PENDING)
+  isVerifiedPurchase Boolean @default(false)
+  helpful   Int         @default(0)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+  @@map("reviews")
+}
+
+// Lista de desejos
+model WishlistItem {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  productId String   @db.ObjectId
+  createdAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+  @@map("wishlist_items")
+}
+
+// Carrinho de compras
+model CartItem {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  productId String   @db.ObjectId
+  quantity  Int      @default(1)
+  price     Float    // Preço no momento da adição
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+  @@map("cart_items")
+}
+
+// Pedidos
+model Order {
+  id              String      @id @default(auto()) @map("_id") @db.ObjectId
+  userId          String      @db.ObjectId
+  orderNumber     String      @unique
+  status          OrderStatus @default(PENDING)
+  paymentStatus   PaymentStatus @default(PENDING)
+  shippingStatus  ShippingStatus @default(PENDING)
+  subtotal        Float
+  shippingCost    Float       @default(0)
+  tax             Float       @default(0)
+  discount        Float       @default(0)
+  total           Float
+  currency        String      @default("BRL")
+  addressId       String      @db.ObjectId
+  shippingMethod  String?
+  trackingCode    String?
+  notes           String?
+  cancelReason    String?
+  refundAmount    Float?
+  refundReason    String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  shippedAt       DateTime?
+  deliveredAt     DateTime?
+  canceledAt      DateTime?
+
+  user     User        @relation(fields: [userId], references: [id])
+  address  Address     @relation(fields: [addressId], references: [id])
+  items    OrderItem[]
+  payments Payment[]
+  coupons  OrderCoupon[]
+
+  @@map("orders")
+}
+
+// Itens do pedido
+model OrderItem {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  orderId   String  @db.ObjectId
+  productId String  @db.ObjectId
+  quantity  Int
+  price     Float   // Preço unitário no momento da compra
+  total     Float   // quantity * price
+
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+
+  @@map("order_items")
+}
+
+// Pagamentos
+model Payment {
+  id            String        @id @default(auto()) @map("_id") @db.ObjectId
+  orderId       String        @db.ObjectId
+  method        PaymentMethod
+  provider      String?       // Ex: "stripe", "paypal", "pix", "mcash", "mpesa", "mmola"
+  transactionId String?
+  amount        Float
+  status        PaymentStatus @default(PENDING)
+  paidAt        DateTime?
+  failureReason String?
+  // Campos específicos para M-Mola e M-Pesa
+  phoneNumber   String?       // Número de telefone para pagamentos móveis
+  operatorCode  String?       // Código da operadora (Vodacom, Tmcel, etc.)
+  referenceCode String?       // Código de referência da transação
+  externalId    String?       // ID externo da operadora
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  mobileTransactions MobileTransaction[]
+
+  @@map("payments")
+}
+
+// Cupons de desconto
+model Coupon {
+  id                String       @id @default(auto()) @map("_id") @db.ObjectId
+  code              String       @unique
+  type              CouponType
+  value             Float        // Valor ou percentual
+  minOrderValue     Float?       // Valor mínimo do pedido
+  maxDiscount       Float?       // Desconto máximo (para percentuais)
+  usageLimit        Int?         // Limite de uso total
+  usageCount        Int          @default(0)
+  userUsageLimit    Int?         // Limite de uso por usuário
+  isActive          Boolean      @default(true)
+  validFrom         DateTime     @default(now())
+  validUntil        DateTime?
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+
+  orders OrderCoupon[]
+
+  @@map("coupons")
+}
+
+// Relacionamento entre pedidos e cupons
+model OrderCoupon {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  orderId  String @db.ObjectId
+  couponId String @db.ObjectId
+  discount Float  // Desconto aplicado
+
+  order  Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  coupon Coupon @relation(fields: [couponId], references: [id])
+
+  @@unique([orderId, couponId])
+  @@map("order_coupons")
+}
+
+// ========== MODELOS PARA PAGAMENTOS MÓVEIS ==========
+
+// Configurações das operadoras móveis
+model MobileOperator {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String   @unique // "Vodacom", "Tmcel", "Movitel"
+  code        String   @unique // "vodacom", "tmcel", "movitel"
+  country     String   @default("MZ")
+  isActive    Boolean  @default(true)
+  apiEndpoint String?  // URL da API da operadora
+  apiKey      String?  // Chave da API (criptografada)
+  webhookUrl  String?  // URL para receber callbacks
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  mobileWallets MobileWallet[]
+  transactions  MobileTransaction[]
+
+  @@map("mobile_operators")
+}
+
+// Carteiras móveis dos usuários
+model MobileWallet {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId       String   @db.ObjectId
+  operatorId   String   @db.ObjectId
+  phoneNumber  String   // Número da carteira móvel
+  walletType   WalletType
+  isVerified   Boolean  @default(false)
+  isActive     Boolean  @default(true)
+  balance      Float?   // Balance atual (se disponível)
+  lastSync     DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  operator  MobileOperator  @relation(fields: [operatorId], references: [id])
+  transactions MobileTransaction[]
+
+  @@unique([userId, operatorId, phoneNumber])
+  @@map("mobile_wallets")
+}
+
+// Transações de pagamento móvel
+model MobileTransaction {
+  id                String                    @id @default(auto()) @map("_id") @db.ObjectId
+  paymentId         String?                   @db.ObjectId
+  walletId          String                    @db.ObjectId
+  operatorId        String                    @db.ObjectId
+  transactionType   MobileTransactionType
+  amount            Float
+  currency          String                    @default("MZN")
+  fromPhoneNumber   String
+  toPhoneNumber     String?
+  externalReference String?                   // Referência da operadora
+  internalReference String                    @unique // Referência interna
+  description       String?
+  status            MobileTransactionStatus   @default(PENDING)
+  operatorResponse  Json?                     // Resposta completa da operadora
+  errorCode         String?
+  errorMessage      String?
+  processedAt       DateTime?
+  completedAt       DateTime?
+  createdAt         DateTime                  @default(now())
+  updatedAt         DateTime                  @updatedAt
+
+  payment   Payment?        @relation(fields: [paymentId], references: [id])
+  wallet    MobileWallet    @relation(fields: [walletId], references: [id])
+  operator  MobileOperator  @relation(fields: [operatorId], references: [id])
+  callbacks TransactionCallback[]
+
+  @@map("mobile_transactions")
+}
+
+// Callbacks das operadoras
+model TransactionCallback {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  transactionId   String   @db.ObjectId
+  callbackData    Json     // Dados completos do callback
+  signature       String?  // Assinatura para validação
+  isProcessed     Boolean  @default(false)
+  processedAt     DateTime?
+  createdAt       DateTime @default(now())
+
+  transaction MobileTransaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+
+  @@map("transaction_callbacks")
+}
+
+// Log de integração com APIs
+model ApiLog {
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+  service     ApiService  // M_MOLA, M_PESA, etc.
+  endpoint    String      // URL da API chamada
+  method      String      // GET, POST, etc.
+  requestData Json?       // Dados enviados
+  responseData Json?      // Resposta recebida
+  statusCode  Int?        // Código de status HTTP
+  duration    Int?        // Duração em ms
+  success     Boolean
+  errorMessage String?
+  userId      String?     @db.ObjectId
+  orderId     String?     @db.ObjectId
+  createdAt   DateTime    @default(now())
+
+  @@map("api_logs")
+}
+
+// Configurações de pagamento por país/região
+model PaymentConfig {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  country           String   @unique @default("MZ")
+  currency          String   @default("MZN")
+  taxRate           Float    @default(0.17) // 17% IVA em Moçambique
+  minOrderValue     Float    @default(1)
+  maxOrderValue     Float    @default(1000000)
+  defaultShippingCost Float  @default(100)
+  enabledPaymentMethods String[] // Array de métodos habilitados
+  isActive          Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@map("payment_configs")
+}
+
+// ========== ENUMS ==========
+
+enum AgentType {
+  PAI
+  FILHO
+}
+
+enum ToolType {
+  DATABASE
+  API
+  WEBHOOK
+  GENKIT_FLOW
+  CUSTOM
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+  PREFER_NOT_TO_SAY
+}
+
+enum AddressType {
+  HOME
+  WORK
+  OTHER
+}
+
+enum AttributeType {
+  TEXT
+  NUMBER
+  SELECT
+  MULTI_SELECT
+  BOOLEAN
+  COLOR
+  DATE
+}
+
+enum ProductStatus {
+  DRAFT
+  ACTIVE
+  INACTIVE
+  ARCHIVED
+}
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELED
+  RETURNED
+  REFUNDED
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  PAID
+  FAILED
+  CANCELED
+  REFUNDED
+}
+
+enum ShippingStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  IN_TRANSIT
+  OUT_FOR_DELIVERY
+  DELIVERED
+  RETURNED
+}
+
+enum PaymentMethod {
+  CREDIT_CARD
+  DEBIT_CARD
+  PIX
+  BOLETO
+  PAYPAL
+  MERCADO_PAGO
+  STRIPE
+  BANK_TRANSFER
+  M_CASH         // Sistema de pagamento móvel Mcel
+  M_PESA         // Sistema de pagamento móvel Vodacom
+  M_MOLA         // Sistema de pagamento móvel Movitel
+}
+
+enum CouponType {
+  FIXED      // Valor fixo
+  PERCENTAGE // Percentual
+}
+
+enum WalletType {
+  M_CASH     // Mcel M-Cash
+  M_PESA     // Vodacom M-Pesa
+  M_MOLA     // Movitel M-Mola
+}
+
+enum MobileTransactionType {
+  PAYMENT           // Pagamento de compra
+  REFUND           // Reembolso
+  DEPOSIT          // Depósito na carteira
+  WITHDRAWAL       // Levantamento da carteira
+  TRANSFER         // Transferência entre carteiras
+  BALANCE_INQUIRY  // Consulta de saldo
+}
+
+enum MobileTransactionStatus {
+  PENDING          // Pendente
+  PROCESSING       // Em processamento
+  COMPLETED        // Completada com sucesso
+  FAILED           // Falhou
+  CANCELED         // Cancelada
+  EXPIRED          // Expirou
+  REFUNDED         // Reembolsada
+}
+
+enum ApiService {
+  M_CASH           // Mcel M-Cash API
+  M_PESA           // Vodacom M-Pesa API
+  M_MOLA           // Movitel M-Mola API
+  STRIPE           // Stripe API
+  PAYPAL           // PayPal API
+  OTHER            // Outros serviços
+}

@@ -1,0 +1,55 @@
+{
+  "name": "caraon-backend",
+  "version": "1.0.0",
+  "description": "Backend da aplicação CaraON - gerenciamento de instâncias WhatsApp com IA",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "concurrently \"nodemon src/server.js\"",
+    "pm2-start": "pm2 start src/server.js --name caraon-api",
+    "start": "node src/server.js"
+  },
+  "keywords": [
+    "backend",
+    "whatsapp",
+    "express",
+    "api",
+    "caraon",
+    "puppeteer",
+    "genkit",
+    "zod",
+    "prisma"
+  ],
+  "author": "Saíde Omar Saíde",
+  "license": "ISC",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@asteasolutions/zod-to-openapi": "^8.0.0",
+    "@genkit-ai/ai": "^1.14.0",
+    "@genkit-ai/core": "^1.14.0",
+    "@genkit-ai/flow": "^0.5.17",
+    "@genkit-ai/vertexai": "^1.14.0",
+    "@prisma/client": "^6.11.1",
+    "bcryptjs": "^3.0.2",
+    "chromium": "^3.0.3",
+    "cors": "^2.8.5",
+    "dotenv": "^17.0.1",
+    "express": "^5.1.0",
+    "json2csv": "^6.0.0-alpha.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.16.1",
+    "prisma": "^6.11.1",
+    "puppeteer": "^24.12.1",
+    "qrcode": "^1.5.4",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "whatsapp-web.js": "^1.31.0",
+    "ws": "^8.18.3",
+    "wwebjs-mongo": "^1.1.0"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.0",
+    "nodemon": "^3.1.10"
+  }
+}
