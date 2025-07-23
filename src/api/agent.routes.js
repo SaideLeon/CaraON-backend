@@ -377,6 +377,25 @@ router.post('/agents/parent/:instanceId/:organizationId', auth, validate(createP
  */
 router.get('/agents/parent/:instanceId', auth, validate(listParentAgentsSchema), agentController.listParentAgents);
 
+/**
+ * @swagger
+ * /api/v1/agents/user/parents:
+ *   get:
+ *     summary: Lista todos os Agentes Pais de um usuário
+ *     tags: [Agentes]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Lista de agentes pais do usuário.
+ *       401:
+ *         description: Não autorizado.
+ *       500:
+ *         description: Falha ao listar os agentes pais.
+ */
+router.get('/agents/user/parents', auth, agentController.listUserParentAgents);
+
+
 router.post('/agents/child/from-template/:parentAgentId', auth, validate(createChildAgentFromTemplateSchema), agentController.createChildAgentFromTemplate);
 router.post('/agents/child/custom/:parentAgentId', auth, validate(createCustomChildAgentSchema), agentController.createCustomChildAgent);
 router.get('/agents/child/:parentAgentId', auth, validate(listChildAgentsSchema), agentController.listChildAgents);

@@ -203,3 +203,33 @@ exports.listParentAgents = async (req, res) => {
         res.status(500).json({ error: 'Falha ao listar os agentes pais.' });
     }
 };
+
+exports.listUserParentAgents = async (req, res) => {
+    const { userId } = req.user;
+
+    try {
+        const instances = await prisma.instance.findMany({
+            where: { userId: userId },
+            select: { id: true }
+        });
+
+        const instanceIds = instances.map(instance => instance.id);
+
+        const agents = await prisma.agent.findMany({
+            where: {
+                instanceId: { in: instanceIds },
+                type: 'PAI',
+                isActive: true,
+            },
+            include: {
+                organization: true,
+                childAgents: true,
+                instance: true,
+            }
+        });
+        res.status(200).json(agents);
+    } catch (error) {
+        console.error("Erro ao listar agentes pais do usuário:", error);
+        res.status(500).json({ error: 'Falha ao listar os agentes pais do usuário.' });
+    }
+};

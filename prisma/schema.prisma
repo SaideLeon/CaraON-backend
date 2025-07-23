@@ -175,7 +175,7 @@ model AgentExecution {
   createdAt     DateTime @default(now())
 
   agent    Agent?   @relation(fields: [agentId], references: [id])
-  instance Instance @relation(fields: [instanceId], references: [id])
+  instance Instance @relation(fields: [instanceId], references: [id], onDelete: Cascade)
 
   @@map("agent_executions")
 }

@@ -84,3 +84,21 @@ exports.getInstanceStatus = async (req, res) => {
         res.status(500).json({ error: 'Falha ao obter o status da instância.' });
     }
 };
+
+exports.deleteInstance = async (req, res) => {
+    const { instanceId } = req.params;
+    try {
+        const instance = await prisma.instance.findUnique({ where: { id: instanceId } });
+        if (!instance || instance.userId !== req.user.userId) {
+            return res.status(404).json({ error: 'Instância não encontrada' });
+        }
+
+        await whatsappService.disconnectInstance(instance.clientId);
+        await prisma.instance.delete({ where: { id: instanceId } });
+
+        res.status(204).send();
+    } catch (error) {
+        console.error('Erro ao deletar instância:', error);
+        res.status(500).json({ error: 'Falha ao deletar a instância.' });
+    }
+};

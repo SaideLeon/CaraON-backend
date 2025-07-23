@@ -76,113 +76,6 @@ const auth = require('../middlewares/auth.middleware');
  *                 updatedAt: "2025-07-21T12:00:00.000Z"
  */
 
-/**
- * @swagger
- * /api/v1/instances/{id}:
- *   get:
- *     summary: Obtém instância por ID
- *     tags:
- *       - Instâncias
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Instância retornada
- *         content:
- *           application/json:
- *             example:
- *               id: "inst_1"
- *               name: "Instância Exemplo"
- *               clientId: "client_1"
- *               userId: "user_1"
- *               status: "PENDING_QR"
- *               createdAt: "2025-07-21T12:00:00.000Z"
- *               updatedAt: "2025-07-21T12:00:00.000Z"
- *       404:
- *         description: Instância não encontrada
- *         content:
- *           application/json:
- *             example:
- *               error: "Instância não encontrada."
- *   put:
- *     summary: Atualiza instância
- *     tags:
- *       - Instâncias
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               clientId:
- *                 type: string
- *               userId:
- *                 type: string
- *           required:
- *             - userId
- *           example:
- *             name: "Instância Atualizada"
- *             clientId: "client_2"
- *             userId: "user_2"
- *     responses:
- *       200:
- *         description: Instância atualizada
- *         content:
- *           application/json:
- *             example:
- *               id: "inst_1"
- *               name: "Instância Atualizada"
- *               clientId: "client_2"
- *               userId: "user_2"
- *               status: "ACTIVE"
- *               createdAt: "2025-07-21T12:00:00.000Z"
- *               updatedAt: "2025-07-21T12:10:00.000Z"
- *       404:
- *         description: Instância não encontrada
- *         content:
- *           application/json:
- *             example:
- *               error: "Instância não encontrada."
- *   delete:
- *     summary: Deleta instância
- *     tags:
- *       - Instâncias
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       204:
- *         description: Instância deletada
- *       404:
- *         description: Instância não encontrada
- *         content:
- *           application/json:
- *             example:
- *               error: "Instância não encontrada."
- */
-
 router.post('/new/instance', auth, instanceController.createInstance);
 router.get('/user/instances', auth, instanceController.listInstances);
 
@@ -278,5 +171,33 @@ router.post('/instances/:instanceId/disconnect', auth, validate(instanceActionSc
  *         description: Falha ao obter o status da instância.
  */
 router.get('/instances/:instanceId/status', auth, validate(instanceActionSchema), instanceController.getInstanceStatus);
+
+/**
+ * @swagger
+ * /api/v1/instances/{instanceId}:
+ *   delete:
+ *     summary: Deleta uma instância de WhatsApp
+ *     tags: [Instâncias]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: instanceId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: O ID da instância a ser deletada.
+ *     responses:
+ *       204:
+ *         description: Instância deletada com sucesso.
+ *       401:
+ *         description: Não autorizado.
+ *       404:
+ *         description: Instância não encontrada.
+ *       500:
+ *         description: Falha ao deletar a instância.
+ */
+router.delete('/instances/:instanceId', auth, validate(instanceActionSchema), instanceController.deleteInstance);
+
 
 module.exports = router;
