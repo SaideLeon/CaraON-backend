@@ -18,8 +18,9 @@ const webSocketService = require('./services/websocket.service');
 const { generateOpenApi } = require('./docs/openapi');
 const app = express();
 const PORT = process.env.PORT || 3000;
+const API_SERVER_URL = process.env.API_SERVER_URL || `http://localhost:${PORT}`;
 
-generateOpenApi(app, PORT);
+generateOpenApi(app, API_SERVER_URL);
 
 app.use(cors({ origin: '*' }));
 app.use(express.json());

@@ -26,9 +26,9 @@ require('../schemas/user.schema');
 /**
  * Gera a documentação OpenAPI e monta o middleware Swagger.
  * @param {import('express').Application} app
- * @param {number} port
+ * @param {string} serverUrl
  */
-function generateOpenApi(app, port) {
+function generateOpenApi(app, serverUrl) {
   // 1. Gera as definições dos schemas a partir do Zod
   const generator = new OpenApiGeneratorV3(registry.definitions);
   const zodSchemas = generator.generateComponents();
@@ -44,8 +44,8 @@ function generateOpenApi(app, port) {
       },
       servers: [
         {
-          url: `http://localhost:${port}`,
-          description: 'Servidor de desenvolvimento local',
+          url: serverUrl,
+          description: 'Servidor da API',
         },
       ],
       security: [
