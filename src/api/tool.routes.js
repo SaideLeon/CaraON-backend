@@ -38,16 +38,26 @@ const auth = require('../middlewares/auth.middleware');
  *                 type: object
  *                 description: Configuração da ferramenta. Para `DATABASE`, especifica a busca de produtos no banco de dados real.
  *           examples:
- *             databaseExample:
- *               summary: Exemplo de Ferramenta de Banco de Dados
+ *             searchStock:
+ *               summary: Ferramenta de Consulta de Estoque
  *               value:
- *                 name: "Busca de Produtos"
- *                 description: "Ferramenta para buscar produtos no banco de dados da loja."
+ *                 name: "Consultar Estoque de Smartphone"
+ *                 description: "Ferramenta para verificar a disponibilidade de um modelo de smartphone específico no banco de dados da TechCell."
  *                 type: "DATABASE"
  *                 config:
- *                   connectionString: "mongodb://root:LeonardaSumila12@129.146.70.15:5435/caraon_db?authSource=admin&directConnection=true"
  *                   collection: "products"
- *                   query: "{\"name\": \"{product_name}\"}"
+ *                   query: "{\"name\": \"{smartphone_name}\", \"stock\": { \"$gt\": 0 }}"
+ *             checkOrderStatus:
+ *               summary: Ferramenta de Verificação de Pedido
+ *               value:
+ *                 name: "Verificar Status do Pedido"
+ *                 description: "Ferramenta que se conecta à API de logística para rastrear o status de um pedido."
+ *                 type: "API"
+ *                 config:
+ *                   url: "https://api.logistica.com/v1/tracking"
+ *                   method: "POST"
+ *                   headers: "{\"Authorization\": \"Bearer YOUR_API_KEY\"}"
+ *                   body: "{\"orderId\": \"{order_id}\"}"
  *     responses:
  *       201:
  *         description: Ferramenta criada com sucesso.

@@ -26,6 +26,14 @@ const auth = require('../middlewares/auth.middleware');
  *         application/json:
  *           schema:
  *             $ref: '#/components/schemas/CreateOrder'
+ *           examples:
+ *             newPhoneOrder:
+ *               summary: Novo Pedido de Smartphone
+ *               value:
+ *                 cartId: "cart_abc123"
+ *                 shippingAddress: "Rua das Flores, 123, São Paulo, SP, 01234-567"
+ *                 shippingMethod: "SEDEX"
+ *                 paymentMethod: "CREDIT_CARD"
  *     responses:
  *       201:
  *         description: Pedido criado com sucesso.
@@ -106,6 +114,7 @@ router.get('/orders/:id', auth, orderController.getOrderById);
  *               status:
  *                 type: string
  *                 enum: [PENDING, PROCESSING, SHIPPED, DELIVERED, CANCELED, RETURNED, REFUNDED]
+ *                 example: "SHIPPED"
  *     responses:
  *       200:
  *         description: Status do pedido atualizado com sucesso.

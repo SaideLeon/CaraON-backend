@@ -1,23 +1,31 @@
 const { z } = require('zod');
+const { registry } = require('../docs/openapi.registry');
+const { extendZodWithOpenApi } = require('@asteasolutions/zod-to-openapi');
 
-const createTemplateSchema = z.object({
-  body: z.object({
+extendZodWithOpenApi(z);
+
+const CreateTemplateBody = z.object({
     name: z.string().min(3, 'O nome do template é obrigatório.'),
     description: z.string().min(10, 'A descrição precisa ter no mínimo 10 caracteres.'),
     category: z.string().min(3, 'A categoria é obrigatória.'),
     defaultPersona: z.string().min(20, 'A persona padrão precisa ter no mínimo 20 caracteres.'),
     toolIds: z.array(z.string()).optional().default([]),
-  }),
 });
 
-const updateTemplateSchema = z.object({
-  body: z.object({
+const createTemplateSchema = z.object({
+  body: CreateTemplateBody.openapi({ refId: 'CreateTemplate' }),
+});
+
+const UpdateTemplateBody = z.object({
     name: z.string().min(3, 'O nome do template é obrigatório.').optional(),
     description: z.string().min(10, 'A descrição precisa ter no mínimo 10 caracteres.').optional(),
     category: z.string().min(3, 'A categoria é obrigatória.').optional(),
     defaultPersona: z.string().min(20, 'A persona padrão precisa ter no mínimo 20 caracteres.').optional(),
     toolIds: z.array(z.string()).optional(),
-  }),
+});
+
+const updateTemplateSchema = z.object({
+  body: UpdateTemplateBody.openapi({ refId: 'UpdateTemplate' }),
   params: z.object({
     templateId: z.string(),
   }),
@@ -28,6 +36,9 @@ const templateIdParamSchema = z.object({
     templateId: z.string(),
   }),
 });
+
+registry.register('CreateTemplate', CreateTemplateBody);
+registry.register('UpdateTemplate', UpdateTemplateBody);
 
 module.exports = {
   createTemplateSchema,

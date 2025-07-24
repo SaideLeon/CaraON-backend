@@ -66,14 +66,28 @@ const auth = require('../middlewares/auth.middleware');
  *         description: Lista de instâncias do usuário.
  *         content:
  *           application/json:
- *             example:
- *               - id: "inst_1"
- *                 name: "Instância Exemplo"
- *                 clientId: "client_1"
- *                 status: "CONNECTED"
- *                 userId: "user_1"
- *                 createdAt: "2025-07-21T12:00:00.000Z"
- *                 updatedAt: "2025-07-21T12:00:00.000Z"
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Instance'
+ *             examples:
+ *               techCellInstances:
+ *                 summary: Instâncias da TechCell
+ *                 value:
+ *                   - id: "inst_12345"
+ *                     name: "WhatsApp Vendas - TechCell"
+ *                     clientId: "techcell-vendas-123"
+ *                     status: "CONNECTED"
+ *                     userId: "user_abcde"
+ *                     createdAt: "2025-07-23T10:00:00.000Z"
+ *                     updatedAt: "2025-07-23T18:30:00.000Z"
+ *                   - id: "inst_67890"
+ *                     name: "WhatsApp Suporte - TechCell"
+ *                     clientId: "techcell-suporte-456"
+ *                     status: "PENDING_QR"
+ *                     userId: "user_abcde"
+ *                     createdAt: "2025-07-22T15:00:00.000Z"
+ *                     updatedAt: "2025-07-22T15:00:00.000Z"
  */
 
 router.post('/new/instance', auth, instanceController.createInstance);
@@ -99,8 +113,11 @@ router.get('/user/instances', auth, instanceController.listInstances);
  *         description: Solicitação de reconexão bem-sucedida.
  *         content:
  *           application/json:
- *             example:
- *               message: "Reconexão iniciada. Aguarde o QR Code se necessário."
+ *             examples:
+ *               reconnectSuccess:
+ *                 summary: Reconexão bem-sucedida
+ *                 value:
+ *                   message: "Reconexão iniciada para a instância de Vendas. Aguarde o QR Code se necessário."
  *       401:
  *         description: Não autorizado.
  *       404:
@@ -130,8 +147,11 @@ router.post('/instances/:instanceId/reconnect', auth, validate(instanceActionSch
  *         description: Instância desconectada com sucesso.
  *         content:
  *           application/json:
- *             example:
- *               message: "Instância desconectada com sucesso"
+ *             examples:
+ *               disconnectSuccess:
+ *                 summary: Desconexão bem-sucedida
+ *                 value:
+ *                   message: "Instância de Vendas desconectada com sucesso"
  *       401:
  *         description: Não autorizado.
  *       404:
@@ -161,8 +181,15 @@ router.post('/instances/:instanceId/disconnect', auth, validate(instanceActionSc
  *         description: Status da instância retornado com sucesso.
  *         content:
  *           application/json:
- *             example:
- *               status: "CONNECTED"
+ *             examples:
+ *               statusConnected:
+ *                 summary: Status Conectado
+ *                 value:
+ *                   status: "CONNECTED"
+ *               statusPendingQR:
+ *                 summary: Status Aguardando QR Code
+ *                 value:
+ *                   status: "PENDING_QR"
  *       401:
  *         description: Não autorizado.
  *       404:

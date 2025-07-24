@@ -23,7 +23,12 @@ function broadcast(data) {
   });
 }
 
+function isReady() {
+  return !!wss;
+}
+
 module.exports = {
   init,
   broadcast,
+  isReady,
 };

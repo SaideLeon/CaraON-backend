@@ -51,6 +51,19 @@ const auth = require('../middlewares/auth.middleware');
  *         application/json:
  *           schema:
  *             $ref: '#/components/schemas/Category'
+ *           examples:
+ *             smartphones:
+ *               summary: Categoria Smartphones
+ *               value:
+ *                 name: "Smartphones"
+ *                 slug: "smartphones"
+ *                 description: "Todos os tipos de smartphones, dos modelos de entrada aos topo de linha."
+ *             accessories:
+ *               summary: Categoria Acessórios
+ *               value:
+ *                 name: "Acessórios"
+ *                 slug: "acessorios"
+ *                 description: "Capas, películas, carregadores, fones de ouvido e muito mais."
  *     responses:
  *       201:
  *         description: Categoria criada com sucesso.
@@ -113,6 +126,13 @@ const auth = require('../middlewares/auth.middleware');
  *         application/json:
  *           schema:
  *             $ref: '#/components/schemas/Category'
+ *           examples:
+ *             updateWearables:
+ *               summary: Atualizar Categoria Wearables
+ *               value:
+ *                 name: "Wearables & Smartwatches"
+ *                 slug: "wearables-smartwatches"
+ *                 description: "Relógios inteligentes, pulseiras fitness e outros dispositivos vestíveis."
  *     responses:
  *       200:
  *         description: Categoria atualizada com sucesso.

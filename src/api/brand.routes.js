@@ -51,6 +51,19 @@ const auth = require('../middlewares/auth.middleware');
  *         application/json:
  *           schema:
  *             $ref: '#/components/schemas/Brand'
+ *           examples:
+ *             apple:
+ *               summary: Marca Apple
+ *               value:
+ *                 name: "Apple"
+ *                 slug: "apple"
+ *                 description: "Marca conhecida por seus iPhones, MacBooks e outros dispositivos eletrônicos de alta qualidade."
+ *             samsung:
+ *               summary: Marca Samsung
+ *               value:
+ *                 name: "Samsung"
+ *                 slug: "samsung"
+ *                 description: "Líder global em smartphones Android, televisores e outros eletrônicos."
  *     responses:
  *       201:
  *         description: Marca criada com sucesso.
@@ -113,6 +126,12 @@ const auth = require('../middlewares/auth.middleware');
  *         application/json:
  *           schema:
  *             $ref: '#/components/schemas/Brand'
+ *           examples:
+ *             updateXiaomi:
+ *               summary: Atualizar Marca Xiaomi
+ *               value:
+ *                 name: "Xiaomi Inc."
+ *                 description: "Fabricante chinesa de smartphones e outros produtos eletrônicos, conhecida por sua excelente relação custo-benefício."
  *     responses:
  *       200:
  *         description: Marca atualizada com sucesso.

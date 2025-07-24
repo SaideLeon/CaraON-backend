@@ -34,10 +34,14 @@ const auth = require('../middlewares/auth.middleware');
  *           schema:
  *             $ref: '#/components/schemas/CreateOrganization'
  *           examples:
- *             default:
- *               summary: Exemplo de Organização
+ *             salesDept:
+ *               summary: Departamento de Vendas
  *               value:
- *                 name: "Departamento de Gestão de Recursos Humanos"
+ *                 name: "Departamento de Vendas - TechCell"
+ *             supportDept:
+ *               summary: Departamento de Suporte
+ *               value:
+ *                 name: "Departamento de Suporte Técnico - TechCell"
  *     responses:
  *       201:
  *         description: Organização criada com sucesso.

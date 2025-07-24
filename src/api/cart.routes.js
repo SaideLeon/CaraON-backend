@@ -44,6 +44,12 @@ router.get('/cart', auth, cartController.getCart);
  *         application/json:
  *           schema:
  *             $ref: '#/components/schemas/AddToCart'
+ *           examples:
+ *             addIphone15:
+ *               summary: Adicionar iPhone 15 ao Carrinho
+ *               value:
+ *                 productId: "clxkz5f2q0004i8uhc7a2g6h3"
+ *                 quantity: 1
  *     responses:
  *       201:
  *         description: Item adicionado com sucesso.
@@ -70,6 +76,12 @@ router.post('/cart/add', auth, validate(addToCartSchema), cartController.addToCa
  *         application/json:
  *           schema:
  *             $ref: '#/components/schemas/UpdateCart'
+ *           examples:
+ *             updateQuantity:
+ *               summary: Atualizar Quantidade no Carrinho
+ *               value:
+ *                 cartItemId: "cart_item_xyz"
+ *                 quantity: 2
  *     responses:
  *       200:
  *         description: Item atualizado com sucesso.
@@ -98,6 +110,11 @@ router.put('/cart/update', auth, validate(updateCartSchema), cartController.upda
  *         application/json:
  *           schema:
  *             $ref: '#/components/schemas/RemoveFromCart'
+ *           examples:
+ *             removeItem:
+ *               summary: Remover Item do Carrinho
+ *               value:
+ *                 cartItemId: "cart_item_xyz"
  *     responses:
  *       204:
  *         description: Item removido com sucesso.

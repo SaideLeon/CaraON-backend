@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const agentController = require('../controllers/agent.controller');
 const { validate } = require('../middlewares/validate.middleware');
-const { createParentAgentSchema, createChildAgentFromTemplateSchema, createCustomChildAgentSchema, listChildAgentsSchema, updateAgentPersonaSchema, exportAgentAnalyticsSchema, getAgentByIdSchema, listParentAgentsSchema } = require('../schemas/agent.schema');
+const { createParentAgentSchema, createChildAgentFromTemplateSchema, createCustomChildAgentSchema, listChildAgentsSchema, updateAgentPersonaSchema, exportAgentAnalyticsSchema, getAgentByIdSchema, listParentAgentsSchema, deleteAgentSchema } = require('../schemas/agent.schema');
 const auth = require('../middlewares/auth.middleware');
 
 /**
@@ -35,6 +35,12 @@ const auth = require('../middlewares/auth.middleware');
  *         application/json:
  *           schema:
  *             $ref: '#/components/schemas/CreateParentAgentBody'
+ *           examples:
+ *             techStoreAgent:
+ *               summary: Agente para Loja de Celulares
+ *               value:
+ *                 name: "Agente Principal - TechCell"
+ *                 persona: "Você é o agente principal da TechCell, uma loja especializada em smartphones. Sua função é direcionar os clientes para o departamento correto (Vendas, Suporte, etc.) e responder a perguntas gerais sobre a loja."
  *     responses:
  *       201:
  *         description: Agente pai criado com sucesso.
@@ -72,6 +78,12 @@ router.post('/parent/:instanceId', auth, validate(createParentAgentSchema), agen
  *         application/json:
  *           schema:
  *             $ref: '#/components/schemas/CreateParentAgentBody'
+ *           examples:
+ *             techStoreOrgAgent:
+ *               summary: Agente para Departamento de Vendas
+ *               value:
+ *                 name: "Agente de Vendas - TechCell"
+ *                 persona: "Você é um agente do departamento de vendas da TechCell. Sua função é ajudar os clientes a escolher o smartphone ideal, fornecer informações sobre preços, promoções e fechar vendas."
  *     responses:
  *       201:
  *         description: Agente pai criado com sucesso.
@@ -146,6 +158,13 @@ router.get('/user/parents', auth, agentController.listUserParentAgents);
  *         application/json:
  *           schema:
  *             $ref: '#/components/schemas/CreateChildAgentFromTemplateBody'
+ *           examples:
+ *             supportAgent:
+ *               summary: Agente de Suporte Técnico
+ *               value:
+ *                 templateId: "clxkz2x1y0000i8uh7b2g5f5e"
+ *                 name: "Suporte Técnico - TechCell"
+ *                 persona: "Você é um especialista de suporte técnico da TechCell. Ajude os clientes a resolver problemas com seus smartphones, como configurações, bugs ou reparos."
  *     responses:
  *       201:
  *         description: Agente filho criado com sucesso.
@@ -179,6 +198,14 @@ router.post('/child/from-template/:parentAgentId', auth, validate(createChildAge
  *         application/json:
  *           schema:
  *             $ref: '#/components/schemas/CreateCustomChildAgentBody'
+ *           examples:
+ *             financeAgent:
+ *               summary: Agente Financeiro Personalizado
+ *               value:
+ *                 name: "Financeiro - TechCell"
+ *                 persona: "Você é o agente do departamento financeiro da TechCell. Sua função é lidar com pagamentos, faturamento e questões de crédito para a compra de smartphones."
+ *                 flow: '{"steps":["Verificar crédito", "Processar pagamento", "Enviar fatura"]}'
+ *                 tools: ["clxkz5f2q0004i8uhc7a2g6h3"]
  *     responses:
  *       201:
  *         description: Agente filho criado com sucesso.
@@ -243,6 +270,34 @@ router.get('/:agentId', auth, validate(getAgentByIdSchema), agentController.getA
 
 /**
  * @swagger
+ * /api/v1/agents/{agentId}:
+ *   delete:
+ *     summary: Deleta um agente
+ *     tags: [Agentes]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: agentId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: O ID do agente a ser deletado.
+ *     responses:
+ *       204:
+ *         description: Agente deletado com sucesso.
+ *       401:
+ *         description: Não autorizado.
+ *       404:
+ *         description: Agente não encontrado.
+ *       500:
+ *         description: Falha ao deletar o agente.
+ */
+router.delete('/:agentId', auth, validate(deleteAgentSchema), agentController.deleteAgent);
+
+
+/**
+ * @swagger
  * /api/v1/agents/{agentId}/persona:
  *   patch:
  *     summary: Atualiza a persona de um agente
@@ -262,6 +317,11 @@ router.get('/:agentId', auth, validate(getAgentByIdSchema), agentController.getA
  *         application/json:
  *           schema:
  *             $ref: '#/components/schemas/UpdateAgentPersonaBody'
+ *           examples:
+ *             updateSalesAgentPersona:
+ *               summary: Atualizar Persona do Agente de Vendas
+ *               value:
+ *                 persona: "Você é o gerente de vendas da TechCell. Sua nova função é, além de vender, treinar novos vendedores e gerenciar as metas da equipe. Você agora tem um tom mais estratégico e motivacional."
  *     responses:
  *       200:
  *         description: Persona do agente atualizada com sucesso.

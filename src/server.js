@@ -13,37 +13,23 @@ const templateRoutes = require('./api/template.routes');
 const toolRoutes = require('./api/tool.routes');
 const categoryRoutes = require('./api/category.routes');
 const brandRoutes = require('./api/brand.routes');
+const healthRoutes = require('./api/health.routes'); // Importa a nova rota
 const webSocketService = require('./services/websocket.service');
-
-// Swagger UI setup
-const swaggerUi = require('swagger-ui-express');
-const swaggerJsdoc = require('swagger-jsdoc');
-const swaggerSpec = swaggerJsdoc({
-  definition: {
-    openapi: '3.0.0',
-    info: {
-      title: 'CaraON API',
-      version: '1.0.0',
-      description: 'Documentação da API CaraON',
-    },
-  },
-  apis: ['./src/api/*.js'], // You can add JSDoc comments to your route files for more details
-});
-
+const { generateOpenApi } = require('./docs/openapi');
 const app = express();
+const PORT = process.env.PORT || 3000;
 
-app.use(cors());
+generateOpenApi(app, PORT);
+
+app.use(cors({ origin: '*' }));
 app.use(express.json());
 
-// Endpoint para health check (adicione aqui)
-app.get('/health', (req, res) => {
-  res.status(200).send('OK');
-});
 mongoose.connect(process.env.MONGODB_SESSION_URI).then(() => {
   console.log('✅ Conectado ao MongoDB para sessões WhatsApp');
 });
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+// Rotas da API
+app.use('/api/v1', healthRoutes); // Adiciona a rota de health check
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1', instanceRoutes);
 app.use('/api/v1', organizationRoutes);
@@ -58,7 +44,6 @@ app.use('/api/v1', brandRoutes);
 const server = http.createServer(app);
 webSocketService.init(server);
 
-const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`🚀 API e WebSocket rodando na porta ${PORT}`);
   console.log(`📚 Documentação da API disponível em: http://localhost:${PORT}/api-docs`);

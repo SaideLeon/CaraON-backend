@@ -25,7 +25,7 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
-    "@asteasolutions/zod-to-openapi": "^8.0.0",
+    "@asteasolutions/zod-to-openapi": "7.3.4",
     "@genkit-ai/ai": "^1.14.0",
     "@genkit-ai/core": "^1.14.0",
     "@genkit-ai/flow": "^0.5.17",

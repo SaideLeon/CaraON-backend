@@ -7,7 +7,8 @@ const {
     createCustomChildAgentSchema, 
     listChildAgentsSchema, 
     exportAgentAnalyticsSchema,
-    listParentAgentsSchema
+    listParentAgentsSchema,
+    deleteAgentSchema
 } = require('../schemas/agent.schema');
 const { z } = require('zod');
 const agentHierarchyService = require('../services/agent.hierarchy.service');
@@ -123,8 +124,8 @@ exports.getAgentById = async (req, res) => {
             where: { id: agentId },
             include: {
                 tools: true,
-                parent: true,
-                children: true,
+                parentAgent: true,
+                childAgents: true,
             },
         });
 
@@ -231,5 +232,20 @@ exports.listUserParentAgents = async (req, res) => {
     } catch (error) {
         console.error("Erro ao listar agentes pais do usuário:", error);
         res.status(500).json({ error: 'Falha ao listar os agentes pais do usuário.' });
+    }
+};
+
+exports.deleteAgent = async (req, res) => {
+    const { agentId } = req.params;
+
+    try {
+        await agentHierarchyService.deactivateAgent(agentId); // Using deactivateAgent from the service
+        res.status(204).send();
+    } catch (error) {
+        console.error("Erro ao deletar agente:", error);
+        if (error.code === 'P2025') { // Not Found error from Prisma
+            return res.status(404).json({ error: 'Agente não encontrado.' });
+        }
+        res.status(500).json({ error: 'Falha ao deletar o agente.' });
     }
 };

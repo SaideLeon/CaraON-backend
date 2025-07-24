@@ -27,13 +27,20 @@ const auth = require('../middlewares/auth.middleware');
  *           schema:
  *             $ref: '#/components/schemas/CreateTemplate'
  *           examples:
- *             default:
- *               summary: Exemplo de criação de Template
+ *             salesTemplate:
+ *               summary: Template de Agente de Vendas
  *               value:
- *                 name: "Gestor de Recursos Humanos"
- *                 description: "Um agente que gerencia recursos humanos da empresa."
- *                 category: "Gerencia"
- *                 defaultPersona: "Você é um especialista em recursos humanos. Sua função é gerenciar o bem-estar dos funcionários e resolver conflitos."
+ *                 name: "Agente de Vendas de Smartphones"
+ *                 description: "Um agente especializado em vender smartphones, conhecendo todos os modelos, especificações e promoções."
+ *                 category: "Vendas"
+ *                 defaultPersona: "Você é um vendedor especialista em smartphones da TechCell. Seu objetivo é entender a necessidade do cliente e recomendar o melhor aparelho, destacando seus benefícios e fechando a venda."
+ *             supportTemplate:
+ *               summary: Template de Agente de Suporte
+ *               value:
+ *                 name: "Agente de Suporte Técnico de Smartphones"
+ *                 description: "Um agente treinado para resolver problemas técnicos comuns em smartphones."
+ *                 category: "Suporte"
+ *                 defaultPersona: "Você é um especialista de suporte técnico da TechCell. Sua missão é ajudar os clientes a resolverem problemas com seus aparelhos de forma rápida e eficiente, garantindo a satisfação do cliente."
  * 
  *     responses:
  *       201:
@@ -108,13 +115,13 @@ router.get('/:templateId', auth, validate(templateIdParamSchema), templateContro
  *           schema:
  *             $ref: '#/components/schemas/UpdateTemplate'
  *           examples:
- *             default:
- *               summary: Exemplo de Atualização de Template
+ *             updateSalesTemplate:
+ *               summary: Atualizar Template de Vendas
  *               value:
- *                 name: "Gestor de Marketing"
- *                 description: "Um agente que gerencia marketing da empresa."
- *                 category: "Gerencia"
- *                 defaultPersona: "Você é um especialista em marketing. Sua função monitorar o desempenho do funil de venda."
+ *                 name: "Agente Especialista em iPhone"
+ *                 description: "Um agente focado exclusivamente em vender iPhones, com conhecimento profundo de todo o ecossistema Apple."
+ *                 category: "Vendas"
+ *                 defaultPersona: "Você é o maior especialista em iPhones da TechCell. Você conhece cada detalhe, desde a primeira geração até os últimos lançamentos. Sua paixão pela Apple é contagiante e você a usa para mostrar aos clientes porque o iPhone é a melhor escolha."
  * 
  *     responses:
  *       200:

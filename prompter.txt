@@ -1,57 +1,105 @@
-CaraON API
- 1.0.0 
-OAS 3.0
-Documentação da API CaraON
+Responses
+Curl
 
+curl -X 'GET' \
+  'http://localhost:3030/api/v1/agents/687e89f9dd9860a98c6a61ab' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODdkNmI5ZTE0YWI2YzFjMjYyM2FlNGEiLCJpYXQiOjE3NTMzODU4Njh9.QnkC2yqNFjJwpFj5kLUfNEguY2YonJZecolnM-_fiiM'
+Request URL
+http://localhost:3030/api/v1/agents/687e89f9dd9860a98c6a61ab
+Server response
+Code	Details
+500	
+Error: Internal Server Error
 
-Authorize
-Agentes
-Gerenciamento da hierarquia e configuração de agentes de IA.
+Response body
+Download
+{
+  "error": "Falha ao buscar o agente."
+}
+Response headers
+ access-control-allow-origin: * 
+ connection: keep-alive 
+ content-length: 37 
+ content-type: application/json; charset=utf-8 
+ date: Thu,24 Jul 2025 19:50:49 GMT 
+ etag: W/"25-QCW7ntV9A4NSYRf4kv5r+dSvZmg" 
+ keep-alive: timeout=5 
+ x-powered-by: Express 
 
-
-
-POST
-/api/v1/agents/parent/{instanceId}
-Cria um novo Agente Pai para uma instância
-
-
-
-POST
-/api/v1/agents/parent/{instanceId}/{organizationId}
-Cria um novo Agente Pai para uma organização
-
-
-
-POST
-/api/v1/agents/child/from-template/{parentAgentId}
-Cria um Agente Filho a partir de um template
-
-
-
-POST
-/api/v1/agents/child/custom/{parentAgentId}
-Cria um Agente Filho customizado
-
-
-
-GET
-/api/v1/agents/child/{parentAgentId}
-Lista os Agentes Filhos de um Agente Pai
-
-
-
-PATCH
-/api/v1/agents/{agentId}/persona
-Atualiza a persona de um agente
-
-
-
-GET
-/api/v1/agents/analytics/export
-Exporta a análise de performance dos agentes em JSON
-
-
-
-GET
-/api/v1/agents/analytics/export/csv
-Exporta a análise de performance dos agentes em CSV
+  -- yourcommand`)
+[0] [dotenv@17.2.0] injecting env (0) from .env (tip: 🔐 encrypt with dotenvx: https://dotenvx.com)
+[0] ✅ Servidor WebSocket iniciado
+[0] 🚀 API e WebSocket rodando na porta 3030
+[0] 📚 Documentação da API disponível em: http://localhost:3030/api-docs
+[0] ✅ Conectado ao MongoDB para sessões WhatsApp
+[0] Erro ao buscar agente por ID: PrismaClientValidationError: 
+[0] Invalid `prisma.agent.findUnique()` invocation in
+[0] C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\src\controllers\agent.controller.js:123:42
+[0]
+[0]   120 const { agentId } = req.params;
+[0]   121
+[0]   122 try {
+[0] → 123     const agent = await prisma.agent.findUnique({
+[0]             where: {
+[0]               id: "68828e07540243f84e2f8b01"
+[0]             },
+[0]             include: {
+[0]               tools: true,
+[0]               parent: true,
+[0]               ~~~~~~
+[0]               children: true,
+[0]           ?   instance?: true,
+[0]           ?   organization?: true,
+[0]           ?   parentAgent?: true,
+[0]           ?   childAgents?: true,
+[0]           ?   template?: true,
+[0]           ?   config?: true,
+[0]           ?   executions?: true
+[0]             }
+[0]           })
+[0]
+[0] Unknown field `parent` for include statement on model `Agent`. Available options are marked with ?.
+[0]     at Dn (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:29:1363)
+[0]     at ri.handleRequestError (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:121:7102)
+[0]     at ri.handleAndLogRequestError (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:121:6784)
+[0]     at ri.request (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:121:6491)
+[0]     at async l (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:130:9812)
+[0]     at async exports.getAgentById (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\src\controllers\agent.controller.js:123:23) {
+[0]   clientVersion: '6.12.0'
+[0] }
+[0] Erro ao buscar agente por ID: PrismaClientValidationError: 
+[0] Invalid `prisma.agent.findUnique()` invocation in
+[0] C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\src\controllers\agent.controller.js:123:42
+[0]
+[0]   120 const { agentId } = req.params;
+[0]   121
+[0]   122 try {
+[0] → 123     const agent = await prisma.agent.findUnique({
+[0]             where: {
+[0]               id: "687e89f9dd9860a98c6a61ab"
+[0]             },
+[0]             include: {
+[0]               tools: true,
+[0]               parent: true,
+[0]               ~~~~~~
+[0]               children: true,
+[0]           ?   instance?: true,
+[0]           ?   organization?: true,
+[0]           ?   parentAgent?: true,
+[0]           ?   childAgents?: true,
+[0]           ?   template?: true,
+[0]           ?   config?: true,
+[0]           ?   executions?: true
+[0]             }
+[0]           })
+[0]
+[0] Unknown field `parent` for include statement on model `Agent`. Available options are marked with ?.
+[0]     at Dn (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:29:1363)
+[0]     at ri.handleRequestError (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:121:7102)
+[0]     at ri.handleAndLogRequestError (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:121:6784)
+[0]     at ri.request (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:121:6491)
+[0]     at async l (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:130:9812)
+[0]     at async exports.getAgentById (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\src\controllers\agent.controller.js:123:23) {
+[0]   clientVersion: '6.12.0'
+[0] }
