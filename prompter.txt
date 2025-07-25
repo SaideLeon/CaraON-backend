@@ -1,76 +1,172 @@
-Cachos
+POST
+/api/v1/products
+Cria um novo produto
 
-curl -X 'DELETE' \
-  'https://app.caraon.qzz.io/api/v1/instances/687e84e2a380f8a409497f69' \
-  -H 'accept: */*' \
-  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODdkNmI5ZTE0YWI2YzFjMjYyM2FlNGEiLCJpYXQiOjE3NTMzOTk4MzZ9.JjwDZoJVfA1aPonJ2JyLc0d4Cw4VBiHDMWufDM-1W8g'
-URL da solicitação
-https://app.caraon.qzz.io/api/v1/instances/687e84e2a380f8a409497f69
-Resposta do servidor
-Código	Detalhes
-500	
-Erro: o status da resposta é 500
 
-Corpo de resposta
+Parameters
+Cancel
+Reset
+No parameters
 
-Download
+Request body
+
+application/json
+Examples: 
+[Modified value]
+Edit Value
+Schema
 {
-  "error": "Falha ao deletar a instância."
+  "name": "Samsung Galaxy S24 Ultra",
+  "slug": "samsung-galaxy-s24-ultra",
+  "description": "O mais recente e poderoso smartphone da Samsung, com câmera de 200MP, S Pen integrada e o processador mais rápido da linha Galaxy.",
+  "shortDescription": "Smartphone topo de linha com S Pen e câmera de 200MP.",
+  "sku": "SS-S24-ULTRA-BLK",
+  "price": 7999.99,
+  "comparePrice": 8999.99,
+  "cost": 4500,
+  "weight": 0.232,
+  "length": 16.23,
+  "width": 7.9,
+  "height": 0.86,
+  "status": "ACTIVE",
+  "isDigital": false,
+  "trackStock": true,
+  "stock": 150,
+  "minStock": 20,
+  "maxStock": 200,
+  "featured": true,
+  "categoryId": "687ff9a2bcbad9eaf73eb33a",
+  "brandId": "687ffdf2b72f99982c61ed5f",
+  "tags": [
+    "smartphone",
+    "samsung",
+    "android",
+    "s24 ultra"
+  ],
+  "seoTitle": "Comprar Samsung Galaxy S24 Ultra | Loja Oficial",
+  "seoDescription": "Encontre o melhor preço para o novo Samsung Galaxy S24 Ultra. Câmera de 200MP, performance incrível e design premium. Compre já!"
 }
-Cabeçalhos de resposta
- comprimento do conteúdo : 42 
- tipo de conteúdo : aplicação/json; conjunto de caracteres=utf-8 
-Respostas
-Código	Descrição	Ligações
-204	
-Instância deletada com sucesso.
+{
+  "name": "Samsung Galaxy S24 Ultra",
+  "slug": "samsung-galaxy-s24-ultra",
+  "description": "O mais recente e poderoso smartphone da Samsung, com câmera de 200MP, S Pen integrada e o processador mais rápido da linha Galaxy.",
+  "shortDescription": "Smartphone topo de linha com S Pen e câmera de 200MP.",
+  "sku": "SS-S24-ULTRA-BLK",
+  "price": 7999.99,
+  "comparePrice": 8999.99,
+  "cost": 4500,
+  "weight": 0.232,
+  "length": 16.23,
+  "width": 7.9,
+  "height": 0.86,
+  "status": "ACTIVE",
+  "isDigital": false,
+  "trackStock": true,
+  "stock": 150,
+  "minStock": 20,
+  "maxStock": 200,
+  "featured": true,
+  "categoryId": "687ff9a2bcbad9eaf73eb33a",
+  "brandId": "687ffdf2b72f99982c61ed5f",
+  "tags": [
+    "smartphone",
+    "samsung",
+    "android",
+    "s24 ultra"
+  ],
+  "seoTitle": "Comprar Samsung Galaxy S24 Ultra | Loja Oficial",
+  "seoDescription": "Encontre o melhor preço para o novo Samsung Galaxy S24 Ultra. Câmera de 200MP, performance incrível e design premium. Compre já!"
+}​
+Execute
+Clear
+Responses
+Curl
 
-Nenhum link
+curl -X 'POST' \
+  'https://app.caraon.qzz.io/api/v1/products' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODdkNmI5ZTE0YWI2YzFjMjYyM2FlNGEiLCJpYXQiOjE3NTM0NDU4ODl9.KWNH5Vhp4SJdM2IB3YQLfVyRImpIMYDpP3kV8FifpbI' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "name": "Samsung Galaxy S24 Ultra",
+  "slug": "samsung-galaxy-s24-ultra",
+  "description": "O mais recente e poderoso smartphone da Samsung, com câmera de 200MP, S Pen integrada e o processador mais rápido da linha Galaxy.",
+  "shortDescription": "Smartphone topo de linha com S Pen e câmera de 200MP.",
+  "sku": "SS-S24-ULTRA-BLK",
+  "price": 7999.99,
+  "comparePrice": 8999.99,
+  "cost": 4500,
+  "weight": 0.232,
+  "length": 16.23,
+  "width": 7.9,
+  "height": 0.86,
+  "status": "ACTIVE",
+  "isDigital": false,
+  "trackStock": true,
+  "stock": 150,
+  "minStock": 20,
+  "maxStock": 200,
+  "featured": true,
+  "categoryId": "687ff9a2bcbad9eaf73eb33a",
+  "brandId": "687ffdf2b72f99982c61ed5f",
+  "tags": [
+    "smartphone",
+    "samsung",
+    "android",
+    "s24 ultra"
+  ],
+  "seoTitle": "Comprar Samsung Galaxy S24 Ultra | Loja Oficial",
+  "seoDescription": "Encontre o melhor preço para o novo Samsung Galaxy S24 Ultra. Câmera de 200MP, performance incrível e design premium. Compre já!"
+}'
+Request URL
+https://app.caraon.qzz.io/api/v1/products
+Server response
+Code	Details
+409	
+Error: response status is 409
+
+Response body
+Download
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>TypeError: error.meta.target.join is not a function<br> &nbsp; &nbsp;at exports.createProduct (/root/CaraON-backend/src/controllers/products.controller.js:38:97)</pre>
+</body>
+</html>
+Response headers
+ access-control-allow-origin: * 
+ alt-svc: h3=":443"; ma=86400 
+ cf-cache-status: DYNAMIC 
+ cf-ray: 964be8cafd7aef3c-LHR 
+ content-security-policy: default-src 'none' 
+ content-type: text/html; charset=utf-8 
+ date: Fri,25 Jul 2025 13:12:31 GMT 
+ nel: {"success_fraction":0,"report_to":"cf-nel","max_age":604800} 
+ report-to: {"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v4?s=AUZHoqrvmzdxM%2Fx6v%2Bt6KaScKKyroh%2F0xmQo8TZOxYwvsoW0SUJlcZUk5DkDH4ynz9Yu%2B%2BkPz3yqLAMbtO2grPGSGWSntQfd7S%2BhicgDb%2Bj1yfV0IOsaNukRAGqonXlUHM4Jog%3D%3D"}],"group":"cf-nel","max_age":604800} 
+ server: cloudflare 
+ server-timing: cfL4;desc="?proto=QUIC&rtt=225910&min_rtt=212389&rtt_var=18883&sent=16&recv=16&lost=0&retrans=0&sent_bytes=5862&recv_bytes=7734&delivery_rate=2448022&ss_exit_cwnd=0&ss_exit_reason=0&cwnd=17727&unsent_bytes=0&cid=42dd218ce23df778&ts=30231&inflight_dur=1180&x=103" 
+ x-content-type-options: nosniff 
+ x-powered-by: Express 
+Responses
+Code	Description	Links
+201	
+Produto criado com sucesso.
+
+No links
 401	
 Não autorizado.
 
-Nenhum link
+No links
 404	
-Instância não encontrada.
+Categoria ou marca não encontrada.
 
-Nenhum link
+No links
+409	
+Conflito, SKU ou slug já existe.
 
-500	
-Falha ao excluir a instância.
-
-caraon-backend@1.0.0 dev
-> concurrently "nodemon src/server.js"
-
-[0] [nodemon] 3.1.10
-[0] [nodemon] to restart at any time, enter `rs`  
-[0] [nodemon] watching path(s): *.*
-[0] [nodemon] watching extensions: js,mjs,cjs,json
-[0] [nodemon] starting `node src/server.js`       
-[0] [dotenv@17.2.0] injecting env (6) from .env (tip: ⚙️  write to custom object with 
-{ processEnv: myObject })
-[0] [dotenv@17.2.0] injecting env (0) from .env (tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild)
-[0] ✅ Servidor WebSocket iniciado
-[0] 🚀 API e WebSocket rodando na porta 3030
-[0] 📚 Documentação da API disponível em: http://localhost:3030/api-docs
-[0] ✅ Conectado ao MongoDB para sessões WhatsApp
-[0] Falha ao atualizar o status da instância 687d6b9e14ab6c1c2623ae4a-1753400780505: PrismaClientKnownRequestError: 
-[0] Invalid `prisma.instance.update()` invocation in
-[0] C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\src\services\whatsapp.service.js:17:27
-[0] 
-[0]   14
-[0]   15 async function updateInstanceStatus(clientId, status, message = null) {      
-[0]   16   try {
-[0] → 17     await prisma.instance.update(
-[0] An operation failed because it depends on one or more records that were required but not found. No record was found for an update.
-[0]     at ri.handleRequestError (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:121:7459)
-[0]     at ri.handleAndLogRequestError (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:121:6784)
-[0]     at ri.request (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:121:6491)
-[0]     at async l (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:130:9812)
-[0]     at async updateInstanceStatus (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\src\services\whatsapp.service.js:17:5) {
-[0]   code: 'P2025',
-[0]   meta: {
-[0]     modelName: 'Instance',
-[0]     cause: 'No record was found for an update.'
-[0]   },
-[0]   clientVersion: '6.12.0'
-[0] }
+ 
+ 

@@ -35,7 +35,8 @@ exports.createProduct = async (req, res) => {
   } catch (error) {
     console.error('Erro ao criar produto:', error);
     if (error.code === 'P2002') { // Unique constraint violation
-        return res.status(409).json({ error: `Já existe um produto com este ${error.meta.target.join(', ')}.` });
+        const fields = Array.isArray(error.meta.target) ? error.meta.target.join(', ') : error.meta.target;
+        return res.status(409).json({ error: `Já existe um produto com este ${fields}.` });
     }
     res.status(500).json({ error: 'Falha ao criar o produto.' });
   }
@@ -177,7 +178,8 @@ exports.updateProduct = async (req, res) => {
         return res.status(404).json({ error: 'Produto não encontrado.' });
     }
     if (error.code === 'P2002') { // Unique constraint violation
-        return res.status(409).json({ error: `Já existe um produto com este ${error.meta.target.join(', ')}.` });
+        const fields = Array.isArray(error.meta.target) ? error.meta.target.join(', ') : error.meta.target;
+        return res.status(409).json({ error: `Já existe um produto com este ${fields}.` });
     }
     res.status(500).json({ error: 'Falha ao atualizar o produto.' });
   }
