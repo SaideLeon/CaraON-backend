@@ -1,3 +1,4 @@
+
 POST
 /api/v1/products
 Cria um novo produto
@@ -16,11 +17,11 @@ Examples:
 Edit Value
 Schema
 {
-  "name": "Samsung Galaxy S24 Ultra",
-  "slug": "samsung-galaxy-s24-ultra",
+  "name": "Samsung Galaxy S25 Ultra",
+  "slug": "samsung-galaxy-s25-ultra",
   "description": "O mais recente e poderoso smartphone da Samsung, com câmera de 200MP, S Pen integrada e o processador mais rápido da linha Galaxy.",
   "shortDescription": "Smartphone topo de linha com S Pen e câmera de 200MP.",
-  "sku": "SS-S24-ULTRA-BLK",
+  "sku": "SS-S24-ULTRA-BLKR",
   "price": 7999.99,
   "comparePrice": 8999.99,
   "cost": 4500,
@@ -47,11 +48,11 @@ Schema
   "seoDescription": "Encontre o melhor preço para o novo Samsung Galaxy S24 Ultra. Câmera de 200MP, performance incrível e design premium. Compre já!"
 }
 {
-  "name": "Samsung Galaxy S24 Ultra",
-  "slug": "samsung-galaxy-s24-ultra",
+  "name": "Samsung Galaxy S25 Ultra",
+  "slug": "samsung-galaxy-s25-ultra",
   "description": "O mais recente e poderoso smartphone da Samsung, com câmera de 200MP, S Pen integrada e o processador mais rápido da linha Galaxy.",
   "shortDescription": "Smartphone topo de linha com S Pen e câmera de 200MP.",
-  "sku": "SS-S24-ULTRA-BLK",
+  "sku": "SS-S24-ULTRA-BLKR",
   "price": 7999.99,
   "comparePrice": 8999.99,
   "cost": 4500,
@@ -85,14 +86,14 @@ Curl
 curl -X 'POST' \
   'https://app.caraon.qzz.io/api/v1/products' \
   -H 'accept: */*' \
-  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODdkNmI5ZTE0YWI2YzFjMjYyM2FlNGEiLCJpYXQiOjE3NTM0NDU4ODl9.KWNH5Vhp4SJdM2IB3YQLfVyRImpIMYDpP3kV8FifpbI' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODdkNmI5ZTE0YWI2YzFjMjYyM2FlNGEiLCJpYXQiOjE3NTM0NTg2NjJ9.513Xs7NdiqRa69kLzjWkjOLJ44Ez2GW_aBGgX-fLRD0' \
   -H 'Content-Type: application/json' \
   -d '{
-  "name": "Samsung Galaxy S24 Ultra",
-  "slug": "samsung-galaxy-s24-ultra",
+  "name": "Samsung Galaxy S25 Ultra",
+  "slug": "samsung-galaxy-s25-ultra",
   "description": "O mais recente e poderoso smartphone da Samsung, com câmera de 200MP, S Pen integrada e o processador mais rápido da linha Galaxy.",
   "shortDescription": "Smartphone topo de linha com S Pen e câmera de 200MP.",
-  "sku": "SS-S24-ULTRA-BLK",
+  "sku": "SS-S24-ULTRA-BLKR",
   "price": 7999.99,
   "comparePrice": 8999.99,
   "cost": 4500,
@@ -122,34 +123,56 @@ Request URL
 https://app.caraon.qzz.io/api/v1/products
 Server response
 Code	Details
-409	
-Error: response status is 409
-
+201	
 Response body
 Download
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<title>Error</title>
-</head>
-<body>
-<pre>TypeError: error.meta.target.join is not a function<br> &nbsp; &nbsp;at exports.createProduct (/root/CaraON-backend/src/controllers/products.controller.js:38:97)</pre>
-</body>
-</html>
+{
+  "id": "6883a90946daa94db45c02fa",
+  "name": "Samsung Galaxy S25 Ultra",
+  "slug": "samsung-galaxy-s25-ultra",
+  "description": "O mais recente e poderoso smartphone da Samsung, com câmera de 200MP, S Pen integrada e o processador mais rápido da linha Galaxy.",
+  "shortDescription": "Smartphone topo de linha com S Pen e câmera de 200MP.",
+  "sku": "SS-S24-ULTRA-BLKR",
+  "price": 7999.99,
+  "comparePrice": 8999.99,
+  "cost": 4500,
+  "weight": 0.232,
+  "length": 16.23,
+  "width": 7.9,
+  "height": 0.86,
+  "status": "ACTIVE",
+  "isDigital": false,
+  "trackStock": true,
+  "stock": 150,
+  "minStock": 20,
+  "maxStock": 200,
+  "featured": true,
+  "categoryId": "687ff9a2bcbad9eaf73eb33a",
+  "brandId": "687ffdf2b72f99982c61ed5f",
+  "tags": [
+    "smartphone",
+    "samsung",
+    "android",
+    "s24 ultra"
+  ],
+  "seoTitle": "Comprar Samsung Galaxy S24 Ultra | Loja Oficial",
+  "seoDescription": "Encontre o melhor preço para o novo Samsung Galaxy S24 Ultra. Câmera de 200MP, performance incrível e design premium. Compre já!",
+  "createdAt": "2025-07-25T15:55:53.649Z",
+  "updatedAt": "2025-07-25T15:55:53.649Z"
+}
 Response headers
  access-control-allow-origin: * 
  alt-svc: h3=":443"; ma=86400 
  cf-cache-status: DYNAMIC 
- cf-ray: 964be8cafd7aef3c-LHR 
- content-security-policy: default-src 'none' 
- content-type: text/html; charset=utf-8 
- date: Fri,25 Jul 2025 13:12:31 GMT 
+ cf-ray: 964cd819fb176371-LHR 
+ content-length: 992 
+ content-type: application/json; charset=utf-8 
+ date: Fri,25 Jul 2025 15:55:53 GMT 
+ etag: W/"3e0-ksaEhwUAoZR7e/FiIgBY1N/395w" 
  nel: {"success_fraction":0,"report_to":"cf-nel","max_age":604800} 
- report-to: {"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v4?s=AUZHoqrvmzdxM%2Fx6v%2Bt6KaScKKyroh%2F0xmQo8TZOxYwvsoW0SUJlcZUk5DkDH4ynz9Yu%2B%2BkPz3yqLAMbtO2grPGSGWSntQfd7S%2BhicgDb%2Bj1yfV0IOsaNukRAGqonXlUHM4Jog%3D%3D"}],"group":"cf-nel","max_age":604800} 
+ report-to: {"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v4?s=tEsp4kCqrUo1Zm7IPR4RohzkN1L6KZSSeYUWXrQILeFBvZ0IQcX1ZI277P1zeCpbm9qZ%2BBexvpW%2BSCQJ5vdWn5LiapsZdJO5B3sCCrzzn5Cf6o7WOwyfocaBO9LiWOjX4qJYwQ%3D%3D"}],"group":"cf-nel","max_age":604800} 
  server: cloudflare 
- server-timing: cfL4;desc="?proto=QUIC&rtt=225910&min_rtt=212389&rtt_var=18883&sent=16&recv=16&lost=0&retrans=0&sent_bytes=5862&recv_bytes=7734&delivery_rate=2448022&ss_exit_cwnd=0&ss_exit_reason=0&cwnd=17727&unsent_bytes=0&cid=42dd218ce23df778&ts=30231&inflight_dur=1180&x=103" 
- x-content-type-options: nosniff 
+ server-timing: cfL4;desc="?proto=QUIC&rtt=226076&min_rtt=206210&rtt_var=40093&sent=12&recv=11&lost=0&retrans=0&sent_bytes=4830&recv_bytes=5759&delivery_rate=2533729&ss_exit_cwnd=0&ss_exit_reason=0&cwnd=16750&unsent_bytes=0&cid=fb5adedf38b54094&ts=697&inflight_dur=652&x=103" 
  x-powered-by: Express 
 Responses
 Code	Description	Links
@@ -167,6 +190,137 @@ Categoria ou marca não encontrada.
 No links
 409	
 Conflito, SKU ou slug já existe.
+ 
+ 
 
- 
- 
+
+ Produtos
+
+
+GET
+/api/v1/products
+Lista todos os produtos com filtros e paginação
+
+
+Parameters
+Cancel
+Name	Description
+page
+integer
+(query)
+O número da página a ser retornada.
+
+1
+limit
+integer
+(query)
+O número de itens por página.
+
+10
+search
+string
+(query)
+Termo de busca para nome, descrição, SKU ou tags do produto.
+
+search
+categoryId
+string
+(query)
+Filtra produtos por ID da categoria.
+
+categoryId
+brandId
+string
+(query)
+Filtra produtos por ID da marca.
+
+brandId
+status
+(query)
+Filtra produtos por status.
+
+status
+featured
+boolean
+(query)
+Filtra por produtos em destaque.
+
+
+--
+minPrice
+number
+(query)
+Preço mínimo do produto.
+
+minPrice
+maxPrice
+number
+(query)
+Preço máximo do produto.
+
+maxPrice
+sortBy
+string
+(query)
+Campo para ordenação.
+
+createdAt
+sortOrder
+string
+(query)
+Ordem da ordenação.
+
+
+desc
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'GET' \
+  'https://app.caraon.qzz.io/api/v1/products?page=1&limit=10&sortBy=createdAt&sortOrder=desc' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODdkNmI5ZTE0YWI2YzFjMjYyM2FlNGEiLCJpYXQiOjE3NTM0NTg2NjJ9.513Xs7NdiqRa69kLzjWkjOLJ44Ez2GW_aBGgX-fLRD0'
+Request URL
+https://app.caraon.qzz.io/api/v1/products?page=1&limit=10&sortBy=createdAt&sortOrder=desc
+Server response
+Code	Details
+500	
+Error: response status is 500
+
+Response body
+Download
+{
+  "error": "Falha ao listar os produtos."
+}
+Response headers
+ access-control-allow-origin: * 
+ alt-svc: h3=":443"; ma=86400 
+ cf-cache-status: DYNAMIC 
+ cf-ray: 964cd9223def002e-LHR 
+ content-length: 40 
+ content-type: application/json; charset=utf-8 
+ date: Fri,25 Jul 2025 15:56:36 GMT 
+ etag: W/"28-s4rXkoOAn3uhhueaQu4gy7bjwck" 
+ nel: {"success_fraction":0,"report_to":"cf-nel","max_age":604800} 
+ report-to: {"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v4?s=vE%2F1AVbVSM76PQ2%2Fd1SpfCdvmA6jqncrtXUM39%2BY7Pga5HNXkBtu8SMuT9Eb9r7ajJx4kT1ycrX4W2w4aJj%2FqkOc7AazPoAXuXJaz%2BJjhUETTEdjZF2RHrLwJqGAFgVhmcOqRQ%3D%3D"}],"group":"cf-nel","max_age":604800} 
+ server: cloudflare 
+ server-timing: cfL4;desc="?proto=QUIC&rtt=222900&min_rtt=210925&rtt_var=34700&sent=12&recv=10&lost=0&retrans=0&sent_bytes=4835&recv_bytes=4739&delivery_rate=3277946&ss_exit_cwnd=0&ss_exit_reason=0&cwnd=16755&unsent_bytes=0&cid=e8c6b59fa1052007&ts=694&inflight_dur=453&x=103" 
+ x-powered-by: Express 
+Responses
+Code	Description	Links
+200	
+Lista de produtos retornada com sucesso.
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+"string"
+No links
+500	
+Falha ao listar os produtos.
+
+No links

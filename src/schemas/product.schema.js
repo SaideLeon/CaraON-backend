@@ -47,15 +47,15 @@ const updateProductSchema = z.object({
 
 const listProductsSchema = z.object({
   query: z.object({
-    page: z.string().transform(Number).default(1),
-    limit: z.string().transform(Number).default(10),
+    page: z.string().transform(val => parseInt(val, 10)).refine(val => val > 0, 'A página deve ser um número positivo.').default('1'),
+    limit: z.string().transform(val => parseInt(val, 10)).refine(val => val > 0, 'O limite deve ser um número positivo.').default('10'),
     search: z.string().optional(),
     categoryId: z.string().optional(),
     brandId: z.string().optional(),
     status: productStatusEnum.optional(),
     featured: z.string().transform(val => val === 'true').optional(),
-    minPrice: z.string().transform(Number).optional(),
-    maxPrice: z.string().transform(Number).optional(),
+    minPrice: z.string().transform(val => parseFloat(val)).refine(val => val >= 0, 'O preço mínimo não pode ser negativo.').optional(),
+    maxPrice: z.string().transform(val => parseFloat(val)).refine(val => val >= 0, 'O preço máximo não pode ser negativo.').optional(),
     sortBy: z.string().default('createdAt'),
     sortOrder: z.enum(['asc', 'desc']).default('desc'),
   }),

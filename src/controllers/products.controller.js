@@ -45,8 +45,8 @@ exports.createProduct = async (req, res) => {
 exports.getProducts = async (req, res) => {
   try {
     const {
-      page = 1,
-      limit = 10,
+      page,
+      limit,
       search,
       categoryId,
       brandId,
@@ -74,18 +74,21 @@ exports.getProducts = async (req, res) => {
     if (status) where.status = status;
     if (featured !== undefined) where.featured = featured;
 
-    if (minPrice || maxPrice) {
+    if (minPrice !== undefined || maxPrice !== undefined) {
       where.price = {};
-      if (minPrice) where.price.gte = minPrice;
-      if (maxPrice) where.price.lte = maxPrice;
+      if (minPrice !== undefined) where.price.gte = minPrice;
+      if (maxPrice !== undefined) where.price.lte = maxPrice;
     }
+
+    const pageNum = parseInt(page, 10) || 1;
+    const limitNum = parseInt(limit, 10) || 10;
 
     const totalProducts = await prisma.product.count({ where });
 
     const products = await prisma.product.findMany({
       where,
-      skip: (page - 1) * limit,
-      take: limit,
+      skip: (pageNum - 1) * limitNum,
+      take: limitNum,
       orderBy: {
         [sortBy]: sortOrder,
       },
@@ -99,9 +102,9 @@ exports.getProducts = async (req, res) => {
       data: products,
       pagination: {
         total: totalProducts,
-        page,
-        limit,
-        totalPages: Math.ceil(totalProducts / limit),
+        page: pageNum,
+        limit: limitNum,
+        totalPages: Math.ceil(totalProducts / limitNum),
       },
     });
   } catch (error) {
