@@ -1,105 +1,76 @@
-Responses
-Curl
+Cachos
 
-curl -X 'GET' \
-  'http://localhost:3030/api/v1/agents/687e89f9dd9860a98c6a61ab' \
+curl -X 'DELETE' \
+  'https://app.caraon.qzz.io/api/v1/instances/687e84e2a380f8a409497f69' \
   -H 'accept: */*' \
-  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODdkNmI5ZTE0YWI2YzFjMjYyM2FlNGEiLCJpYXQiOjE3NTMzODU4Njh9.QnkC2yqNFjJwpFj5kLUfNEguY2YonJZecolnM-_fiiM'
-Request URL
-http://localhost:3030/api/v1/agents/687e89f9dd9860a98c6a61ab
-Server response
-Code	Details
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODdkNmI5ZTE0YWI2YzFjMjYyM2FlNGEiLCJpYXQiOjE3NTMzOTk4MzZ9.JjwDZoJVfA1aPonJ2JyLc0d4Cw4VBiHDMWufDM-1W8g'
+URL da solicitação
+https://app.caraon.qzz.io/api/v1/instances/687e84e2a380f8a409497f69
+Resposta do servidor
+Código	Detalhes
 500	
-Error: Internal Server Error
+Erro: o status da resposta é 500
 
-Response body
+Corpo de resposta
+
 Download
 {
-  "error": "Falha ao buscar o agente."
+  "error": "Falha ao deletar a instância."
 }
-Response headers
- access-control-allow-origin: * 
- connection: keep-alive 
- content-length: 37 
- content-type: application/json; charset=utf-8 
- date: Thu,24 Jul 2025 19:50:49 GMT 
- etag: W/"25-QCW7ntV9A4NSYRf4kv5r+dSvZmg" 
- keep-alive: timeout=5 
- x-powered-by: Express 
+Cabeçalhos de resposta
+ comprimento do conteúdo : 42 
+ tipo de conteúdo : aplicação/json; conjunto de caracteres=utf-8 
+Respostas
+Código	Descrição	Ligações
+204	
+Instância deletada com sucesso.
 
-  -- yourcommand`)
-[0] [dotenv@17.2.0] injecting env (0) from .env (tip: 🔐 encrypt with dotenvx: https://dotenvx.com)
+Nenhum link
+401	
+Não autorizado.
+
+Nenhum link
+404	
+Instância não encontrada.
+
+Nenhum link
+
+500	
+Falha ao excluir a instância.
+
+caraon-backend@1.0.0 dev
+> concurrently "nodemon src/server.js"
+
+[0] [nodemon] 3.1.10
+[0] [nodemon] to restart at any time, enter `rs`  
+[0] [nodemon] watching path(s): *.*
+[0] [nodemon] watching extensions: js,mjs,cjs,json
+[0] [nodemon] starting `node src/server.js`       
+[0] [dotenv@17.2.0] injecting env (6) from .env (tip: ⚙️  write to custom object with 
+{ processEnv: myObject })
+[0] [dotenv@17.2.0] injecting env (0) from .env (tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild)
 [0] ✅ Servidor WebSocket iniciado
 [0] 🚀 API e WebSocket rodando na porta 3030
 [0] 📚 Documentação da API disponível em: http://localhost:3030/api-docs
 [0] ✅ Conectado ao MongoDB para sessões WhatsApp
-[0] Erro ao buscar agente por ID: PrismaClientValidationError: 
-[0] Invalid `prisma.agent.findUnique()` invocation in
-[0] C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\src\controllers\agent.controller.js:123:42
-[0]
-[0]   120 const { agentId } = req.params;
-[0]   121
-[0]   122 try {
-[0] → 123     const agent = await prisma.agent.findUnique({
-[0]             where: {
-[0]               id: "68828e07540243f84e2f8b01"
-[0]             },
-[0]             include: {
-[0]               tools: true,
-[0]               parent: true,
-[0]               ~~~~~~
-[0]               children: true,
-[0]           ?   instance?: true,
-[0]           ?   organization?: true,
-[0]           ?   parentAgent?: true,
-[0]           ?   childAgents?: true,
-[0]           ?   template?: true,
-[0]           ?   config?: true,
-[0]           ?   executions?: true
-[0]             }
-[0]           })
-[0]
-[0] Unknown field `parent` for include statement on model `Agent`. Available options are marked with ?.
-[0]     at Dn (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:29:1363)
-[0]     at ri.handleRequestError (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:121:7102)
+[0] Falha ao atualizar o status da instância 687d6b9e14ab6c1c2623ae4a-1753400780505: PrismaClientKnownRequestError: 
+[0] Invalid `prisma.instance.update()` invocation in
+[0] C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\src\services\whatsapp.service.js:17:27
+[0] 
+[0]   14
+[0]   15 async function updateInstanceStatus(clientId, status, message = null) {      
+[0]   16   try {
+[0] → 17     await prisma.instance.update(
+[0] An operation failed because it depends on one or more records that were required but not found. No record was found for an update.
+[0]     at ri.handleRequestError (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:121:7459)
 [0]     at ri.handleAndLogRequestError (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:121:6784)
 [0]     at ri.request (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:121:6491)
 [0]     at async l (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:130:9812)
-[0]     at async exports.getAgentById (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\src\controllers\agent.controller.js:123:23) {
-[0]   clientVersion: '6.12.0'
-[0] }
-[0] Erro ao buscar agente por ID: PrismaClientValidationError: 
-[0] Invalid `prisma.agent.findUnique()` invocation in
-[0] C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\src\controllers\agent.controller.js:123:42
-[0]
-[0]   120 const { agentId } = req.params;
-[0]   121
-[0]   122 try {
-[0] → 123     const agent = await prisma.agent.findUnique({
-[0]             where: {
-[0]               id: "687e89f9dd9860a98c6a61ab"
-[0]             },
-[0]             include: {
-[0]               tools: true,
-[0]               parent: true,
-[0]               ~~~~~~
-[0]               children: true,
-[0]           ?   instance?: true,
-[0]           ?   organization?: true,
-[0]           ?   parentAgent?: true,
-[0]           ?   childAgents?: true,
-[0]           ?   template?: true,
-[0]           ?   config?: true,
-[0]           ?   executions?: true
-[0]             }
-[0]           })
-[0]
-[0] Unknown field `parent` for include statement on model `Agent`. Available options are marked with ?.
-[0]     at Dn (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:29:1363)
-[0]     at ri.handleRequestError (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:121:7102)
-[0]     at ri.handleAndLogRequestError (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:121:6784)
-[0]     at ri.request (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:121:6491)
-[0]     at async l (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:130:9812)
-[0]     at async exports.getAgentById (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\src\controllers\agent.controller.js:123:23) {
+[0]     at async updateInstanceStatus (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\src\services\whatsapp.service.js:17:5) {
+[0]   code: 'P2025',
+[0]   meta: {
+[0]     modelName: 'Instance',
+[0]     cause: 'No record was found for an update.'
+[0]   },
 [0]   clientVersion: '6.12.0'
 [0] }

@@ -26,9 +26,9 @@ require('../schemas/user.schema');
 /**
  * Gera a documentação OpenAPI e monta o middleware Swagger.
  * @param {import('express').Application} app
- * @param {string} serverUrl
+ * @param {Array<{url: string, description: string}>} servers
  */
-function generateOpenApi(app, serverUrl) {
+function generateOpenApi(app, servers) {
   // 1. Gera as definições dos schemas a partir do Zod
   const generator = new OpenApiGeneratorV3(registry.definitions);
   const zodSchemas = generator.generateComponents();
@@ -42,12 +42,7 @@ function generateOpenApi(app, serverUrl) {
         version: '1.0.0',
         description: 'Documentação da API CaraON para gerenciamento de instâncias, agentes e produtos.',
       },
-      servers: [
-        {
-          url: serverUrl,
-          description: 'Servidor da API',
-        },
-      ],
+      servers,
       security: [
         {
           bearerAuth: [],

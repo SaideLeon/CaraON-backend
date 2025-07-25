@@ -54,7 +54,7 @@ model Organization {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  instance Instance @relation(fields: [instanceId], references: [id])
+  instance Instance @relation(fields: [instanceId], references: [id], onDelete: Cascade)
   agents   Agent[]
 
   @@map("organizations")
@@ -174,7 +174,7 @@ model AgentExecution {
   toolsUsed     Json?
   createdAt     DateTime @default(now())
 
-  agent    Agent?   @relation(fields: [agentId], references: [id])
+  agent    Agent?   @relation(fields: [agentId], references: [id], onDelete: Cascade)
   instance Instance @relation(fields: [instanceId], references: [id], onDelete: Cascade)
 
   @@map("agent_executions")

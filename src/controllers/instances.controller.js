@@ -93,12 +93,19 @@ exports.deleteInstance = async (req, res) => {
             return res.status(404).json({ error: 'Instância não encontrada' });
         }
 
+        // Primeiro, desconecta o cliente para evitar que ele tente atualizar o status depois da deleção
         await whatsappService.disconnectInstance(instance.clientId);
+
+        // Agora, deleta a instância do banco de dados
         await prisma.instance.delete({ where: { id: instanceId } });
 
         res.status(204).send();
     } catch (error) {
         console.error('Erro ao deletar instância:', error);
+        // Adiciona uma verificação para o caso de o erro ser o registro não encontrado, o que pode acontecer em uma race condition
+        if (error.code === 'P2025') {
+            return res.status(404).json({ error: 'Instância não encontrada.' });
+        }
         res.status(500).json({ error: 'Falha ao deletar a instância.' });
     }
 };
