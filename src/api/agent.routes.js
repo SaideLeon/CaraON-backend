@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const agentController = require('../controllers/agent.controller');
 const { validate } = require('../middlewares/validate.middleware');
-const { createParentAgentSchema, createChildAgentFromTemplateSchema, createCustomChildAgentSchema, listChildAgentsSchema, updateAgentPersonaSchema, exportAgentAnalyticsSchema, getAgentByIdSchema, listParentAgentsSchema, deleteAgentSchema } = require('../schemas/agent.schema');
+const { createParentAgentSchema, createChildAgentFromTemplateSchema, createCustomChildAgentSchema, listChildAgentsSchema, updateAgentPersonaSchema, exportAgentAnalyticsSchema, getAgentByIdSchema, listParentAgentsSchema, deleteAgentSchema, updateAgentSchema } = require('../schemas/agent.schema');
 const auth = require('../middlewares/auth.middleware');
 
 /**
@@ -267,6 +267,44 @@ router.get('/child/:parentAgentId', auth, validate(listChildAgentsSchema), agent
  *         description: Falha ao obter o agente.
  */
 router.get('/:agentId', auth, validate(getAgentByIdSchema), agentController.getAgentById);
+
+/**
+ * @swagger
+ * /api/v1/agents/{agentId}:
+ *   put:
+ *     summary: Atualiza um agente existente (nome, persona, prioridade)
+ *     tags: [Agentes]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: agentId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: O ID do agente a ser atualizado.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UpdateAgentBody'
+ *           examples:
+ *             setHighPriority:
+ *               summary: Definir Agente como Principal
+ *               value:
+ *                 priority: 10
+ *     responses:
+ *       200:
+ *         description: Agente atualizado com sucesso.
+ *       401:
+ *         description: Não autorizado.
+ *       404:
+ *         description: Agente não encontrado.
+ *       500:
+ *         description: Falha ao atualizar o agente.
+ */
+router.put('/:agentId', auth, validate(updateAgentSchema), agentController.updateAgent);
 
 /**
  * @swagger

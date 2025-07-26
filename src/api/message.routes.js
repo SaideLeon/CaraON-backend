@@ -1,0 +1,78 @@
+const express = require('express');
+const router = express.Router();
+const messageController = require('../controllers/message.controller');
+const { validate } = require('../middlewares/validate.middleware');
+const { listMessagesSchema, deleteMessageSchema } = require('../schemas/message.schema');
+const auth = require('../middlewares/auth.middleware');
+
+/**
+ * @swagger
+ * tags:
+ *   name: Mensagens
+ *   description: API para visualizar e gerenciar o histórico de mensagens.
+ */
+
+/**
+ * @swagger
+ * /api/v1/instances/{instanceId}/messages:
+ *   get:
+ *     summary: Lista as mensagens de uma instância
+ *     tags: [Mensagens]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: instanceId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: O ID da instância.
+ *       - in: query
+ *         name: contactId
+ *         schema:
+ *           type: string
+ *         description: (Opcional) Filtra as mensagens por um contato específico.
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 20
+ *     responses:
+ *       200:
+ *         description: Lista de mensagens.
+ *       401:
+ *         description: Não autorizado.
+ */
+router.get('/instances/:instanceId/messages', auth, validate(listMessagesSchema), messageController.listMessages);
+
+/**
+ * @swagger
+ * /api/v1/messages/{messageId}:
+ *   delete:
+ *     summary: Deleta uma mensagem específica
+ *     tags: [Mensagens]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: messageId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: O ID da mensagem a ser deletada.
+ *     responses:
+ *       204:
+ *         description: Mensagem deletada com sucesso.
+ *       401:
+ *         description: Não autorizado.
+ *       404:
+ *         description: Mensagem não encontrada.
+ */
+router.delete('/messages/:messageId', auth, validate(deleteMessageSchema), messageController.deleteMessage);
+
+module.exports = router;

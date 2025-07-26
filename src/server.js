@@ -14,6 +14,8 @@ const toolRoutes = require('./api/tool.routes');
 const categoryRoutes = require('./api/category.routes');
 const brandRoutes = require('./api/brand.routes');
 const healthRoutes = require('./api/health.routes'); // Importa a nova rota
+const messageRoutes = require('./api/message.routes'); // Importa a rota de mensagens
+const contactRoutes = require('./api/contact.routes'); // Importa a rota de contatos
 const webSocketService = require('./services/websocket.service');
 const { generateOpenApi } = require('./docs/openapi');
 const app = express();
@@ -43,6 +45,8 @@ app.use('/api/v1/templates', templateRoutes);
 app.use('/api/v1/tools', toolRoutes);
 app.use('/api/v1', categoryRoutes);
 app.use('/api/v1', brandRoutes);
+app.use('/api/v1', messageRoutes);
+app.use('/api/v1', contactRoutes);
 
 const server = http.createServer(app);
 webSocketService.init(server);

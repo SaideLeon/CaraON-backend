@@ -43,6 +43,8 @@ model Instance {
   organizations Organization[]
   agents        Agent[]
   executions    AgentExecution[]
+  contacts      Contact[] // Adicionado
+  messages      Message[] // Adicionado
 
   @@map("instances")
 }
@@ -59,6 +61,47 @@ model Organization {
 
   @@map("organizations")
 }
+
+// ========== MODELOS DE COMUNICAÇÃO ==========
+
+model Contact {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  instanceId  String    @db.ObjectId
+  phoneNumber String    // Número de telefone do cliente (ex: 5511999998888@c.us)
+  name        String?   // Nome que o cliente define no WhatsApp
+  pushName    String?   // Nome de perfil do WhatsApp
+  isBlocked   Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  instance Instance @relation(fields: [instanceId], references: [id], onDelete: Cascade)
+  messages Message[]
+
+  @@unique([instanceId, phoneNumber])
+  @@map("contacts")
+}
+
+model Message {
+  id          String           @id @default(auto()) @map("_id") @db.ObjectId
+  instanceId  String           @db.ObjectId
+  contactId   String           @db.ObjectId
+  wppId       String           @unique // ID da mensagem do WhatsApp para evitar duplicatas
+  direction   MessageDirection // INCOMING ou OUTGOING
+  content     String           // Conteúdo da mensagem
+  status      String?          // Status da mensagem (sent, delivered, read)
+  isRead      Boolean          @default(false)
+  sentAt      DateTime         @default(now())
+  deliveredAt DateTime?
+  readAt      DateTime?
+  agentExecutionId String?          @db.ObjectId // Adicionado
+
+  instance       Instance        @relation(fields: [instanceId], references: [id], onDelete: Cascade)
+  contact        Contact         @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  agentExecution AgentExecution? @relation(fields: [agentExecutionId], references: [id], onDelete: SetNull)
+
+  @@map("messages")
+}
+
 
 model Agent {
   id             String    @id @default(auto()) @map("_id") @db.ObjectId
@@ -176,6 +219,7 @@ model AgentExecution {
 
   agent    Agent?   @relation(fields: [agentId], references: [id], onDelete: Cascade)
   instance Instance @relation(fields: [instanceId], references: [id], onDelete: Cascade)
+  messages Message[] // Adicionado
 
   @@map("agent_executions")
 }
@@ -674,6 +718,11 @@ model PaymentConfig {
 enum AgentType {
   PAI
   FILHO
+}
+
+enum MessageDirection {
+  INCOMING
+  OUTGOING
 }
 
 enum ToolType {

@@ -8,7 +8,8 @@ const {
     listChildAgentsSchema, 
     exportAgentAnalyticsSchema,
     listParentAgentsSchema,
-    deleteAgentSchema
+    deleteAgentSchema,
+    updateAgentSchema
 } = require('../schemas/agent.schema');
 const { z } = require('zod');
 const agentHierarchyService = require('../services/agent.hierarchy.service');
@@ -30,6 +31,24 @@ exports.updateAgentPersona = async (req, res) => {
             return res.status(404).json({ error: 'Agente não encontrado.' });
         }
         res.status(500).json({ error: 'Falha ao atualizar a persona do agente.' });
+    }
+};
+
+exports.updateAgent = async (req, res) => {
+    const { agentId } = req.params;
+    const { name, persona, priority } = req.body;
+
+    try {
+        const agent = await prisma.agent.update({
+            where: { id: agentId },
+            data: { name, persona, priority },
+        });
+        res.status(200).json(agent);
+    } catch (error) {
+        if (error.code === 'P2025') { // Not Found error from Prisma
+            return res.status(404).json({ error: 'Agente não encontrado.' });
+        }
+        res.status(500).json({ error: 'Falha ao atualizar o agente.' });
     }
 };
 

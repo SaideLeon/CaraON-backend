@@ -60,6 +60,19 @@ const updateAgentPersonaSchema = z.object({
     }),
 });
 
+const UpdateAgentBody = z.object({
+    name: z.string().min(3, 'O nome do agente é obrigatório.').optional(),
+    persona: z.string().min(20, 'A persona precisa ter no mínimo 20 caracteres.').optional(),
+    priority: z.number().int('A prioridade deve ser um número inteiro.').optional(),
+});
+
+const updateAgentSchema = z.object({
+    body: UpdateAgentBody.openapi({refId: 'UpdateAgentBody'}),
+    params: z.object({
+        agentId: z.string().regex(/^[0-9a-fA-F]{24}$/, 'ID de agente inválido'),
+    }),
+});
+
 const exportAgentAnalyticsSchema = z.object({
     query: z.object({
         instanceId: z.string().regex(/^[0-9a-fA-F]{24}$/, 'ID de instância inválido'),
@@ -90,6 +103,7 @@ registry.register('CreateParentAgentBody', CreateParentAgentBody);
 registry.register('CreateChildAgentFromTemplateBody', CreateChildAgentFromTemplateBody);
 registry.register('CreateCustomChildAgentBody', CreateCustomChildAgentBody);
 registry.register('UpdateAgentPersonaBody', UpdateAgentPersonaBody);
+registry.register('UpdateAgentBody', UpdateAgentBody);
 
 
 module.exports = {
@@ -98,6 +112,7 @@ module.exports = {
     createCustomChildAgentSchema,
     listChildAgentsSchema,
     updateAgentPersonaSchema,
+    updateAgentSchema,
     exportAgentAnalyticsSchema,
     getAgentByIdSchema,
     listParentAgentsSchema,

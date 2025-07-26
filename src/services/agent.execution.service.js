@@ -2,245 +2,231 @@ const { PrismaClient } = require('@prisma/client');
 const { generateResponse } = require('./genkit.service');
 const { executeToolFunction } = require('./tools.service');
 const agentHierarchyService = require('./agent.hierarchy.service');
-const agentSelectionService = require('./agent.selection.service');
+const { selectAgent } = require('./agent.selection.service');
 
 const prisma = new PrismaClient();
 
 /**
- * Executa o fluxo hierárquico de agentes
+ * Executa o fluxo de roteamento e execução de agentes em múltiplos níveis.
+ * @param {string} instanceId - O ID da instância.
+ * @param {string} messageContent - A mensagem do usuário.
+ * @param {string} userPhone - O telefone do usuário.
  */
-async function executeHierarchicalAgentFlow(instanceId, organizationId, messageContent, userPhone) {
-  const startTime = Date.now();
-  
-  try {
-    // 1. Buscar o agente pai
-    const parentAgent = await agentHierarchyService.getParentAgent(instanceId, organizationId);
-    
-    if (!parentAgent) {
-      throw new Error('Nenhum agente pai encontrado para esta instância/organização');
-    }
+async function executeHierarchicalAgentFlow(instanceId, messageContent, userPhone) {
+    const startTime = Date.now();
+    let executionLog = []; // Para rastrear a cadeia de agentes
 
-    // 2. O agente pai decide qual agente filho usar
-    const selectedChildAgent = await agentSelectionService.selectChildAgent(parentAgent.id, messageContent);
-    
-    if (!selectedChildAgent) {
-      // Se não há agente filho adequado, o pai responde diretamente
-      return await executeAgentDirect(parentAgent, messageContent, userPhone);
-    }
+    try {
+        // 1. Obter o Agente Roteador (Pai da Instância, sem organizationId)
+        const routerAgent = await agentHierarchyService.getParentAgent(instanceId, null);
+        if (!routerAgent) {
+            throw new Error(`Nenhum Agente Roteador encontrado para a instância ${instanceId}`);
+        }
+        executionLog.push(routerAgent.id);
 
-    // 3. Executar o agente filho selecionado
-    const childResponse = await executeChildAgent(selectedChildAgent, messageContent, userPhone);
-    
-    // 4. O agente pai pode processar/refinar a resposta do filho
-    const finalResponse = await refineResponseWithParent(parentAgent, messageContent, childResponse);
-    
-    // 5. Registrar a execução
-    await logAgentExecution(parentAgent.id, instanceId, messageContent, finalResponse, Date.now() - startTime, true, [selectedChildAgent.id]);
-    
-    return finalResponse;
-    
-  } catch (error) {
-    console.error('Erro na execução hierárquica:', error);
-    await logAgentExecution(null, instanceId, messageContent, null, Date.now() - startTime, false, [], error.message);
-    throw error;
-  }
+        // 2. O Roteador seleciona o departamento (Agente Pai da Organização)
+        const organizationAgents = await agentHierarchyService.getOrganizationParentAgents(instanceId);
+        const departmentAgent = await selectAgent(routerAgent, organizationAgents, messageContent, 'organization');
+
+        // Se nenhum departamento for selecionado, o próprio roteador responde
+        if (!departmentAgent) {
+            console.log('Nenhum departamento selecionado. O roteador responderá diretamente.');
+            const directResponse = await executeAgentDirect(routerAgent, messageContent);
+            await logAgentExecution(routerAgent.id, instanceId, messageContent, directResponse, Date.now() - startTime, true, executionLog);
+            return directResponse;
+        }
+        executionLog.push(departmentAgent.id);
+
+        // 3. O Pai do Departamento seleciona o Agente Filho (Especialista)
+        const specialistAgents = await agentHierarchyService.getChildAgents(departmentAgent.id);
+        const specialistAgent = await selectAgent(departmentAgent, specialistAgents, messageContent, 'specialist');
+
+        // Se nenhum especialista for selecionado, o pai do departamento responde
+        if (!specialistAgent) {
+            console.log('Nenhum especialista selecionado. O pai do departamento responderá.');
+            const departmentResponse = await executeAgentDirect(departmentAgent, messageContent);
+            await logAgentExecution(routerAgent.id, instanceId, messageContent, departmentResponse, Date.now() - startTime, true, executionLog);
+            return departmentResponse;
+        }
+        executionLog.push(specialistAgent.id);
+
+        // 4. O Agente Especialista executa a tarefa
+        const specialistResponse = await executeSpecialistAgent(specialistAgent, messageContent);
+
+        // 5. Opcional: Refinamento pelo Roteador/Pai
+        const finalResponse = await refineResponseWithParent(routerAgent, messageContent, specialistResponse);
+
+        // 6. Registrar a execução completa e obter o ID
+        const execution = await logAgentExecution(routerAgent.id, instanceId, messageContent, finalResponse, Date.now() - startTime, true, executionLog);
+
+        return { finalResponse, executionId: execution.id };
+
+    } catch (error) {
+        console.error('Erro na execução hierárquica de múltiplos níveis:', error);
+        // Salva a execução falha e retorna o ID
+        const execution = await logAgentExecution(null, instanceId, messageContent, null, Date.now() - startTime, false, executionLog, error.message);
+        // Lança o erro com o ID da execução para referência
+        const richError = new Error(error.message);
+        richError.executionId = execution ? execution.id : null;
+        throw richError;
+    }
 }
 
 /**
- * Executa um agente filho específico
+ * Executa um agente especialista, incluindo o uso de ferramentas.
+ * @param {object} agent - O objeto do agente especialista.
+ * @param {string} messageContent - A mensagem do usuário.
+ * @returns {Promise<string>} A resposta do agente.
  */
-async function executeChildAgent(childAgent, messageContent, userPhone) {
-  const startTime = Date.now();
-  
-  try {
-    // Preparar contexto com ferramentas disponíveis
-    const availableTools = childAgent.tools.filter(t => t.isActive);
+async function executeSpecialistAgent(agent, messageContent) {
+    const availableTools = agent.tools ? agent.tools.filter(t => t.isActive) : [];
     const toolsContext = availableTools.map(t => ({
-      name: t.tool.name,
-      description: t.tool.description,
-      type: t.tool.type
+        name: t.tool.name,
+        description: t.tool.description,
     }));
 
-    // Construir prompt para o agente filho
-    const childPrompt = `
-${childAgent.persona}
+    const agentPrompt = `
+${agent.persona}
 
-Ferramentas disponíveis:
-${toolsContext.map(tool => `- ${tool.name}: ${tool.description}`).join('\n')}
+${toolsContext.length > 0 ? 'Ferramentas disponíveis:\n' + toolsContext.map(t => `- ${t.name}: ${t.description}`).join('\n') : ''}
 
 Mensagem do usuário: "${messageContent}"
 
-Se precisar usar uma ferramenta, indique claramente qual ferramenta usar e os parâmetros necessários.
-Forneça uma resposta completa e útil baseada na sua especialidade.
+Sua tarefa é responder à mensagem. Se precisar de uma ferramenta, indique com "USAR_FERRAMENTA: [nome_da_ferramenta]".
 `;
 
-    // Gerar resposta inicial
-    let response = await generateResponse(childPrompt, {
-      maxTokens: childAgent.config.maxTokens,
-      temperature: childAgent.config.temperature,
-      model: childAgent.config.model
-    });
+    let agentResponse = await generateResponse(agentPrompt, { ...agent.config });
 
-    // Verificar se precisa executar ferramentas
-    const toolExecution = await checkAndExecuteTools(childAgent, response, messageContent);
-    
-    if (toolExecution) {
-      // Regenerar resposta com dados das ferramentas
-      const enhancedPrompt = `
-${childPrompt}
+    const toolExecutionResult = await checkAndExecuteTools(agent, agentResponse, messageContent);
 
-Dados obtidos das ferramentas:
-${toolExecution}
+    if (toolExecutionResult) {
+        const enhancedPrompt = `
+${agent.persona}
 
-Agora forneça uma resposta completa utilizando essas informações.
+Mensagem do usuário: "${messageContent}"
+
+Contexto obtido da ferramenta:
+${toolExecutionResult}
+
+Com base neste contexto, forneça a resposta final e completa.
 `;
-      
-      response = await generateResponse(enhancedPrompt, {
-        maxTokens: childAgent.config.maxTokens,
-        temperature: childAgent.config.temperature,
-        model: childAgent.config.model
-      });
+        agentResponse = await generateResponse(enhancedPrompt, { ...agent.config });
     }
 
-    // Registrar execução do agente filho
-    await logAgentExecution(childAgent.id, childAgent.instanceId, messageContent, response, Date.now() - startTime, true, []);
-    
-    return response;
-    
-  } catch (error) {
-    console.error(`Erro na execução do agente filho ${childAgent.id}:`, error);
-    await logAgentExecution(childAgent.id, childAgent.instanceId, messageContent, null, Date.now() - startTime, false, [], error.message);
-    
-    return childAgent.config.fallbackMessage || 'Desculpe, não consegui processar sua solicitação nesta especialidade.';
-  }
+    return agentResponse;
 }
 
 /**
- * Verifica se a resposta indica uso de ferramenta e executa se necessário
+ * Executa um agente diretamente, sem seleção de filhos ou ferramentas.
  */
-async function checkAndExecuteTools(agent, response, originalMessage) {
-  const toolIndicators = [
-    'USAR_FERRAMENTA:',
-    'EXECUTAR_TOOL:',
-    'FERRAMENTA_NECESSÁRIA:',
-    'CONSULTAR_DADOS:'
-  ];
-
-  const needsTool = toolIndicators.some(indicator => 
-    response.toUpperCase().includes(indicator)
-  );
-
-  if (!needsTool) {
-    return null;
-  }
-
-  // Extrair qual ferramenta usar e os parâmetros
-  // Implementação simplificada - pode ser melhorada com regex mais sofisticado
-  const availableTools = agent.tools.filter(t => t.isActive);
-  
-  for (const agentTool of availableTools) {
-    if (response.toUpperCase().includes(agentTool.tool.name.toUpperCase())) {
-      try {
-        const toolResult = await executeToolFunction(agentTool.tool, originalMessage, agentTool.config);
-        return `Resultado da ferramenta ${agentTool.tool.name}: ${JSON.stringify(toolResult)}`;
-      } catch (error) {
-        console.error(`Erro ao executar ferramenta ${agentTool.tool.name}:`, error);
-        return `Erro ao executar ferramenta ${agentTool.tool.name}: ${error.message}`;
-      }
-    }
-  }
-
-  return null;
+async function executeAgentDirect(agent, messageContent) {
+    const prompt = `${agent.persona}\n\nMensagem do usuário: "${messageContent}"`;
+    return await generateResponse(prompt, { ...agent.config });
 }
 
 /**
- * Agente pai refina a resposta do agente filho
+ * Verifica se uma ferramenta é necessária, extrai parâmetros e a executa.
+ */
+async function checkAndExecuteTools(agent, agentResponse, originalMessage) {
+    const availableTools = agent.tools ? agent.tools.filter(t => t.isActive) : [];
+    if (availableTools.length === 0) return null;
+
+    const extraction = await extractToolAndParameters(agentResponse, availableTools, originalMessage);
+    if (!extraction) return null;
+
+    const { tool, parameters, agentConfig } = extraction;
+    try {
+        const toolResult = await executeToolFunction(tool, parameters, agentConfig);
+        return `Resultado da ferramenta ${tool.name}: ${JSON.stringify(toolResult)}`;
+    } catch (error) {
+        console.error(`Erro ao executar a ferramenta ${tool.name}:`, error);
+        return `Erro ao executar a ferramenta ${tool.name}: ${error.message}`;
+    }
+}
+
+/**
+ * Usa um LLM para extrair a ferramenta e seus parâmetros.
+ */
+async function extractToolAndParameters(agentResponse, availableTools, originalMessage) {
+    const toolIndicators = ['USAR_FERRAMENTA:', 'EXECUTAR_TOOL:', 'FERRAMENTA_NECESSÁRIA:'];
+    if (!toolIndicators.some(ind => agentResponse.toUpperCase().includes(ind))) return null;
+
+    const toolSchema = availableTools.map(t => ({
+        name: t.tool.name,
+        description: t.tool.description,
+        parameters: t.tool.config.requiredFields || t.tool.config.searchFields || ['query'],
+    }));
+
+    const prompt = `
+Você analisa uma conversa e extrai o nome de uma ferramenta e seus parâmetros em JSON.
+
+Conversa:
+- Usuário: "${originalMessage}"
+- Agente: "${agentResponse}"
+
+Ferramentas:
+${JSON.stringify(toolSchema, null, 2)}
+
+Responda APENAS com um objeto JSON com "toolName" e "parameters".
+`;
+
+    try {
+        const jsonResponse = await generateResponse(prompt, { temperature: 0 });
+        const cleanedJson = jsonResponse.replace(/```json/g, '').replace(/```/g, '').trim();
+        const parsed = JSON.parse(cleanedJson);
+
+        if (!parsed.toolName || !parsed.parameters) return null;
+
+        const selectedTool = availableTools.find(t => t.tool.name === parsed.toolName);
+        if (!selectedTool) return null;
+
+        return { tool: selectedTool.tool, parameters: parsed.parameters, agentConfig: selectedTool.config };
+    } catch (error) {
+        console.error("Erro ao extrair parâmetros com LLM:", error);
+        return null;
+    }
+}
+
+/**
+ * Permite que um agente de nível superior refine a resposta de um agente de nível inferior.
  */
 async function refineResponseWithParent(parentAgent, originalMessage, childResponse) {
-  const refinementPrompt = `
+    const prompt = `
 ${parentAgent.persona}
 
-Mensagem original do usuário: "${originalMessage}"
-Resposta do agente especialista: "${childResponse}"
+Mensagem original: "${originalMessage}"
+Resposta do especialista: "${childResponse}"
 
-Sua tarefa é revisar e refinar a resposta do agente especialista, garantindo que:
-1. A resposta está completa e precisa
-2. O tom está adequado para o contexto da empresa
-3. Não há informações contraditórias
-4. A resposta atende completamente à pergunta do usuário
-
-Se a resposta estiver adequada, pode retorná-la sem modificações.
-Se precisar de ajustes, faça-os mantendo o conhecimento técnico do especialista.
+Revise e, se necessário, refine a resposta do especialista para garantir clareza, tom e completude. Se estiver boa, retorne-a como está.
 `;
-
-  try {
-    const refinedResponse = await generateResponse(refinementPrompt, {
-      maxTokens: parentAgent.config.maxTokens,
-      temperature: parentAgent.config.temperature,
-      model: parentAgent.config.model
-    });
-
-    return refinedResponse;
-    
-  } catch (error) {
-    console.error('Erro no refinamento da resposta:', error);
-    // Fallback: retornar a resposta original do agente filho
-    return childResponse;
-  }
+    return await generateResponse(prompt, { ...parentAgent.config });
 }
 
 /**
- * Executa agente diretamente (sem filhos)
+ * Registra a execução completa do fluxo de agentes e retorna o registro.
+ * @returns {Promise<object>} O registro da execução criada.
  */
-async function executeAgentDirect(agent, messageContent, userPhone) {
-  const startTime = Date.now();
-  
-  try {
-    const response = await generateResponse(
-      `${agent.persona}\n\nMensagem do usuário: "${messageContent}"`,
-      {
-        maxTokens: agent.config.maxTokens,
-        temperature: agent.config.temperature,
-        model: agent.config.model
-      }
-    );
-
-    await logAgentExecution(agent.id, agent.instanceId, messageContent, response, Date.now() - startTime, true, []);
-    
-    return response;
-    
-  } catch (error) {
-    console.error('Erro na execução direta do agente:', error);
-    await logAgentExecution(agent.id, agent.instanceId, messageContent, null, Date.now() - startTime, false, [], error.message);
-    
-    return agent.config.fallbackMessage || 'Desculpe, não consegui processar sua solicitação no momento.';
-  }
-}
-
-/**
- * Registra a execução do agente para análise
- */
-async function logAgentExecution(agentId, instanceId, userMessage, agentResponse, executionTime, success, toolsUsed = [], errorMessage = null) {
-  try {
-    await prisma.agentExecution.create({
-      data: {
-        agentId,
-        instanceId,
-        userMessage,
-        agentResponse,
-        executionTime,
-        success,
-        toolsUsed,
-        errorMessage
-      }
-    });
-  } catch (error) {
-    console.error('Erro ao registrar execução do agente:', error);
-  }
+async function logAgentExecution(routerAgentId, instanceId, userMessage, finalResponse, executionTime, success, agentChain = [], errorMessage = null) {
+    try {
+        const execution = await prisma.agentExecution.create({
+            data: {
+                agentId: routerAgentId, // O ID do agente que iniciou o fluxo
+                instanceId,
+                userMessage,
+                agentResponse: finalResponse,
+                executionTime,
+                success,
+                toolsUsed: agentChain, // Usando este campo para registrar a cadeia de agentes
+                errorMessage,
+            },
+        });
+        return execution;
+    } catch (error) {
+        console.error('Erro ao registrar execução do agente:', error);
+        return null; // Retorna nulo em caso de falha no log
+    }
 }
 
 module.exports = {
-  executeHierarchicalAgentFlow,
-  executeAgentDirect,
-  executeChildAgent,
+    executeHierarchicalAgentFlow,
 };

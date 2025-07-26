@@ -22,6 +22,8 @@ require('../schemas/product.schema');
 require('../schemas/template.schema');
 require('../schemas/tool.schema');
 require('../schemas/user.schema');
+require('../schemas/message.schema');
+require('../schemas/contact.schema');
 
 /**
  * Gera a documentação OpenAPI e monta o middleware Swagger.

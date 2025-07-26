@@ -17,33 +17,13 @@ async function createSystemTools() {
       }
     },
     {
-      name: 'getSalesData',
-      description: 'Consulta dados de vendas e histórico de transações',
+      name: 'checkOrderStatus',
+      description: 'Verifica o status de um pedido',
       type: 'DATABASE',
       config: {
-        table: 'sales',
-        searchFields: ['product_id', 'date', 'customer_id'],
-        returnFields: ['id', 'product_id', 'quantity', 'total', 'date', 'status']
-      }
-    },
-    {
-      name: 'checkPromotion',
-      description: 'Verifica promoções ativas para produtos',
-      type: 'DATABASE',
-      config: {
-        table: 'promotions',
-        searchFields: ['product_id', 'active'],
-        returnFields: ['id', 'product_id', 'discount_percent', 'start_date', 'end_date']
-      }
-    },
-    {
-      name: 'searchKnowledgeBase',
-      description: 'Busca informações na base de conhecimento',
-      type: 'DATABASE',
-      config: {
-        table: 'knowledge_base',
-        searchFields: ['title', 'content', 'category'],
-        returnFields: ['id', 'title', 'content', 'category', 'tags']
+        table: 'orders',
+        searchFields: ['id', 'customer_phone', 'tracking_code'],
+        returnFields: ['id', 'status', 'tracking_code', 'estimated_delivery', 'items']
       }
     },
     {
@@ -56,106 +36,6 @@ async function createSystemTools() {
         requiredFields: ['customer_phone', 'subject', 'description', 'priority']
       }
     },
-    {
-      name: 'checkOrderStatus',
-      description: 'Verifica o status de um pedido',
-      type: 'DATABASE',
-      config: {
-        table: 'orders',
-        searchFields: ['id', 'customer_phone', 'tracking_code'],
-        returnFields: ['id', 'status', 'tracking_code', 'estimated_delivery', 'items']
-      }
-    },
-    {
-      name: 'getCompanyInfo',
-      description: 'Busca informações sobre a empresa',
-      type: 'DATABASE',
-      config: {
-        table: 'company_info',
-        searchFields: ['category', 'active'],
-        returnFields: ['id', 'category', 'title', 'content', 'contact_info']
-      }
-    },
-    {
-      name: 'getProductCatalog',
-      description: 'Busca catálogo completo de produtos',
-      type: 'DATABASE',
-      config: {
-        table: 'products',
-        searchFields: ['active', 'category'],
-        returnFields: ['id', 'name', 'description', 'price', 'category', 'image_url']
-      }
-    },
-    {
-      name: 'getPolicies',
-      description: 'Busca políticas da empresa (devolução, privacidade, etc.)',
-      type: 'DATABASE',
-      config: {
-        table: 'policies',
-        searchFields: ['type', 'active'],
-        returnFields: ['id', 'type', 'title', 'content', 'last_updated']
-      }
-    },
-    {
-      name: 'checkAvailability',
-      description: 'Verifica disponibilidade de horários para agendamento',
-      type: 'DATABASE',
-      config: {
-        table: 'availability_slots',
-        searchFields: ['date', 'available'],
-        returnFields: ['id', 'date', 'start_time', 'end_time', 'available']
-      }
-    },
-    {
-      name: 'scheduleAppointment',
-      description: 'Agenda um compromisso ou consulta',
-      type: 'DATABASE',
-      config: {
-        table: 'appointments',
-        action: 'create',
-        requiredFields: ['customer_phone', 'date', 'time', 'service_type']
-      }
-    },
-    {
-      name: 'sendReminder',
-      description: 'Envia lembretes de agendamento',
-      type: 'WEBHOOK',
-      config: {
-        url: '/api/webhooks/send-reminder',
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
-      }
-    },
-    {
-      name: 'checkPaymentStatus',
-      description: 'Verifica status de pagamentos',
-      type: 'DATABASE',
-      config: {
-        table: 'payments',
-        searchFields: ['order_id', 'customer_phone', 'payment_id'],
-        returnFields: ['id', 'order_id', 'status', 'amount', 'payment_method', 'date']
-      }
-    },
-    {
-      name: 'generateInvoice',
-      description: 'Gera fatura ou boleto',
-      type: 'API',
-      config: {
-        endpoint: '/api/financial/generate-invoice',
-        method: 'POST',
-        requiredFields: ['customer_id', 'items', 'total']
-      }
-    },
-    {
-      name: 'processPayment',
-      description: 'Processa pagamento',
-      type: 'API',
-      config: {
-        endpoint: '/api/financial/process-payment',
-        method: 'POST',
-        requiredFields: ['payment_method', 'amount', 'order_id']
-      }
-    }
   ];
 
   for (const tool of systemTools) {
@@ -178,206 +58,190 @@ async function createSystemTools() {
 }
 
 /**
- * Executa uma ferramenta
+ * Executa uma ferramenta com base nos parâmetros extraídos pelo LLM.
+ * @param {object} tool - O objeto da ferramenta a ser executada.
+ * @param {object} parameters - Os parâmetros extraídos pelo LLM.
+ * @param {object} [agentConfig={}] - Configurações adicionais do agente.
+ * @returns {Promise<any>} O resultado da execução da ferramenta.
  */
-async function executeToolFunction(tool, input, agentConfig = {}) {
+async function executeToolFunction(tool, parameters, agentConfig = {}) {
   switch (tool.type) {
     case 'DATABASE':
-      return await executeDatabaseTool(tool, input, agentConfig);
+      return await executeDatabaseTool(tool, parameters, agentConfig);
     case 'API':
-      return await executeApiTool(tool, input, agentConfig);
+      return await executeApiTool(tool, parameters, agentConfig);
     case 'WEBHOOK':
-      return await executeWebhookTool(tool, input, agentConfig);
+      return await executeWebhookTool(tool, parameters, agentConfig);
     case 'GENKIT_FLOW':
-      return await executeGenkitFlow(tool, input, agentConfig);
+      return await executeGenkitFlow(tool, parameters, agentConfig);
     default:
       throw new Error(`Tipo de ferramenta não suportado: ${tool.type}`);
   }
 }
 
 /**
- * Executa ferramenta de banco de dados
+ * Executa uma ferramenta do tipo DATABASE.
  */
-async function executeDatabaseTool(tool, input, agentConfig) {
+async function executeDatabaseTool(tool, parameters, agentConfig) {
   const config = { ...tool.config, ...agentConfig };
-  
-  // Implementação simplificada - você pode expandir baseado nas suas necessidades
-  switch (config.action || 'search') {
+  const action = config.action || 'search';
+
+  switch (action) {
     case 'search':
-      return await searchInDatabase(config, input);
+      return await searchInDatabase(config, parameters);
     case 'create':
-      return await createInDatabase(config, input);
+      return await createInDatabase(config, parameters);
     case 'update':
-      return await updateInDatabase(config, input);
+      return await updateInDatabase(config, parameters);
     default:
-      throw new Error(`Ação não suportada: ${config.action}`);
+      throw new Error(`Ação de banco de dados não suportada: ${action}`);
   }
 }
 
 /**
- * Busca no banco de dados
+ * Realiza uma busca no banco de dados com base nos parâmetros fornecidos.
  */
-async function searchInDatabase(config, input) {
+async function searchInDatabase(config, parameters) {
   const { table, searchFields, returnFields } = config;
-  
-  // Construir query dinamicamente baseada no input
-  const searchTerms = extractSearchTerms(input);
-  
-  // Exemplo com Prisma raw query (adapte conforme sua estrutura)
-  const query = `
-    SELECT ${returnFields.join(', ')} 
-    FROM ${table} 
-    WHERE ${searchFields.map(field => `${field} ILIKE '%${searchTerms}%'`).join(' OR ')}
-    LIMIT 10
-  `;
-  
+  const modelName = table.charAt(0).toLowerCase() + table.slice(1, -1); // Heurística para converter nome de tabela para nome de modelo Prisma (ex: 'products' -> 'product')
+
+  if (!prisma[modelName]) {
+    throw new Error(`Modelo Prisma inválido: ${modelName}`);
+  }
+
+  const whereClauses = searchFields.map(field => {
+    if (parameters[field]) {
+      return { [field]: { contains: parameters[field], mode: 'insensitive' } };
+    }
+    return null;
+  }).filter(Boolean);
+
+  if (whereClauses.length === 0) {
+    return []; // Retorna vazio se nenhum parâmetro de busca foi fornecido
+  }
+
   try {
-    const results = await prisma.$queryRawUnsafe(query);
+    const results = await prisma[modelName].findMany({
+      where: {
+        OR: whereClauses,
+      },
+      select: returnFields.reduce((acc, field) => ({ ...acc, [field]: true }), {}),
+      take: 10,
+    });
     return results;
   } catch (error) {
-    console.error('Erro na busca no banco:', error);
+    console.error('Erro na busca no banco de dados:', error);
     throw new Error('Erro ao buscar dados no banco de dados');
   }
 }
 
 /**
- * Cria registro no banco de dados
+ * Cria um novo registro no banco de dados.
  */
-async function createInDatabase(config, input) {
+async function createInDatabase(config, parameters) {
   const { table, requiredFields } = config;
-  
-  // Extrair dados do input
-  const data = extractDataFromInput(input, requiredFields);
-  
+  const modelName = table.charAt(0).toLowerCase() + table.slice(1, -1);
+
+  if (!prisma[modelName]) {
+    throw new Error(`Modelo Prisma inválido: ${modelName}`);
+  }
+
   // Validar campos obrigatórios
   for (const field of requiredFields) {
-    if (!data[field]) {
-      throw new Error(`Campo obrigatório não encontrado: ${field}`);
+    if (!parameters[field]) {
+      throw new Error(`Parâmetro obrigatório ausente para a criação: ${field}`);
     }
   }
-  
-  // Criar registro (adapte conforme sua estrutura)
+
   try {
-    const result = await prisma[table].create({ data });
+    const result = await prisma[modelName].create({ data: parameters });
     return result;
   } catch (error) {
-    console.error('Erro ao criar registro:', error);
+    console.error('Erro ao criar registro no banco de dados:', error);
     throw new Error('Erro ao criar registro no banco de dados');
   }
 }
 
 /**
- * Executa ferramenta de API
+ * Executa uma ferramenta do tipo API.
  */
-async function executeApiTool(tool, input, agentConfig) {
+async function executeApiTool(tool, parameters, agentConfig) {
   const config = { ...tool.config, ...agentConfig };
   const { endpoint, method, requiredFields } = config;
-  
-  const data = extractDataFromInput(input, requiredFields);
-  
+
+  // Validar campos obrigatórios
+  for (const field of requiredFields) {
+    if (!parameters[field]) {
+      throw new Error(`Parâmetro obrigatório ausente para a API: ${field}`);
+    }
+  }
+
   try {
     const response = await fetch(endpoint, {
       method,
       headers: {
         'Content-Type': 'application/json',
-        ...config.headers
+        ...config.headers,
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify(parameters),
     });
-    
+
+    if (!response.ok) {
+        const errorBody = await response.text();
+        throw new Error(`Falha na chamada da API: ${response.status} ${response.statusText} - ${errorBody}`);
+    }
+
     return await response.json();
   } catch (error) {
     console.error('Erro na chamada da API:', error);
-    throw new Error('Erro ao executar API');
+    throw new Error('Erro ao executar a ferramenta de API');
   }
 }
 
 /**
- * Executa webhook
+ * Executa uma ferramenta do tipo WEBHOOK.
  */
-async function executeWebhookTool(tool, input, agentConfig) {
-  const config = { ...tool.config, ...agentConfig };
-  const { url, method, headers } = config;
-  
-  try {
-    const response = await fetch(url, {
-      method,
-      headers: {
-        'Content-Type': 'application/json',
-        ...headers
-      },
-      body: JSON.stringify({ input, timestamp: new Date().toISOString() })
-    });
-    
-    return await response.json();
-  } catch (error) {
-    console.error('Erro no webhook:', error);
-    throw new Error('Erro ao executar webhook');
-  }
+async function executeWebhookTool(tool, parameters, agentConfig) {
+    const config = { ...tool.config, ...agentConfig };
+    const { url, method, headers } = config;
+
+    try {
+        const response = await fetch(url, {
+            method,
+            headers: {
+                'Content-Type': 'application/json',
+                ...headers,
+            },
+            body: JSON.stringify({ ...parameters, triggeredAt: new Date().toISOString() }),
+        });
+
+        if (!response.ok) {
+            const errorBody = await response.text();
+            throw new Error(`Falha no webhook: ${response.status} ${response.statusText} - ${errorBody}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Erro ao executar webhook:', error);
+        throw new Error('Erro ao executar a ferramenta de webhook');
+    }
 }
 
 /**
- * Executa flow do Genkit
+ * Executa um flow do Genkit (conceitual).
  */
-async function executeGenkitFlow(tool, input, agentConfig) {
-  // Implementar integração com Genkit flows
-  // Este é um exemplo conceitual
+async function executeGenkitFlow(tool, parameters, agentConfig) {
+  // Esta é uma implementação conceitual e precisa ser adaptada para sua configuração real do Genkit.
   try {
-    const { runFlow } = require('@genkit-ai/flow');
-    const result = await runFlow(tool.config.flowName, input);
+    const { runFlow } = require('@genkit-ai/flow'); // Assumindo que você tem o Genkit configurado
+    const result = await runFlow(tool.config.flowName, parameters);
     return result;
   } catch (error) {
-    console.error('Erro no Genkit flow:', error);
-    throw new Error('Erro ao executar flow do Genkit');
+    console.error(`Erro ao executar o flow do Genkit '${tool.config.flowName}':`, error);
+    throw new Error(`Erro ao executar o flow do Genkit: ${tool.config.flowName}`);
   }
 }
 
-/**
- * Extrai termos de busca do input
- */
-function extractSearchTerms(input) {
-  // Implementação básica - pode ser melhorada com NLP
-  return input.toLowerCase().replace(/[^\w\s]/g, '').trim();
-}
-
-/**
- * Extrai dados estruturados do input
- */
-function extractDataFromInput(input, requiredFields) {
-  // Implementação básica - pode usar NLP para extrair dados
-  const data = {};
-  
-  // Exemplo simples de extração
-  for (const field of requiredFields) {
-    if (input.toLowerCase().includes(field)) {
-      // Lógica para extrair valor do campo
-      data[field] = extractFieldValue(input, field);
-    }
-  }
-  
-  return data;
-}
-
-/**
- * Extrai valor de um campo específico
- */
-function extractFieldValue(input, field) {
-  // Implementação básica - pode ser melhorada
-  const patterns = {
-    'customer_phone': /(\+?\d{2}\s?\d{4,5}-?\d{4})/,
-    'email': /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/,
-    'date': /(\d{2}\/\d{2}\/\d{4})/,
-    'time': /(\d{2}:\d{2})/
-  };
-  
-  const pattern = patterns[field];
-  if (pattern) {
-    const match = input.match(pattern);
-    return match ? match[1] : null;
-  }
-  
-  return null;
-}
 
 /**
  * Lista todas as ferramentas disponíveis
@@ -419,10 +283,6 @@ async function createCustomTool(data) {
 module.exports = {
   createSystemTools,
   executeToolFunction,
-  executeDatabaseTool,
-  executeApiTool,
-  executeWebhookTool,
-  executeGenkitFlow,
   getAllTools,
   getToolById,
   createCustomTool

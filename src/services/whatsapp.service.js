@@ -28,7 +28,7 @@ async function updateInstanceStatus(clientId, status, message = null) {
 }
 
 async function _handleIncomingWhatsAppMessage(client, message) {
-  console.log(`✉️ Mensagem recebida para ${client.options.authStrategy.clientId}: ${message.body}`);
+  console.log(`✉️  Mensagem recebida para ${client.options.authStrategy.clientId}: ${message.body}`);
 
   if (message.isStatus || message.from.includes('@g.us')) return;
 
@@ -38,20 +38,63 @@ async function _handleIncomingWhatsAppMessage(client, message) {
     const instance = await prisma.instance.findUnique({ where: { clientId } });
     if (!instance) return;
 
-    // TODO: Implementar a lógica para determinar a organização (se houver)
-    const organizationId = null; 
+    // 1. Garante que o contato exista no banco de dados
+    const wppContact = await message.getContact();
+    const contact = await prisma.contact.upsert({
+      where: { instanceId_phoneNumber: { instanceId: instance.id, phoneNumber: message.from } },
+      update: {
+        name: wppContact.name,
+        pushName: wppContact.pushname,
+      },
+      create: {
+        instanceId: instance.id,
+        phoneNumber: message.from,
+        name: wppContact.name,
+        pushName: wppContact.pushname,
+      },
+    });
 
-    const agentResponse = await executeHierarchicalAgentFlow(
+    // 2. Executa o fluxo de agentes para obter uma resposta e o ID da execução
+    const { finalResponse, executionId } = await executeHierarchicalAgentFlow(
       instance.id,
-      organizationId,
       message.body,
       message.from
     );
 
-    client.sendMessage(message.from, agentResponse);
+    // 3. Salva a mensagem recebida (INCOMING) com o ID da execução
+    await prisma.message.create({
+      data: {
+        instanceId: instance.id,
+        contactId: contact.id,
+        wppId: message.id.id,
+        direction: 'INCOMING',
+        content: message.body,
+        status: 'read',
+        isRead: true,
+        agentExecutionId: executionId, // Vincula à execução
+      },
+    });
+
+    // 4. Envia a resposta e a salva no banco de dados (OUTGOING)
+    const sentMessage = await client.sendMessage(message.from, finalResponse);
+    await prisma.message.create({
+      data: {
+        instanceId: instance.id,
+        contactId: contact.id,
+        wppId: sentMessage.id.id,
+        direction: 'OUTGOING',
+        content: finalResponse,
+        status: 'sent',
+        agentExecutionId: executionId, // Vincula à mesma execução
+      },
+    });
 
   } catch (error) {
     console.error('Erro ao processar mensagem do WhatsApp:', error);
+    // Se o erro tiver um executionId, podemos usá-lo para registrar a falha
+    const executionId = error.executionId || null;
+    // Tenta salvar a mensagem de erro no banco de dados para rastreabilidade
+    // (Opcional, mas bom para depuração)
     client.sendMessage(message.from, 'Ocorreu um erro ao processar sua mensagem. Tente novamente mais tarde.');
   }
 }

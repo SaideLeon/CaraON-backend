@@ -172,6 +172,9 @@ async function getParentAgent(instanceId, organizationId = null) {
       type: 'PAI',
       isActive: true
     },
+    orderBy: {
+      priority: 'desc'
+    },
     include: {
       childAgents: {
         where: { isActive: true },
@@ -210,6 +213,30 @@ async function deactivateAgent(agentId) {
   });
 }
 
+/**
+ * Busca todos os agentes pais de organizações dentro de uma instância.
+ * @param {string} instanceId - O ID da instância.
+ * @returns {Promise<Array<object>>} Uma lista de agentes pais de organizações.
+ */
+async function getOrganizationParentAgents(instanceId) {
+  return await prisma.agent.findMany({
+    where: {
+      instanceId,
+      type: 'PAI',
+      isActive: true,
+      organizationId: {
+        not: null, // Garante que apenas agentes de organizações sejam retornados
+      },
+    },
+    include: {
+      organization: true,
+    },
+    orderBy: {
+      priority: 'desc',
+    },
+  });
+}
+
 module.exports = {
   createParentAgent,
   createChildAgentFromTemplate,
@@ -217,5 +244,6 @@ module.exports = {
   getChildAgents,
   getParentAgent,
   updateAgentPriority,
-  deactivateAgent
+  deactivateAgent,
+  getOrganizationParentAgents,
 };
