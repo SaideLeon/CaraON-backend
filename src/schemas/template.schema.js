@@ -5,11 +5,11 @@ const { extendZodWithOpenApi } = require('@asteasolutions/zod-to-openapi');
 extendZodWithOpenApi(z);
 
 const CreateTemplateBody = z.object({
-    name: z.string().min(3, 'O nome do template é obrigatório.'),
-    description: z.string().min(10, 'A descrição precisa ter no mínimo 10 caracteres.'),
-    category: z.string().min(3, 'A categoria é obrigatória.'),
-    defaultPersona: z.string().min(20, 'A persona padrão precisa ter no mínimo 20 caracteres.'),
-    toolIds: z.array(z.string()).optional().default([]),
+  name: z.string().min(3, 'O nome do template é obrigatório.'),
+  description: z.string().min(10, 'A descrição precisa ter no mínimo 10 caracteres.'),
+  category: z.string().min(3, 'A categoria é obrigatória.'),
+  defaultPersona: z.string().min(20, 'A persona padrão precisa ter no mínimo 20 caracteres.'),
+  toolIds: z.array(z.string()).optional().default([]),
 });
 
 const createTemplateSchema = z.object({
@@ -17,11 +17,11 @@ const createTemplateSchema = z.object({
 });
 
 const UpdateTemplateBody = z.object({
-    name: z.string().min(3, 'O nome do template é obrigatório.').optional(),
-    description: z.string().min(10, 'A descrição precisa ter no mínimo 10 caracteres.').optional(),
-    category: z.string().min(3, 'A categoria é obrigatória.').optional(),
-    defaultPersona: z.string().min(20, 'A persona padrão precisa ter no mínimo 20 caracteres.').optional(),
-    toolIds: z.array(z.string()).optional(),
+  name: z.string().min(3, 'O nome do template é obrigatório.').optional(),
+  description: z.string().min(10, 'A descrição precisa ter no mínimo 10 caracteres.').optional(),
+  category: z.string().min(3, 'A categoria é obrigatória.').optional(),
+  defaultPersona: z.string().min(20, 'A persona padrão precisa ter no mínimo 20 caracteres.').optional(),
+  toolIds: z.array(z.string()).optional(),
 });
 
 const updateTemplateSchema = z.object({

@@ -35,8 +35,8 @@ exports.createProduct = async (req, res) => {
   } catch (error) {
     console.error('Erro ao criar produto:', error);
     if (error.code === 'P2002') { // Unique constraint violation
-        const fields = Array.isArray(error.meta.target) ? error.meta.target.join(', ') : error.meta.target;
-        return res.status(409).json({ error: `Já existe um produto com este ${fields}.` });
+      const fields = Array.isArray(error.meta.target) ? error.meta.target.join(', ') : error.meta.target;
+      return res.status(409).json({ error: `Já existe um produto com este ${fields}.` });
     }
     res.status(500).json({ error: 'Falha ao criar o produto.' });
   }
@@ -178,11 +178,11 @@ exports.updateProduct = async (req, res) => {
   } catch (error) {
     console.error('Erro ao atualizar produto:', error);
     if (error.code === 'P2025') { // Record to update not found
-        return res.status(404).json({ error: 'Produto não encontrado.' });
+      return res.status(404).json({ error: 'Produto não encontrado.' });
     }
     if (error.code === 'P2002') { // Unique constraint violation
-        const fields = Array.isArray(error.meta.target) ? error.meta.target.join(', ') : error.meta.target;
-        return res.status(409).json({ error: `Já existe um produto com este ${fields}.` });
+      const fields = Array.isArray(error.meta.target) ? error.meta.target.join(', ') : error.meta.target;
+      return res.status(409).json({ error: `Já existe um produto com este ${fields}.` });
     }
     res.status(500).json({ error: 'Falha ao atualizar o produto.' });
   }
@@ -200,7 +200,7 @@ exports.deleteProduct = async (req, res) => {
   } catch (error) {
     console.error('Erro ao deletar produto:', error);
     if (error.code === 'P2025') { // Record to delete not found
-        return res.status(404).json({ error: 'Produto não encontrado.' });
+      return res.status(404).json({ error: 'Produto não encontrado.' });
     }
     res.status(500).json({ error: 'Falha ao deletar o produto.' });
   }

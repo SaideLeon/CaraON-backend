@@ -5,8 +5,8 @@ const { extendZodWithOpenApi } = require('@asteasolutions/zod-to-openapi');
 extendZodWithOpenApi(z);
 
 const CreateOrderBody = z.object({
-    userId: z.string(),
-    total: z.number().positive('O total deve ser um número positivo.'),
+  userId: z.string(),
+  total: z.number().positive('O total deve ser um número positivo.'),
 });
 
 const createOrderSchema = z.object({

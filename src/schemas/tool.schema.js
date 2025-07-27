@@ -28,7 +28,7 @@ const genkitFlowConfigSchema = z.object({
 const customConfigSchema = z.record(z.any()).optional();
 
 const createToolSchema = z.object({
-  body: z.discriminatedUnion("type", [
+  body: z.discriminatedUnion('type', [
     z.object({
       name: z.string().min(3, 'O nome da ferramenta é obrigatório.'),
       description: z.string().min(10, 'A descrição precisa ter no mínimo 10 caracteres.'),
@@ -63,9 +63,9 @@ const createToolSchema = z.object({
 });
 
 const toolIdParamSchema = z.object({
-    params: z.object({
-        toolId: z.string(),
-    }),
+  params: z.object({
+    toolId: z.string(),
+  }),
 });
 
 

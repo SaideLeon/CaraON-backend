@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const qrcode = require('qrcode');
 const webSocketService = require('./websocket.service');
 const { executeHierarchicalAgentFlow } = require('./agent.execution.service');
+const agentHierarchyService = require('./agent.hierarchy.service'); // Importar o serviço
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const activeClients = {};
@@ -37,6 +38,32 @@ async function _handleIncomingWhatsAppMessage(client, message) {
   try {
     const instance = await prisma.instance.findUnique({ where: { clientId } });
     if (!instance) return;
+
+    // Etapa de Auto-Correção: Garante que um Agente Roteador Principal exista
+    let routerAgent = await prisma.agent.findFirst({
+      where: {
+        instanceId: instance.id,
+        type: 'PAI',
+        organizationId: null, // Chave para identificar o roteador principal
+      },
+    });
+
+    if (!routerAgent) {
+      console.warn(`⚠️ Nenhum Agente Roteador Principal encontrado para a instância ${instance.name}. Criando um automaticamente.`);
+      const user = await prisma.user.findUnique({ where: { id: instance.userId } });
+      if (user) {
+        routerAgent = await agentHierarchyService.createParentAgent({
+          name: `Roteador - ${instance.name}`,
+          persona: 'Você é o agente roteador principal. Sua função é analisar a mensagem do usuário e direcioná-la para o departamento ou especialista correto (Vendas, Suporte, etc.). Se não tiver certeza, peça ao usuário para esclarecer.',
+          instanceId: instance.id,
+          organizationId: null,
+          userId: user.id,
+        });
+        console.log(`✅ Agente Roteador Principal criado automaticamente para a instância ${instance.name}.`);
+      } else {
+        throw new Error(`Não foi possível criar o roteador principal pois o usuário da instância ${instance.id} não foi encontrado.`);
+      }
+    }
 
     // 1. Garante que o contato exista no banco de dados
     const wppContact = await message.getContact();

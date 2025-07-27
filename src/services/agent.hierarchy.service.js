@@ -6,6 +6,15 @@ const prisma = new PrismaClient();
  */
 async function createParentAgent(data) {
   const { name, persona, instanceId, organizationId, userId } = data;
+
+  let routerAgentId = null;
+  // Se estivermos criando um agente de organização, encontre o roteador principal da instância.
+  if (organizationId) {
+    const instanceRouter = await getParentAgent(instanceId, null); // organizationId nulo para obter o principal
+    if (instanceRouter) {
+      routerAgentId = instanceRouter.id;
+    }
+  }
   
   const parentAgent = await prisma.agent.create({
     data: {
@@ -14,6 +23,7 @@ async function createParentAgent(data) {
       persona,
       instanceId,
       organizationId,
+      routerAgentId, // Define o novo campo
       isActive: true,
       priority: 0,
       config: {
@@ -58,6 +68,7 @@ async function createChildAgentFromTemplate(data) {
       instanceId,
       organizationId,
       parentAgentId,
+      routerAgentId: parentAgentId, // Um filho é roteado por seu pai
       templateId,
       isActive: true,
       priority: 1,
@@ -106,6 +117,7 @@ async function createCustomChildAgent(data) {
       instanceId,
       organizationId,
       parentAgentId,
+      routerAgentId: parentAgentId, // Um filho é roteado por seu pai
       isActive: true,
       priority: 2,
       config: {

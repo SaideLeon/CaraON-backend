@@ -5,7 +5,7 @@ const { extendZodWithOpenApi } = require('@asteasolutions/zod-to-openapi');
 extendZodWithOpenApi(z);
 
 const CreateOrganizationBody = z.object({
-    name: z.string().min(3, 'O nome da organização precisa ter no mínimo 3 caracteres.').openapi({ description: 'Nome da organização' }),
+  name: z.string().min(3, 'O nome da organização precisa ter no mínimo 3 caracteres.').openapi({ description: 'Nome da organização' }),
 });
 
 const createOrganizationSchema = z.object({

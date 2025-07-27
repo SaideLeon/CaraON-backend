@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "concurrently \"nodemon src/server.js\"",
     "pm2-start": "pm2 start src/server.js --name caraon-api",
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "lint": "eslint ."
   },
   "keywords": [
     "backend",
@@ -50,6 +51,7 @@
   },
   "devDependencies": {
     "concurrently": "^9.2.0",
+    "eslint": "^9.32.0",
     "nodemon": "^3.1.10"
   }
 }

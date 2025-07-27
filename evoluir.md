@@ -1,2 +1,1 @@
-A execução de   │      
-│    GENKIT_FLOW é puramente conceitual e precisa ser implementada. 
+Verifique se a cada novo agente criado por usuario no banco de dados será conciderado um  GENKIT_FLOW é puramente conceitual, caso sim é preciso ser implementada. 

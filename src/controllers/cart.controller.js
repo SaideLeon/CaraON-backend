@@ -102,7 +102,7 @@ exports.addToCart = async (req, res) => {
     }
 
     if (product.status !== 'ACTIVE') {
-        return res.status(400).json({ error: 'Este produto não está disponível para compra.' });
+      return res.status(400).json({ error: 'Este produto não está disponível para compra.' });
     }
 
     if (!product.trackStock || product.stock < quantity) {

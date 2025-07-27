@@ -75,17 +75,17 @@ const auth = require('../middlewares/auth.middleware');
  */
 
 router.post(
-    '/instances/:instanceId/organizations',
-    auth,
-    validate(createOrganizationSchema),
-    organizationController.createOrganization
+  '/instances/:instanceId/organizations',
+  auth,
+  validate(createOrganizationSchema),
+  organizationController.createOrganization
 );
 
 router.get(
-    '/instances/:instanceId/organizations',
-    auth,
-    validate(listOrganizationsSchema),
-    organizationController.listOrganizations
+  '/instances/:instanceId/organizations',
+  auth,
+  validate(listOrganizationsSchema),
+  organizationController.listOrganizations
 );
 
 module.exports = router;

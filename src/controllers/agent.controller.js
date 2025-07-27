@@ -1,15 +1,15 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const { 
-    updateAgentPersonaSchema, 
-    createParentAgentSchema, 
-    createChildAgentFromTemplateSchema, 
-    createCustomChildAgentSchema, 
-    listChildAgentsSchema, 
-    exportAgentAnalyticsSchema,
-    listParentAgentsSchema,
-    deleteAgentSchema,
-    updateAgentSchema
+  updateAgentPersonaSchema, 
+  createParentAgentSchema, 
+  createChildAgentFromTemplateSchema, 
+  createCustomChildAgentSchema, 
+  listChildAgentsSchema, 
+  exportAgentAnalyticsSchema,
+  listParentAgentsSchema,
+  deleteAgentSchema,
+  updateAgentSchema
 } = require('../schemas/agent.schema');
 const { z } = require('zod');
 const agentHierarchyService = require('../services/agent.hierarchy.service');
@@ -17,254 +17,254 @@ const agentAnalyticsService = require('../services/agent.analytics.service');
 const { Parser } = require('json2csv');
 
 exports.updateAgentPersona = async (req, res) => {
-    const { agentId } = req.params;
-    const { persona } = req.body;
+  const { agentId } = req.params;
+  const { persona } = req.body;
 
-    try {
-        const agent = await prisma.agent.update({
-            where: { id: agentId },
-            data: { persona },
-        });
-        res.status(200).json(agent);
-    } catch (error) {
-        if (error.code === 'P2025') { // Not Found error from Prisma
-            return res.status(404).json({ error: 'Agente não encontrado.' });
-        }
-        res.status(500).json({ error: 'Falha ao atualizar a persona do agente.' });
+  try {
+    const agent = await prisma.agent.update({
+      where: { id: agentId },
+      data: { persona },
+    });
+    res.status(200).json(agent);
+  } catch (error) {
+    if (error.code === 'P2025') { // Not Found error from Prisma
+      return res.status(404).json({ error: 'Agente não encontrado.' });
     }
+    res.status(500).json({ error: 'Falha ao atualizar a persona do agente.' });
+  }
 };
 
 exports.updateAgent = async (req, res) => {
-    const { agentId } = req.params;
-    const { name, persona, priority } = req.body;
+  const { agentId } = req.params;
+  const { name, persona, priority } = req.body; // Removido routerAgentId
 
-    try {
-        const agent = await prisma.agent.update({
-            where: { id: agentId },
-            data: { name, persona, priority },
-        });
-        res.status(200).json(agent);
-    } catch (error) {
-        if (error.code === 'P2025') { // Not Found error from Prisma
-            return res.status(404).json({ error: 'Agente não encontrado.' });
-        }
-        res.status(500).json({ error: 'Falha ao atualizar o agente.' });
+  try {
+    const agent = await prisma.agent.update({
+      where: { id: agentId },
+      data: { name, persona, priority },
+    });
+    res.status(200).json(agent);
+  } catch (error) {
+    if (error.code === 'P2025') { // Not Found error from Prisma
+      return res.status(404).json({ error: 'Agente não encontrado.' });
     }
+    res.status(500).json({ error: 'Falha ao atualizar o agente.' });
+  }
 };
 
 exports.createParentAgent = async (req, res) => {
-    const { instanceId, organizationId } = req.params;
-    const { name, persona } = req.body;
-    const { userId } = req.user;
+  const { instanceId, organizationId } = req.params;
+  const { name, persona } = req.body;
+  const { userId } = req.user;
 
-    try {
-        const agent = await agentHierarchyService.createParentAgent({
-            name,
-            persona,
-            instanceId,
-            organizationId,
-            userId,
-        });
-        res.status(201).json(agent);
-    } catch (error) {
-        console.error("Erro ao criar agente pai:", error);
-        res.status(500).json({ error: 'Falha ao criar o agente pai.' });
-    }
+  try {
+    const agent = await agentHierarchyService.createParentAgent({
+      name,
+      persona,
+      instanceId,
+      organizationId,
+      userId,
+    });
+    res.status(201).json(agent);
+  } catch (error) {
+    console.error('Erro ao criar agente pai:', error);
+    res.status(500).json({ error: 'Falha ao criar o agente pai.' });
+  }
 };
 
 exports.createChildAgentFromTemplate = async (req, res) => {
-    const { parentAgentId } = req.params;
-    const { name, templateId, customPersona } = req.body;
+  const { parentAgentId } = req.params;
+  const { name, templateId, customPersona } = req.body;
 
-    try {
-        const parentAgent = await prisma.agent.findUnique({ where: { id: parentAgentId } });
-        if (!parentAgent) {
-            return res.status(404).json({ error: 'Agente pai não encontrado' });
-        }
-
-        const agent = await agentHierarchyService.createChildAgentFromTemplate({
-            name,
-            templateId,
-            customPersona,
-            parentAgentId,
-            instanceId: parentAgent.instanceId,
-            organizationId: parentAgent.organizationId,
-        });
-        res.status(201).json(agent);
-    } catch (error) {
-        console.error("Erro ao criar agente filho a partir de template:", error);
-        res.status(500).json({ error: 'Falha ao criar o agente filho.' });
+  try {
+    const parentAgent = await prisma.agent.findUnique({ where: { id: parentAgentId } });
+    if (!parentAgent) {
+      return res.status(404).json({ error: 'Agente pai não encontrado' });
     }
+
+    const agent = await agentHierarchyService.createChildAgentFromTemplate({
+      name,
+      templateId,
+      customPersona,
+      parentAgentId,
+      instanceId: parentAgent.instanceId,
+      organizationId: parentAgent.organizationId,
+    });
+    res.status(201).json(agent);
+  } catch (error) {
+    console.error('Erro ao criar agente filho a partir de template:', error);
+    res.status(500).json({ error: 'Falha ao criar o agente filho.' });
+  }
 };
 
 exports.createCustomChildAgent = async (req, res) => {
-    const { parentAgentId } = req.params;
-    const { name, persona, toolIds } = req.body;
+  const { parentAgentId } = req.params;
+  const { name, persona, toolIds } = req.body;
 
-    try {
-        const parentAgent = await prisma.agent.findUnique({ where: { id: parentAgentId } });
-        if (!parentAgent) {
-            return res.status(404).json({ error: 'Agente pai não encontrado' });
-        }
-
-        const agent = await agentHierarchyService.createCustomChildAgent({
-            name,
-            persona,
-            toolIds,
-            parentAgentId,
-            instanceId: parentAgent.instanceId,
-            organizationId: parentAgent.organizationId,
-        });
-        res.status(201).json(agent);
-    } catch (error) {
-        console.error("Erro ao criar agente filho customizado:", error);
-        res.status(500).json({ error: 'Falha ao criar o agente filho customizado.' });
+  try {
+    const parentAgent = await prisma.agent.findUnique({ where: { id: parentAgentId } });
+    if (!parentAgent) {
+      return res.status(404).json({ error: 'Agente pai não encontrado' });
     }
+
+    const agent = await agentHierarchyService.createCustomChildAgent({
+      name,
+      persona,
+      toolIds,
+      parentAgentId,
+      instanceId: parentAgent.instanceId,
+      organizationId: parentAgent.organizationId,
+    });
+    res.status(201).json(agent);
+  } catch (error) {
+    console.error('Erro ao criar agente filho customizado:', error);
+    res.status(500).json({ error: 'Falha ao criar o agente filho customizado.' });
+  }
 };
 
 
 exports.listChildAgents = async (req, res) => {
-    const { parentAgentId } = req.params;
+  const { parentAgentId } = req.params;
 
-    try {
-        const agents = await agentHierarchyService.getChildAgents(parentAgentId);
-        res.status(200).json(agents);
-    } catch (error) {
-        console.error("Erro ao listar agentes filhos:", error);
-        res.status(500).json({ error: 'Falha ao listar os agentes filhos.' });
-    }
+  try {
+    const agents = await agentHierarchyService.getChildAgents(parentAgentId);
+    res.status(200).json(agents);
+  } catch (error) {
+    console.error('Erro ao listar agentes filhos:', error);
+    res.status(500).json({ error: 'Falha ao listar os agentes filhos.' });
+  }
 };
 
 exports.getAgentById = async (req, res) => {
-    const { agentId } = req.params;
+  const { agentId } = req.params;
 
-    try {
-        const agent = await prisma.agent.findUnique({
-            where: { id: agentId },
-            include: {
-                tools: true,
-                parentAgent: true,
-                childAgents: true,
-            },
-        });
+  try {
+    const agent = await prisma.agent.findUnique({
+      where: { id: agentId },
+      include: {
+        tools: true,
+        parentAgent: true,
+        childAgents: true,
+      },
+    });
 
-        if (!agent) {
-            return res.status(404).json({ error: 'Agente não encontrado.' });
-        }
-
-        res.status(200).json(agent);
-    } catch (error) {
-        console.error("Erro ao buscar agente por ID:", error);
-        res.status(500).json({ error: 'Falha ao buscar o agente.' });
+    if (!agent) {
+      return res.status(404).json({ error: 'Agente não encontrado.' });
     }
+
+    res.status(200).json(agent);
+  } catch (error) {
+    console.error('Erro ao buscar agente por ID:', error);
+    res.status(500).json({ error: 'Falha ao buscar o agente.' });
+  }
 };
 
 exports.exportAgentAnalytics = async (req, res) => {
-    const { instanceId, organizationId } = req.query;
+  const { instanceId, organizationId } = req.query;
 
-    try {
-        const report = await agentAnalyticsService.generateOptimizationReport(instanceId, organizationId);
-        res.status(200).json(report);
-    } catch (error) {
-        console.error("Erro ao exportar análise de agentes:", error);
-        res.status(500).json({ error: 'Falha ao exportar a análise de agentes.' });
-    }
+  try {
+    const report = await agentAnalyticsService.generateOptimizationReport(instanceId, organizationId);
+    res.status(200).json(report);
+  } catch (error) {
+    console.error('Erro ao exportar análise de agentes:', error);
+    res.status(500).json({ error: 'Falha ao exportar a análise de agentes.' });
+  }
 };
 
 exports.exportAgentAnalyticsCsv = async (req, res) => {
-    const { instanceId, organizationId } = req.query;
+  const { instanceId, organizationId } = req.query;
 
-    try {
-        const report = await agentAnalyticsService.generateOptimizationReport(instanceId, organizationId);
+  try {
+    const report = await agentAnalyticsService.generateOptimizationReport(instanceId, organizationId);
         
-        const fields = [
-            { label: 'Agent ID', value: 'agent.id' },
-            { label: 'Agent Name', value: 'agent.name' },
-            { label: 'Total Executions', value: 'totalExecutions' },
-            { label: 'Successful Executions', value: 'successfulExecutions' },
-            { label: 'Failed Executions', value: 'failedExecutions' },
-            { label: 'Success Rate (%)', value: 'successRate' },
-            { label: 'Average Execution Time (ms)', value: 'averageExecutionTime' },
-        ];
+    const fields = [
+      { label: 'Agent ID', value: 'agent.id' },
+      { label: 'Agent Name', value: 'agent.name' },
+      { label: 'Total Executions', value: 'totalExecutions' },
+      { label: 'Successful Executions', value: 'successfulExecutions' },
+      { label: 'Failed Executions', value: 'failedExecutions' },
+      { label: 'Success Rate (%)', value: 'successRate' },
+      { label: 'Average Execution Time (ms)', value: 'averageExecutionTime' },
+    ];
 
-        const data = Object.values(report.performance);
+    const data = Object.values(report.performance);
 
-        const json2csvParser = new Parser({ fields });
-        const csv = json2csvParser.parse(data);
+    const json2csvParser = new Parser({ fields });
+    const csv = json2csvParser.parse(data);
 
-        res.header('Content-Type', 'text/csv');
-        res.attachment('agent_analytics.csv');
-        res.status(200).send(csv);
+    res.header('Content-Type', 'text/csv');
+    res.attachment('agent_analytics.csv');
+    res.status(200).send(csv);
 
-    } catch (error) {
-        console.error("Erro ao exportar análise de agentes para CSV:", error);
-        res.status(500).json({ error: 'Falha ao exportar a análise de agentes para CSV.' });
-    }
+  } catch (error) {
+    console.error('Erro ao exportar análise de agentes para CSV:', error);
+    res.status(500).json({ error: 'Falha ao exportar a análise de agentes para CSV.' });
+  }
 };
 
 exports.listParentAgents = async (req, res) => {
-    const { instanceId } = req.params;
+  const { instanceId } = req.params;
 
-    try {
-        const agents = await prisma.agent.findMany({
-            where: {
-                instanceId: instanceId,
-                type: 'PAI',
-                isActive: true,
-            },
-            include: {
-                organization: true,
-                childAgents: true,
-            }
-        });
-        res.status(200).json(agents);
-    } catch (error) {
-        console.error("Erro ao listar agentes pais:", error);
-        res.status(500).json({ error: 'Falha ao listar os agentes pais.' });
-    }
+  try {
+    const agents = await prisma.agent.findMany({
+      where: {
+        instanceId: instanceId,
+        type: 'PAI',
+        isActive: true,
+      },
+      include: {
+        organization: true,
+        childAgents: true,
+      }
+    });
+    res.status(200).json(agents);
+  } catch (error) {
+    console.error('Erro ao listar agentes pais:', error);
+    res.status(500).json({ error: 'Falha ao listar os agentes pais.' });
+  }
 };
 
 exports.listUserParentAgents = async (req, res) => {
-    const { userId } = req.user;
+  const { userId } = req.user;
 
-    try {
-        const instances = await prisma.instance.findMany({
-            where: { userId: userId },
-            select: { id: true }
-        });
+  try {
+    const instances = await prisma.instance.findMany({
+      where: { userId: userId },
+      select: { id: true }
+    });
 
-        const instanceIds = instances.map(instance => instance.id);
+    const instanceIds = instances.map(instance => instance.id);
 
-        const agents = await prisma.agent.findMany({
-            where: {
-                instanceId: { in: instanceIds },
-                type: 'PAI',
-                isActive: true,
-            },
-            include: {
-                organization: true,
-                childAgents: true,
-                instance: true,
-            }
-        });
-        res.status(200).json(agents);
-    } catch (error) {
-        console.error("Erro ao listar agentes pais do usuário:", error);
-        res.status(500).json({ error: 'Falha ao listar os agentes pais do usuário.' });
-    }
+    const agents = await prisma.agent.findMany({
+      where: {
+        instanceId: { in: instanceIds },
+        type: 'PAI',
+        isActive: true,
+      },
+      include: {
+        organization: true,
+        childAgents: true,
+        instance: true,
+      }
+    });
+    res.status(200).json(agents);
+  } catch (error) {
+    console.error('Erro ao listar agentes pais do usuário:', error);
+    res.status(500).json({ error: 'Falha ao listar os agentes pais do usuário.' });
+  }
 };
 
 exports.deleteAgent = async (req, res) => {
-    const { agentId } = req.params;
+  const { agentId } = req.params;
 
-    try {
-        await agentHierarchyService.deactivateAgent(agentId); // Using deactivateAgent from the service
-        res.status(204).send();
-    } catch (error) {
-        console.error("Erro ao deletar agente:", error);
-        if (error.code === 'P2025') { // Not Found error from Prisma
-            return res.status(404).json({ error: 'Agente não encontrado.' });
-        }
-        res.status(500).json({ error: 'Falha ao deletar o agente.' });
+  try {
+    await agentHierarchyService.deactivateAgent(agentId); // Using deactivateAgent from the service
+    res.status(204).send();
+  } catch (error) {
+    console.error('Erro ao deletar agente:', error);
+    if (error.code === 'P2025') { // Not Found error from Prisma
+      return res.status(404).json({ error: 'Agente não encontrado.' });
     }
+    res.status(500).json({ error: 'Falha ao deletar o agente.' });
+  }
 };

@@ -111,20 +111,23 @@ model Agent {
   instanceId     String    @db.ObjectId
   organizationId String?   @db.ObjectId
   parentAgentId  String?   @db.ObjectId
+  routerAgentId  String?   @db.ObjectId // Novo campo para identificar o agente roteador
   templateId     String?   @db.ObjectId
   isActive       Boolean   @default(true)
   priority       Int       @default(0)
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
 
-  instance      Instance        @relation(fields: [instanceId], references: [id])
-  organization  Organization?   @relation(fields: [organizationId], references: [id])
-  parentAgent   Agent?          @relation("AgentHierarchy", fields: [parentAgentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  childAgents   Agent[]         @relation("AgentHierarchy")
-  template      AgentTemplate?  @relation(fields: [templateId], references: [id])
-  tools         AgentTool[]
-  config        AgentConfig?
-  executions    AgentExecution[]
+  instance       Instance        @relation(fields: [instanceId], references: [id])
+  organization   Organization?   @relation(fields: [organizationId], references: [id])
+  parentAgent    Agent?          @relation("AgentHierarchy", fields: [parentAgentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  childAgents    Agent[]         @relation("AgentHierarchy")
+  routerAgent    Agent?          @relation("AgentRouter", fields: [routerAgentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  routingFor     Agent[]         @relation("AgentRouter")
+  template       AgentTemplate?  @relation(fields: [templateId], references: [id])
+  tools          AgentTool[]
+  config         AgentConfig?
+  executions     AgentExecution[]
 
   @@map("agents")
 }
