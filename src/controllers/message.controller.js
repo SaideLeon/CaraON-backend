@@ -23,6 +23,15 @@ exports.listMessages = async (req, res) => {
             },
             include: {
                 contact: true,
+                agentExecution: {
+                    include: {
+                        agent: {
+                            select: {
+                                name: true,
+                            },
+                        },
+                    },
+                },
             },
         });
 

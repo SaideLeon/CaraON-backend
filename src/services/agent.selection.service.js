@@ -2,6 +2,11 @@ const { generateResponse } = require('./genkit.service');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
+// Função para validar se um ID tem o formato ObjectId do MongoDB
+function isValidObjectId(id) {
+    return /^[0-9a-fA-F]{24}$/.test(id);
+}
+
 /**
  * Seleciona o agente mais adequado (filho ou pai de organização) para uma tarefa.
  * @param {object} orchestratorAgent - O agente que está fazendo a seleção (roteador ou pai de organização).
@@ -47,16 +52,30 @@ Responda APENAS com o ID do ${contextType} selecionado. Se nenhum for adequado, 
         const selectedId = llmResponse.trim().replace(/"/g, '');
 
         if (selectedId === 'NONE' || !selectedId) {
+            console.log(`LLM respondeu com 'NONE'. Nenhum ${contextType} será selecionado.`);
+            return null;
+        }
+
+        // Validação robusta do ID retornado pelo LLM
+        if (!isValidObjectId(selectedId)) {
+            console.warn(`LLM retornou um ID inválido: '${selectedId}'. Ignorando a seleção.`);
             return null;
         }
 
         const selectedAgent = availableAgents.find(agent => agent.id === selectedId);
-        return selectedAgent || null;
+
+        if (!selectedAgent) {
+            console.warn(`LLM retornou o ID '${selectedId}', mas este agente não está na lista de opções disponíveis.`);
+            return null;
+        }
+
+        return selectedAgent;
 
     } catch (error) {
         console.error(`Erro na seleção de ${contextType} via LLM:`, error);
         // Fallback: em caso de erro, retorna o primeiro por prioridade (se aplicável)
-        return availableAgents[0] || null;
+        // Isso pode ser ajustado para uma lógica de fallback mais sofisticada se necessário.
+        return availableAgents.sort((a, b) => (a.priority || 0) - (b.priority || 0))[0] || null;
     }
 }
 

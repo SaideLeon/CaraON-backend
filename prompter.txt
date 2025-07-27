@@ -1,7 +1,118 @@
-✦ Ótimo. A Etapa 2 está concluída. A lógica de salvamento agora vincula corretamente as mensagens às  
-  suas execuções de agente.
+curl -X 'GET' \
+  'http://localhost:3030/api/v1/instances/687e78cd6a5d7dda26dfe1b6/contacts' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODdkNmI5ZTE0YWI2YzFjMjYyM2FlNGEiLCJpYXQiOjE3NTM1ODMxMDZ9.PqTu7roLc_fsSMPIBgxEnMa00LBi9OI1hTfG3MlVDQ0'
+Request URL
+http://localhost:3030/api/v1/instances/687e78cd6a5d7dda26dfe1b6/contacts
+Server response
+Code	Details
+500
+Undocumented
+Error: Internal Server Error
 
-  Etapa 3 de 3: Atualizar a API de Mensagens (`message.controller.js`)
-
-  A etapa final é modificar o controlador de mensagens para que ele inclua as informações da execução 
-  do agente (e o nome do agente) na resposta da API.
+Response body
+Download
+{
+  "error": "Falha ao buscar contatos."
+}
+Response headers
+ access-control-allow-origin: * 
+ connection: keep-alive 
+ content-length: 37 
+ content-type: application/json; charset=utf-8 
+ date: Sun,27 Jul 2025 02:27:07 GMT 
+ etag: W/"25-3aXK99bHBFW4JQIjYSOe4kSAjME" 
+ keep-alive: timeout=5 
+ x-powered-by: Express 
+Responses
+ [nodemon] watching extensions: js,mjs,cjs,json
+[0] [nodemon] starting `node src/server.js`       
+[0] [dotenv@17.2.0] injecting env (6) from .env (tip: ⚙️  suppress all logs with { qu
+iet: true })
+[0] [dotenv@17.2.0] injecting env (0) from .env (tip: 🔐 encrypt with dotenvx: https://dotenvx.com)
+[0] ✅ Servidor WebSocket iniciado
+[0] 🚀 API e WebSocket rodando na porta 3030
+[0] 📚 Documentação da API disponível em: http://localhost:3030/api-docs
+[0] ✅ Conectado ao MongoDB para sessões WhatsApp
+[0] Erro ao listar contatos: PrismaClientValidationError: 
+[0] Invalid `prisma.contact.findMany()` invocation in
+[0] C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\src\controllers\contact.controller.js:12:47
+[0]
+[0]    9
+[0]   10 try {
+[0]   11     const totalContacts = await prisma.contact.count({ where });
+[0] → 12     const contacts = await prisma.contact.findMany({
+[0]            where: {
+[0]              instanceId: "687e78cd6a5d7dda26dfe1b6"
+[0]            },
+[0]            skip: 0,
+[0]            take: "20",
+[0]                  ~~~~
+[0]            orderBy: {
+[0]              updatedAt: "desc"
+[0]            }
+[0]          })
+[0]
+[0] Argument `take`: Invalid value provided. Expected Int, provided String.
+[0]     at Dn (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:29:1363)
+[0]     at ri.handleRequestError (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:121:7102)
+[0]     at ri.handleAndLogRequestError (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:121:6784)
+[0]     at ri.request (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:121:6491)
+[0]     at async l (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:130:9812)
+[0]     at async exports.listContacts (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\src\controllers\contact.controller.js:12:26) {
+[0]   clientVersion: '6.12.0'
+[0] }
+[0] Erro ao listar contatos: PrismaClientValidationError: 
+[0] Invalid `prisma.contact.findMany()` invocation in
+[0] C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\src\controllers\contact.controller.js:12:47
+[0]
+[0]    9
+[0]   10 try {
+[0]   11     const totalContacts = await prisma.contact.count({ where });
+[0] → 12     const contacts = await prisma.contact.findMany({
+[0]            where: {
+[0]              instanceId: "687e78cd6a5d7dda26dfe1b6"
+[0]            },
+[0]            take: undefined,
+[0]            orderBy: {
+[0]              updatedAt: "desc"
+[0]            },
+[0]          + skip: Int
+[0]          })
+[0]
+[0] Argument `skip` is missing.
+[0]     at Dn (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:29:1363)
+[0]     at ri.handleRequestError (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:121:7102)
+[0]     at ri.handleAndLogRequestError (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:121:6784)
+[0]     at ri.request (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:121:6491)
+[0]     at async l (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:130:9812)
+[0]     at async exports.listContacts (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\src\controllers\contact.controller.js:12:26) {
+[0]   clientVersion: '6.12.0'
+[0] }
+[0] Erro ao listar contatos: PrismaClientValidationError: 
+[0] Invalid `prisma.contact.findMany()` invocation in
+[0] C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\src\controllers\contact.controller.js:12:47
+[0]
+[0]    9
+[0]   10 try {
+[0]   11     const totalContacts = await prisma.contact.count({ where });
+[0] → 12     const contacts = await prisma.contact.findMany({
+[0]            where: {
+[0]              instanceId: "687e78cd6a5d7dda26dfe1b6"
+[0]            },
+[0]            take: undefined,
+[0]            orderBy: {
+[0]              updatedAt: "desc"
+[0]            },
+[0]          + skip: Int
+[0]          })
+[0]
+[0] Argument `skip` is missing.
+[0]     at Dn (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:29:1363)
+[0]     at ri.handleRequestError (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:121:7102)
+[0]     at ri.handleAndLogRequestError (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:121:6784)
+[0]     at ri.request (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:121:6491)
+[0]     at async l (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\@prisma\client\runtime\library.js:130:9812)
+[0]     at async exports.listContacts (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\src\controllers\contact.controller.js:12:26) {
+[0]   clientVersion: '6.12.0'
+[0] }

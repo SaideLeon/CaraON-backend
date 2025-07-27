@@ -9,8 +9,8 @@ const listContactsSchema = z.object({
         instanceId: z.string().regex(/^[0-9a-fA-F]{24}$/, 'ID de instância inválido'),
     }),
     query: z.object({
-        page: z.string().optional().default('1'),
-        limit: z.string().optional().default('20'),
+        page: z.coerce.number().int().positive().optional().default(1),
+        limit: z.coerce.number().int().positive().optional().default(20),
     }),
 });
 

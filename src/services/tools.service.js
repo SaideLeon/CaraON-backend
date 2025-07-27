@@ -1,6 +1,48 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
+// Mapeamento explícito de nomes de tabela para nomes de modelo Prisma
+const tableToModelMap = {
+    'users': 'user',
+    'instances': 'instance',
+    'organizations': 'organization',
+    'contacts': 'contact',
+    'messages': 'message',
+    'agents': 'agent',
+    'agent_templates': 'agentTemplate',
+    'tools': 'tool',
+    'agent_tools': 'agentTool',
+    'agent_template_tools': 'agentTemplateTools',
+    'agent_configs': 'agentConfig',
+    'agent_executions': 'agentExecution',
+    'customers': 'customer',
+    'addresses': 'address',
+    'categories': 'category',
+    'attributes': 'attribute',
+    'category_attributes': 'categoryAttribute',
+    'products': 'product',
+    'brands': 'brand',
+    'product_images': 'productImage',
+    'product_variants': 'productVariant',
+    'product_attributes': 'productAttribute',
+    'reviews': 'review',
+    'wishlist_items': 'wishlistItem',
+    'cart_items': 'cartItem',
+    'orders': 'order',
+    'order_items': 'orderItem',
+    'payments': 'payment',
+    'coupons': 'coupon',
+    'order_coupons': 'orderCoupon',
+    'mobile_operators': 'mobileOperator',
+    'mobile_wallets': 'mobileWallet',
+    'mobile_transactions': 'mobileTransaction',
+    'transaction_callbacks': 'transactionCallback',
+    'api_logs': 'apiLog',
+    'payment_configs': 'paymentConfig',
+    'support_tickets': 'supportTicket', // Adicionado para a ferramenta de sistema
+};
+
+
 /**
  * Cria ferramentas padrão do sistema
  */
@@ -92,7 +134,8 @@ async function executeDatabaseTool(tool, parameters, agentConfig) {
     case 'create':
       return await createInDatabase(config, parameters);
     case 'update':
-      return await updateInDatabase(config, parameters);
+      // A implementação de update pode ser adicionada aqui
+      throw new Error(`Ação de banco de dados 'update' ainda não implementada.`);
     default:
       throw new Error(`Ação de banco de dados não suportada: ${action}`);
   }
@@ -103,10 +146,10 @@ async function executeDatabaseTool(tool, parameters, agentConfig) {
  */
 async function searchInDatabase(config, parameters) {
   const { table, searchFields, returnFields } = config;
-  const modelName = table.charAt(0).toLowerCase() + table.slice(1, -1); // Heurística para converter nome de tabela para nome de modelo Prisma (ex: 'products' -> 'product')
+  const modelName = tableToModelMap[table.toLowerCase()];
 
-  if (!prisma[modelName]) {
-    throw new Error(`Modelo Prisma inválido: ${modelName}`);
+  if (!modelName || !prisma[modelName]) {
+    throw new Error(`Modelo Prisma inválido ou não mapeado para a tabela: ${table}`);
   }
 
   const whereClauses = searchFields.map(field => {
@@ -140,10 +183,10 @@ async function searchInDatabase(config, parameters) {
  */
 async function createInDatabase(config, parameters) {
   const { table, requiredFields } = config;
-  const modelName = table.charAt(0).toLowerCase() + table.slice(1, -1);
+  const modelName = tableToModelMap[table.toLowerCase()];
 
-  if (!prisma[modelName]) {
-    throw new Error(`Modelo Prisma inválido: ${modelName}`);
+  if (!modelName || !prisma[modelName]) {
+    throw new Error(`Modelo Prisma inválido ou não mapeado para a tabela: ${table}`);
   }
 
   // Validar campos obrigatórios
@@ -170,9 +213,11 @@ async function executeApiTool(tool, parameters, agentConfig) {
   const { endpoint, method, requiredFields } = config;
 
   // Validar campos obrigatórios
-  for (const field of requiredFields) {
-    if (!parameters[field]) {
-      throw new Error(`Parâmetro obrigatório ausente para a API: ${field}`);
+  if (requiredFields) {
+    for (const field of requiredFields) {
+      if (!parameters[field]) {
+        throw new Error(`Parâmetro obrigatório ausente para a API: ${field}`);
+      }
     }
   }
 
@@ -231,14 +276,18 @@ async function executeWebhookTool(tool, parameters, agentConfig) {
  * Executa um flow do Genkit (conceitual).
  */
 async function executeGenkitFlow(tool, parameters, agentConfig) {
-  // Esta é uma implementação conceitual e precisa ser adaptada para sua configuração real do Genkit.
+  // TODO: Esta é uma implementação conceitual e precisa ser adaptada para sua configuração real do Genkit.
+  // A implementação real dependerá de como os flows do Genkit são definidos e expostos.
   try {
+    // Supondo que 'runFlow' seja uma função assíncrona importada de um serviço Genkit.
     const { runFlow } = require('@genkit-ai/flow'); // Assumindo que você tem o Genkit configurado
+    console.log(`Executando flow do Genkit '${tool.config.flowName}' com os parâmetros:`, parameters);
     const result = await runFlow(tool.config.flowName, parameters);
+    console.log(`Resultado do flow '${tool.config.flowName}':`, result);
     return result;
   } catch (error) {
     console.error(`Erro ao executar o flow do Genkit '${tool.config.flowName}':`, error);
-    throw new Error(`Erro ao executar o flow do Genkit: ${tool.config.flowName}`);
+    throw new Error(`Erro ao executar o flow do Genkit: ${tool.config.flowName}. Verifique se o flow está definido e o ambiente Genkit está configurado corretamente.`);
   }
 }
 
