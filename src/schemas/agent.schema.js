@@ -4,44 +4,44 @@ const { extendZodWithOpenApi } = require('@asteasolutions/zod-to-openapi');
 
 extendZodWithOpenApi(z);
 
-const CreateParentAgentBody = z.object({
+const AgentTypeEnum = z.enum(['ROUTER', 'PARENT', 'CHILD']);
+
+const CreateAgentBody = z.object({
   name: z.string().min(3, 'O nome do agente é obrigatório.'),
-  persona: z.string().min(20, 'A persona precisa ter no mínimo 20 caracteres.'),
+  persona: z.string().min(10, 'A persona precisa ter no mínimo 10 caracteres.'),
+  type: AgentTypeEnum,
+  instanceId: z.string().regex(/^[0-9a-fA-F]{24}$/, 'ID de instância inválido').optional(),
+  organizationId: z.string().regex(/^[0-9a-fA-F]{24}$/, 'ID de organização inválido').optional(),
+  parentAgentId: z.string().regex(/^[0-9a-fA-F]{24}$/, 'ID de agente pai inválido').optional(),
+  toolIds: z.array(z.string().regex(/^[0-9a-fA-F]{24}$/, 'ID de ferramenta inválido')).optional(),
 });
 
-const createParentAgentSchema = z.object({
-  body: CreateParentAgentBody.openapi({refId: 'CreateParentAgentBody'}),
-  params: z.object({
-    instanceId: z.string().regex(/^[0-9a-fA-F]{24}$/, 'ID de instância inválido'),
-    organizationId: z.string().regex(/^[0-9a-fA-F]{24}$/, 'ID de organização inválido').optional(),
-  }),
+const createAgentSchema = z.object({
+    body: CreateAgentBody.openapi({refId: 'CreateAgentBody'}),
+}).superRefine((data, ctx) => {
+    if (data.body.type === 'ROUTER' && !data.body.instanceId) {
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'instanceId é obrigatório para agentes do tipo ROUTER',
+            path: ['body', 'instanceId'],
+        });
+    }
+    if (data.body.type === 'PARENT' && (!data.body.instanceId || !data.body.organizationId)) {
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'instanceId e organizationId são obrigatórios para agentes do tipo PARENT',
+            path: ['body', 'organizationId'],
+        });
+    }
+    if (data.body.type === 'CHILD' && !data.body.parentAgentId) {
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'parentAgentId é obrigatório para agentes do tipo CHILD',
+            path: ['body', 'parentAgentId'],
+        });
+    }
 });
 
-const CreateChildAgentFromTemplateBody = z.object({
-  templateId: z.string().regex(/^[0-9a-fA-F]{24}$/, 'ID de template inválido'),
-  name: z.string().min(3, 'O nome do agente é obrigatório.'),
-  persona: z.string().min(20, 'A persona precisa ter no mínimo 20 caracteres.').optional(),
-});
-
-const createChildAgentFromTemplateSchema = z.object({
-  body: CreateChildAgentFromTemplateBody.openapi({refId: 'CreateChildAgentFromTemplateBody'}),
-  params: z.object({
-    parentAgentId: z.string().regex(/^[0-9a-fA-F]{24}$/, 'ID de agente pai inválido'),
-  }),
-});
-
-const CreateCustomChildAgentBody = z.object({
-  name: z.string().min(3, 'O nome do agente é obrigatório.'),
-  persona: z.string().min(20, 'A persona precisa ter no mínimo 20 caracteres.'),
-  tools: z.array(z.string().regex(/^[0-9a-fA-F]{24}$/, 'ID de ferramenta inválido')).optional(),
-});
-
-const createCustomChildAgentSchema = z.object({
-  body: CreateCustomChildAgentBody.openapi({refId: 'CreateCustomChildAgentBody'}),
-  params: z.object({
-    parentAgentId: z.string().regex(/^[0-9a-fA-F]{24}$/, 'ID de agente pai inválido'),
-  }),
-});
 
 const listChildAgentsSchema = z.object({
   params: z.object({
@@ -99,17 +99,13 @@ const deleteAgentSchema = z.object({
 });
 
 
-registry.register('CreateParentAgentBody', CreateParentAgentBody);
-registry.register('CreateChildAgentFromTemplateBody', CreateChildAgentFromTemplateBody);
-registry.register('CreateCustomChildAgentBody', CreateCustomChildAgentBody);
+registry.register('CreateAgentBody', CreateAgentBody);
 registry.register('UpdateAgentPersonaBody', UpdateAgentPersonaBody);
 registry.register('UpdateAgentBody', UpdateAgentBody);
 
 
 module.exports = {
-  createParentAgentSchema,
-  createChildAgentFromTemplateSchema,
-  createCustomChildAgentSchema,
+  createAgentSchema,
   listChildAgentsSchema,
   updateAgentPersonaSchema,
   updateAgentSchema,

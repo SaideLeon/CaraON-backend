@@ -2,7 +2,16 @@ const express = require('express');
 const router = express.Router();
 const agentController = require('../controllers/agent.controller');
 const { validate } = require('../middlewares/validate.middleware');
-const { createParentAgentSchema, createChildAgentFromTemplateSchema, createCustomChildAgentSchema, listChildAgentsSchema, updateAgentPersonaSchema, exportAgentAnalyticsSchema, getAgentByIdSchema, listParentAgentsSchema, deleteAgentSchema, updateAgentSchema } = require('../schemas/agent.schema');
+const { 
+    createAgentSchema, 
+    listChildAgentsSchema, 
+    updateAgentPersonaSchema, 
+    exportAgentAnalyticsSchema, 
+    getAgentByIdSchema, 
+    listParentAgentsSchema, 
+    deleteAgentSchema, 
+    updateAgentSchema 
+} = require('../schemas/agent.schema');
 const auth = require('../middlewares/auth.middleware');
 
 /**
@@ -16,89 +25,60 @@ const auth = require('../middlewares/auth.middleware');
 
 /**
  * @swagger
- * /api/v1/agents/parent/{instanceId}:
+ * /api/v1/agents:
  *   post:
- *     summary: Cria um novo Agente Pai para uma instância
+ *     summary: Cria um novo Agente (ROUTER, PARENT, ou CHILD)
  *     tags: [Agentes]
  *     security:
  *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: instanceId
- *         required: true
- *         schema:
- *           type: string
- *         description: O ID da instância à qual o agente pertencerá.
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/CreateParentAgentBody'
+ *             $ref: '#/components/schemas/CreateAgentBody'
  *           examples:
- *             techStoreAgent:
- *               summary: Agente para Loja de Celulares
+ *             createRouter:
+ *               summary: Criar um Agente Roteador
  *               value:
- *                 name: "Agente Principal - TechCell"
- *                 persona: "Você é o agente principal da TechCell, uma loja especializada em smartphones. Sua função é direcionar os clientes para o departamento correto (Vendas, Suporte, etc.) e responder a perguntas gerais sobre a loja."
+ *                 name: "Roteador Principal da Instância"
+ *                 persona: "Eu sou o roteador principal. Direciono os clientes para o departamento correto."
+ *                 type: "ROUTER"
+ *                 instanceId: "60d0fe4f5311236168a109ca"
+ *             createParent:
+ *               summary: Criar um Agente Pai (Departamento)
+ *               value:
+ *                 name: "Departamento de Vendas"
+ *                 persona: "Nós somos o departamento de vendas. Como podemos ajudar?"
+ *                 type: "PARENT"
+ *                 instanceId: "60d0fe4f5311236168a109ca"
+ *                 organizationId: "60d0fe4f5311236168a109cb"
+ *             createChild:
+ *               summary: Criar um Agente Filho (Especialista)
+ *               value:
+ *                 name: "Especialista em iPhones"
+ *                 persona: "Eu sou um especialista em iPhones. Posso ajudar com qualquer dúvida sobre eles."
+ *                 type: "CHILD"
+ *                 parentAgentId: "60d0fe4f5311236168a109cc"
+ *                 toolIds: ["60d0fe4f5311236168a109cd"]
  *     responses:
  *       201:
- *         description: Agente pai criado com sucesso.
+ *         description: Agente criado com sucesso.
+ *       400:
+ *         description: Requisição inválida.
  *       401:
  *         description: Não autorizado.
  *       500:
- *         description: Falha ao criar o agente pai.
+ *         description: Falha ao criar o agente.
  */
-router.post('/parent/:instanceId', auth, validate(createParentAgentSchema), agentController.createParentAgent);
+router.post('/', auth, validate(createAgentSchema), agentController.createAgent);
+
 
 /**
  * @swagger
- * /api/v1/agents/parent/{instanceId}/{organizationId}:
- *   post:
- *     summary: Cria um novo Agente Pai para uma organização
- *     tags: [Agentes]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: instanceId
- *         required: true
- *         schema:
- *           type: string
- *         description: O ID da instância à qual o agente pertencerá.
- *       - in: path
- *         name: organizationId
- *         required: true
- *         schema:
- *           type: string
- *         description: O ID da organização à qual o agente pertencerá.
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/CreateParentAgentBody'
- *           examples:
- *             techStoreOrgAgent:
- *               summary: Agente para Departamento de Vendas
- *               value:
- *                 name: "Agente de Vendas - TechCell"
- *                 persona: "Você é um agente do departamento de vendas da TechCell. Sua função é ajudar os clientes a escolher o smartphone ideal, fornecer informações sobre preços, promoções e fechar vendas."
- *     responses:
- *       201:
- *         description: Agente pai criado com sucesso.
- *       401:
- *         description: Não autorizado.
- *       500:
- *         description: Falha ao criar o agente pai.
- */
-router.post('/parent/:instanceId/:organizationId', auth, validate(createParentAgentSchema), agentController.createParentAgent);
-
-/**
- * @swagger
- * /api/v1/agents/parent/{instanceId}:
+ * /api/v1/agents/parents/{instanceId}:
  *   get:
- *     summary: Lista os Agentes Pais de uma instância
+ *     summary: Lista os Agentes Pais e Roteadores de uma instância
  *     tags: [Agentes]
  *     security:
  *       - bearerAuth: []
@@ -111,112 +91,32 @@ router.post('/parent/:instanceId/:organizationId', auth, validate(createParentAg
  *         description: O ID da instância.
  *     responses:
  *       200:
- *         description: Lista de agentes pais.
+ *         description: Lista de agentes.
  *       401:
  *         description: Não autorizado.
  *       500:
- *         description: Falha ao listar os agentes pais.
+ *         description: Falha ao listar os agentes.
  */
-router.get('/parent/:instanceId', auth, validate(listParentAgentsSchema), agentController.listParentAgents);
+router.get('/parents/:instanceId', auth, validate(listParentAgentsSchema), agentController.listParentAgents);
 
 /**
  * @swagger
  * /api/v1/agents/user/parents:
  *   get:
- *     summary: Lista todos os Agentes Pais de um usuário
+ *     summary: Lista todos os Agentes Pais e Roteadores de um usuário
  *     tags: [Agentes]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Lista de agentes pais do usuário.
+ *         description: Lista de agentes do usuário.
  *       401:
  *         description: Não autorizado.
  *       500:
- *         description: Falha ao listar os agentes pais.
+ *         description: Falha ao listar os agentes.
  */
 router.get('/user/parents', auth, agentController.listUserParentAgents);
 
-/**
- * @swagger
- * /api/v1/agents/child/from-template/{parentAgentId}:
- *   post:
- *     summary: Cria um Agente Filho a partir de um template
- *     tags: [Agentes]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: parentAgentId
- *         required: true
- *         schema:
- *           type: string
- *         description: O ID do agente pai.
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/CreateChildAgentFromTemplateBody'
- *           examples:
- *             supportAgent:
- *               summary: Agente de Suporte Técnico
- *               value:
- *                 templateId: "clxkz2x1y0000i8uh7b2g5f5e"
- *                 name: "Suporte Técnico - TechCell"
- *                 persona: "Você é um especialista de suporte técnico da TechCell. Ajude os clientes a resolver problemas com seus smartphones, como configurações, bugs ou reparos."
- *     responses:
- *       201:
- *         description: Agente filho criado com sucesso.
- *       401:
- *         description: Não autorizado.
- *       404:
- *         description: Agente pai não encontrado.
- *       500:
- *         description: Falha ao criar o agente filho.
- */
-router.post('/child/from-template/:parentAgentId', auth, validate(createChildAgentFromTemplateSchema), agentController.createChildAgentFromTemplate);
-
-/**
- * @swagger
- * /api/v1/agents/child/custom/{parentAgentId}:
- *   post:
- *     summary: Cria um Agente Filho customizado
- *     tags: [Agentes]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: parentAgentId
- *         required: true
- *         schema:
- *           type: string
- *         description: O ID do agente pai.
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/CreateCustomChildAgentBody'
- *           examples:
- *             financeAgent:
- *               summary: Agente Financeiro Personalizado
- *               value:
- *                 name: "Financeiro - TechCell"
- *                 persona: "Você é o agente do departamento financeiro da TechCell. Sua função é lidar com pagamentos, faturamento e questões de crédito para a compra de smartphones."
- *                 flow: '{"steps":["Verificar crédito", "Processar pagamento", "Enviar fatura"]}'
- *                 tools: ["clxkz5f2q0004i8uhc7a2g6h3"]
- *     responses:
- *       201:
- *         description: Agente filho criado com sucesso.
- *       401:
- *         description: Não autorizado.
- *       404:
- *         description: Agente pai não encontrado.
- *       500:
- *         description: Falha ao criar o agente filho.
- */
-router.post('/child/custom/:parentAgentId', auth, validate(createCustomChildAgentSchema), agentController.createCustomChildAgent);
 
 /**
  * @swagger

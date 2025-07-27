@@ -50,52 +50,50 @@ const tableToModelMap = {
 async function createSystemTools() {
   const systemTools = [
     {
-      name: 'getProductInfo',
-      description: 'Busca informações detalhadas sobre produtos no banco de dados',
+      name: 'searchProducts',
+      description: 'Busca por produtos no catálogo da loja. Use para encontrar informações sobre produtos, verificar preços e estoque.',
       type: 'DATABASE',
       config: {
-        table: 'products',
-        searchFields: ['name', 'description', 'category'],
-        returnFields: ['id', 'name', 'description', 'price', 'category', 'stock']
-      }
+        model: 'product',
+        operation: 'findMany',
+        where: {
+          OR: [
+            { name: { contains: '{query}', mode: 'insensitive' } },
+            { description: { contains: '{query}', mode: 'insensitive' } },
+          ],
+          status: 'ACTIVE',
+        },
+        select: { id: true, name: true, description: true, price: true, stock: true, category: { select: { name: true } } },
+        take: 5,
+      },
+      isSystem: true,
     },
     {
-      name: 'checkOrderStatus',
-      description: 'Verifica o status de um pedido',
+      name: 'getCustomerInfo',
+      description: 'Obtém informações detalhadas sobre o cliente logado, como nome, email, histórico de pedidos e endereço padrão.',
       type: 'DATABASE',
       config: {
-        table: 'orders',
-        searchFields: ['id', 'customer_phone', 'tracking_code'],
-        returnFields: ['id', 'status', 'tracking_code', 'estimated_delivery', 'items']
-      }
-    },
-    {
-      name: 'createTicket',
-      description: 'Cria um ticket de suporte técnico',
-      type: 'DATABASE',
-      config: {
-        table: 'support_tickets',
-        action: 'create',
-        requiredFields: ['customer_phone', 'subject', 'description', 'priority']
-      }
+        model: 'user',
+        operation: 'findUnique',
+        where: { id: '{userId}' },
+        include: {
+          customer: true,
+          addresses: { where: { isDefault: true } },
+          orders: { orderBy: { createdAt: 'desc' }, take: 1 },
+        },
+      },
+      isSystem: true,
     },
   ];
 
-  for (const tool of systemTools) {
-    const existingTool = await prisma.tool.findFirst({
-      where: { name: tool.name }
+  for (const toolData of systemTools) {
+    const existingTool = await prisma.tool.findUnique({
+      where: { name: toolData.name },
     });
 
     if (!existingTool) {
-      await prisma.tool.create({
-        data: {
-          name: tool.name,
-          description: tool.description,
-          type: tool.type,
-          config: tool.config,
-          isSystem: true
-        }
-      });
+      await prisma.tool.create({ data: toolData });
+      console.log(`[System] Ferramenta '${toolData.name}' criada.`);
     }
   }
 }

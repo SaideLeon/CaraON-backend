@@ -1,82 +1,39 @@
+caraon-backend@1.0.0 dev
+> concurrently "nodemon src/server.js"
 
-18|caraon-api  | 🔗 Novo cliente WebSocket conectado
-18|caraon-api  | ▶️ Teste de playground recebido para a instância: 687e78cd6a5d7dda26dfe1b6
-18|caraon-api  | Erro ao gerar resposta com Genkit: TypeError: Cannot read properties of undefined (reading 'generate')
-18|caraon-api  |     at generateResponse (/root/CaraON-backend/src/services/genkit.service.js:11:41)
-18|caraon-api  |     at selectAgent (/root/CaraON-backend/src/services/agent.selection.service.js:46:31)
-18|caraon-api  |     at executeHierarchicalAgentFlow (/root/CaraON-backend/src/services/agent.execution.service.js:31:35)
-18|caraon-api  |     at async WebSocket.<anonymous> (/root/CaraON-backend/src/services/websocket.service.js:51:33)
-18|caraon-api  | Erro na seleção de departamento (organização) via LLM: Error: Falha ao se comunicar com o modelo de linguagem.
-18|caraon-api  |     at generateResponse (/root/CaraON-backend/src/services/genkit.service.js:22:11)
-18|caraon-api  |     at selectAgent (/root/CaraON-backend/src/services/agent.selection.service.js:46:31)
-18|caraon-api  |     at executeHierarchicalAgentFlow (/root/CaraON-backend/src/services/agent.execution.service.js:31:35)
-18|caraon-api  |     at async WebSocket.<anonymous> (/root/CaraON-backend/src/services/websocket.service.js:51:33)
-18|caraon-api  | Nenhum especialista selecionado. O agente do departamento responderá.
-18|caraon-api  | Erro ao gerar resposta com Genkit: TypeError: Cannot read properties of undefined (reading 'generate')
-18|caraon-api  |     at generateResponse (/root/CaraON-backend/src/services/genkit.service.js:11:41)
-18|caraon-api  |     at executeAgentDirect (/root/CaraON-backend/src/services/agent.execution.service.js:124:16)
-18|caraon-api  |     at executeHierarchicalAgentFlow (/root/CaraON-backend/src/services/agent.execution.service.js:49:40)
-18|caraon-api  |     at async WebSocket.<anonymous> (/root/CaraON-backend/src/services/websocket.service.js:51:33)
-18|caraon-api  | Erro na execução hierárquica de múltiplos níveis: Error: Falha ao se comunicar com o modelo de linguagem.
-18|caraon-api  |     at generateResponse (/root/CaraON-backend/src/services/genkit.service.js:22:11)
-18|caraon-api  |     at executeAgentDirect (/root/CaraON-backend/src/services/agent.execution.service.js:124:16)
-18|caraon-api  |     at executeHierarchicalAgentFlow (/root/CaraON-backend/src/services/agent.execution.service.js:49:40)
-18|caraon-api  |     at async WebSocket.<anonymous> (/root/CaraON-backend/src/services/websocket.service.js:51:33)
-18|caraon-api  | Erro ao processar mensagem do WebSocket: Error: Falha ao se comunicar com o modelo de linguagem.
-18|caraon-api  |     at executeHierarchicalAgentFlow (/root/CaraON-backend/src/services/agent.execution.service.js:69:23)
-18|caraon-api  |     at async WebSocket.<anonymous> (/root/CaraON-backend/src/services/websocket.service.js:51:33) {
-18|caraon-api  |   executionId: '688608649958ed15553d1a8f'
-18|caraon-api  | }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+[0] [nodemon] 3.1.10
+[0] [nodemon] to restart at any time, enter `rs`  
+[0] [nodemon] watching path(s): *.*
+[0] [nodemon] watching extensions: js,mjs,cjs,json
+[0] [nodemon] starting `node src/server.js`       
+[0] [dotenv@17.2.0] injecting env (6) from .env (tip: 🛠️  run anywhere with `dotenvx
+ run -- yourcommand`)
+[0] [dotenv@17.2.0] injecting env (0) from .env (tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit)
+[0] Registering flow: welcomeFlow
+[0] C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\genkit.config.js:4  
+[0] module.exports = configureGenkit({
+[0]                  ^
+[0] 
+[0] TypeError: configureGenkit is not a function
+[0]     at Object.<anonymous> (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\genkit.config.js:4:18)
+[0]     at Module._compile (node:internal/modules/cjs/loader:1730:14)
+[0]     at Object..js (node:internal/modules/cjs/loader:1895:10)
+[0]     at Module.load (node:internal/modules/cjs/loader:1465:32)
+[0]     at Function._load (node:internal/modules/cjs/loader:1282:12)
+[0]     at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+[0]     at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+[0]     at Module.require (node:internal/modules/cjs/loader:1487:12)
+[0]     at require (node:internal/modules/helpers:135:16)
+[0]     at Object.<anonymous> (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\src\server.js:21:1)
+[0]     at Module._compile (node:internal/modules/cjs/loader:1730:14)
+[0]     at Object..js (node:internal/modules/cjs/loader:1895:10)
+[0]     at Module.load (node:internal/modules/cjs/loader:1465:32)
+[0]     at Function._load (node:internal/modules/cjs/loader:1282:12)
+[0]     at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+[0]     at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+[0] 
+[0] Node.js v22.15.0
+[0] [nodemon] app crashed - waiting for file changes before starting...
 
 
 

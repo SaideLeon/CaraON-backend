@@ -1,13 +1,18 @@
-const { configureGenkit } = require('@genkit-ai/core');
-const { vertexAI } = require('@genkit-ai/vertexai');
+import { configureGenkit } from '@genkit-ai/core';
+import { geminiPro } from '@genkit-ai/googleai';
 
-module.exports = configureGenkit({
-  plugins: [
-    vertexAI({
-      location: 'us-central1', // Ou a localização de sua preferência
-      // O projectId será pego da variável de ambiente GCLOUD_PROJECT
-    }),
-  ],
-  logLevel: 'debug',
-  enableTracingAndMetrics: true,
-});
+// Importe seus fluxos aqui para que o Genkit os registre
+// Não precisamos importar as ferramentas aqui, elas são passadas dinamicamente para os fluxos
+import './src/flows/routerFlow.js';
+import './src/flows/childFlow.js';
+
+export const setupGenkit = () => {
+  configureGenkit({
+    plugins: [
+      // Importante: Genkit usa as variáveis de ambiente como GOOGLE_API_KEY automaticamente
+      geminiPro(),
+    ],
+    logLevel: 'debug',
+  });
+  console.log('Genkit configurado.');
+};

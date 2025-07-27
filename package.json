@@ -30,6 +30,7 @@
     "@genkit-ai/ai": "^1.14.0",
     "@genkit-ai/core": "^1.14.0",
     "@genkit-ai/flow": "^0.5.17",
+    "@genkit-ai/googleai": "^1.15.5",
     "@genkit-ai/vertexai": "^1.14.0",
     "@prisma/client": "^6.11.1",
     "bcryptjs": "^3.0.2",

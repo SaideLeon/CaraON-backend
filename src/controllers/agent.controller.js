@@ -2,8 +2,7 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const { 
   updateAgentPersonaSchema, 
-  createParentAgentSchema, 
-  createChildAgentFromTemplateSchema, 
+  createAgentSchema, // Schema unificado para criação
   createCustomChildAgentSchema, 
   listChildAgentsSchema, 
   exportAgentAnalyticsSchema,
@@ -11,10 +10,47 @@ const {
   deleteAgentSchema,
   updateAgentSchema
 } = require('../schemas/agent.schema');
-const { z } = require('zod');
 const agentHierarchyService = require('../services/agent.hierarchy.service');
 const agentAnalyticsService = require('../services/agent.analytics.service');
 const { Parser } = require('json2csv');
+
+// Cria um Agente (ROUTER, PARENT, ou CHILD)
+exports.createAgent = async (req, res) => {
+  const { instanceId, organizationId, parentAgentId } = req.params;
+  const { name, persona, type, toolIds } = req.body;
+  const { userId } = req.user;
+
+  try {
+    let agent;
+    if (type === 'CHILD') {
+        if (!parentAgentId) {
+            return res.status(400).json({ error: 'Agente PAI é obrigatório para criar um agente FILHO.' });
+        }
+        const parentAgent = await prisma.agent.findUnique({ where: { id: parentAgentId } });
+        if (!parentAgent) {
+            return res.status(404).json({ error: 'Agente pai não encontrado' });
+        }
+        agent = await agentHierarchyService.createCustomChildAgent({
+            name, persona, toolIds,
+            parentAgentId,
+            instanceId: parentAgent.instanceId,
+            organizationId: parentAgent.organizationId,
+        });
+    } else { // PARENT ou ROUTER
+        agent = await agentHierarchyService.createParentAgent({
+            name, persona, type,
+            instanceId,
+            organizationId,
+            userId,
+        });
+    }
+    res.status(201).json(agent);
+  } catch (error) {
+    console.error(`Erro ao criar agente do tipo ${type}:`, error);
+    res.status(500).json({ error: `Falha ao criar o agente ${type}.` });
+  }
+};
+
 
 exports.updateAgentPersona = async (req, res) => {
   const { agentId } = req.params;
@@ -36,7 +72,7 @@ exports.updateAgentPersona = async (req, res) => {
 
 exports.updateAgent = async (req, res) => {
   const { agentId } = req.params;
-  const { name, persona, priority } = req.body; // Removido routerAgentId
+  const { name, persona, priority } = req.body;
 
   try {
     const agent = await prisma.agent.update({
@@ -49,51 +85,6 @@ exports.updateAgent = async (req, res) => {
       return res.status(404).json({ error: 'Agente não encontrado.' });
     }
     res.status(500).json({ error: 'Falha ao atualizar o agente.' });
-  }
-};
-
-exports.createParentAgent = async (req, res) => {
-  const { instanceId, organizationId } = req.params;
-  const { name, persona } = req.body;
-  const { userId } = req.user;
-
-  try {
-    const agent = await agentHierarchyService.createParentAgent({
-      name,
-      persona,
-      instanceId,
-      organizationId,
-      userId,
-    });
-    res.status(201).json(agent);
-  } catch (error) {
-    console.error('Erro ao criar agente pai:', error);
-    res.status(500).json({ error: 'Falha ao criar o agente pai.' });
-  }
-};
-
-exports.createChildAgentFromTemplate = async (req, res) => {
-  const { parentAgentId } = req.params;
-  const { name, templateId, customPersona } = req.body;
-
-  try {
-    const parentAgent = await prisma.agent.findUnique({ where: { id: parentAgentId } });
-    if (!parentAgent) {
-      return res.status(404).json({ error: 'Agente pai não encontrado' });
-    }
-
-    const agent = await agentHierarchyService.createChildAgentFromTemplate({
-      name,
-      templateId,
-      customPersona,
-      parentAgentId,
-      instanceId: parentAgent.instanceId,
-      organizationId: parentAgent.organizationId,
-    });
-    res.status(201).json(agent);
-  } catch (error) {
-    console.error('Erro ao criar agente filho a partir de template:', error);
-    res.status(500).json({ error: 'Falha ao criar o agente filho.' });
   }
 };
 
@@ -209,7 +200,7 @@ exports.listParentAgents = async (req, res) => {
     const agents = await prisma.agent.findMany({
       where: {
         instanceId: instanceId,
-        type: 'PAI',
+        type: { in: ['ROUTER', 'PARENT'] }, // Busca por ROUTER e PARENT
         isActive: true,
       },
       include: {
@@ -238,7 +229,7 @@ exports.listUserParentAgents = async (req, res) => {
     const agents = await prisma.agent.findMany({
       where: {
         instanceId: { in: instanceIds },
-        type: 'PAI',
+        type: { in: ['ROUTER', 'PARENT'] },
         isActive: true,
       },
       include: {

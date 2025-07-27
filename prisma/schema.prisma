@@ -112,7 +112,6 @@ model Agent {
   organizationId String?   @db.ObjectId
   parentAgentId  String?   @db.ObjectId
   routerAgentId  String?   @db.ObjectId // Novo campo para identificar o agente roteador
-  templateId     String?   @db.ObjectId
   isActive       Boolean   @default(true)
   priority       Int       @default(0)
   createdAt      DateTime  @default(now())
@@ -124,29 +123,11 @@ model Agent {
   childAgents    Agent[]         @relation("AgentHierarchy")
   routerAgent    Agent?          @relation("AgentRouter", fields: [routerAgentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   routingFor     Agent[]         @relation("AgentRouter")
-  template       AgentTemplate?  @relation(fields: [templateId], references: [id])
   tools          AgentTool[]
   config         AgentConfig?
   executions     AgentExecution[]
 
   @@map("agents")
-}
-
-model AgentTemplate {
-  id             String   @id @default(auto()) @map("_id") @db.ObjectId
-  name           String
-  description    String
-  category       String
-  defaultPersona String
-  isSystem       Boolean  @default(false)
-  userId         String?  @db.ObjectId
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-
-  agents       Agent[]
-  defaultTools AgentTemplateTools[]
-
-  @@map("agent_templates")
 }
 
 model Tool {
@@ -160,7 +141,6 @@ model Tool {
   updatedAt     DateTime @updatedAt
 
   agentTools    AgentTool[]
-  templateTools AgentTemplateTools[]
 
   @@map("tools")
 }
@@ -177,19 +157,6 @@ model AgentTool {
 
   @@unique([agentId, toolId])
   @@map("agent_tools")
-}
-
-model AgentTemplateTools {
-  id         String @id @default(auto()) @map("_id") @db.ObjectId
-  templateId String @db.ObjectId
-  toolId     String @db.ObjectId
-  config     Json?
-
-  template AgentTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
-  tool     Tool          @relation(fields: [toolId], references: [id])
-
-  @@unique([templateId, toolId])
-  @@map("agent_template_tools")
 }
 
 model AgentConfig {
@@ -719,8 +686,9 @@ model PaymentConfig {
 // ========== ENUMS ==========
 
 enum AgentType {
-  PAI
-  FILHO
+  ROUTER
+  PARENT
+  CHILD
 }
 
 enum MessageDirection {

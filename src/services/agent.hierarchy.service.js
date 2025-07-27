@@ -2,35 +2,41 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 /**
- * Cria um agente pai para uma instância ou organização
+ * Cria um agente PAI (departamento) ou um agente ROUTER (roteador principal).
  */
 async function createParentAgent(data) {
   const { name, persona, instanceId, organizationId, userId } = data;
 
+  // Se não há organizationId, é um ROUTER. Se há, é um PARENT (departamento).
+  const agentType = organizationId ? 'PARENT' : 'ROUTER';
   let routerAgentId = null;
-  // Se estivermos criando um agente de organização, encontre o roteador principal da instância.
-  if (organizationId) {
-    const instanceRouter = await getParentAgent(instanceId, null); // organizationId nulo para obter o principal
+
+  // Se for um PARENT, ele precisa ser vinculado ao ROUTER da instância.
+  if (agentType === 'PARENT') {
+    const instanceRouter = await getParentAgent(instanceId, null); // Busca o ROUTER
     if (instanceRouter) {
       routerAgentId = instanceRouter.id;
+    } else {
+        // Esta é uma salvaguarda. O fluxo normal deve criar o Roteador primeiro.
+        console.warn(`Tentativa de criar agente PARENT para a organização ${organizationId} sem um agente ROUTER na instância ${instanceId}.`);
     }
   }
   
   const parentAgent = await prisma.agent.create({
     data: {
       name,
-      type: 'PAI',
+      type: agentType,
       persona,
       instanceId,
       organizationId,
-      routerAgentId, // Define o novo campo
+      routerAgentId, // Vincula o PARENT ao ROUTER
       isActive: true,
       priority: 0,
       config: {
         create: {
           maxTokens: 2000,
           temperature: 0.7,
-          model: 'googleai/gemini-2.0-flash',
+          model: 'googleai/gemini-pro',
           systemPrompt: 'Você é um agente orquestrador que delega tarefas para agentes especializados.',
           fallbackMessage: 'Desculpe, não consegui processar sua solicitação no momento.'
         }
@@ -45,63 +51,6 @@ async function createParentAgent(data) {
   return parentAgent;
 }
 
-/**
- * Cria um agente filho baseado em um template
- */
-async function createChildAgentFromTemplate(data) {
-  const { name, templateId, instanceId, organizationId, parentAgentId, customPersona } = data;
-  
-  const template = await prisma.agentTemplate.findUnique({
-    where: { id: templateId },
-    include: { defaultTools: { include: { tool: true } } }
-  });
-
-  if (!template) {
-    throw new Error('Template não encontrado');
-  }
-
-  const childAgent = await prisma.agent.create({
-    data: {
-      name,
-      type: 'FILHO',
-      persona: customPersona || template.defaultPersona,
-      instanceId,
-      organizationId,
-      parentAgentId,
-      routerAgentId: parentAgentId, // Um filho é roteado por seu pai
-      templateId,
-      isActive: true,
-      priority: 1,
-      config: {
-        create: {
-          maxTokens: 1500,
-          temperature: 0.8,
-          model: 'googleai/gemini-2.0-flash',
-          systemPrompt: `Você é um agente especialista em ${template.category}.`,
-          fallbackMessage: 'Não consegui processar sua solicitação nesta especialidade.'
-        }
-      }
-    },
-    include: {
-      config: true,
-      template: true
-    }
-  });
-
-  // Adicionar ferramentas padrão do template
-  for (const templateTool of template.defaultTools) {
-    await prisma.agentTool.create({
-      data: {
-        agentId: childAgent.id,
-        toolId: templateTool.toolId,
-        config: templateTool.config,
-        isActive: true
-      }
-    });
-  }
-
-  return childAgent;
-}
 
 /**
  * Cria um agente filho personalizado
@@ -112,7 +61,7 @@ async function createCustomChildAgent(data) {
   const childAgent = await prisma.agent.create({
     data: {
       name,
-      type: 'FILHO',
+      type: 'CHILD',
       persona,
       instanceId,
       organizationId,
@@ -124,7 +73,7 @@ async function createCustomChildAgent(data) {
         create: {
           maxTokens: 1200,
           temperature: 0.9,
-          model: 'googleai/gemini-2.0-flash',
+          model: 'googleai/gemini-pro',
           systemPrompt: 'Você é um agente especialista personalizado.',
           fallbackMessage: 'Não consegui processar sua solicitação personalizada.'
         }
@@ -136,14 +85,16 @@ async function createCustomChildAgent(data) {
   });
 
   // Adicionar ferramentas específicas
-  for (const toolId of toolIds) {
-    await prisma.agentTool.create({
-      data: {
-        agentId: childAgent.id,
-        toolId,
-        isActive: true
+  if (toolIds && toolIds.length > 0) {
+      for (const toolId of toolIds) {
+        await prisma.agentTool.create({
+          data: {
+            agentId: childAgent.id,
+            toolId,
+            isActive: true
+          }
+        });
       }
-    });
   }
 
   return childAgent;
@@ -164,8 +115,7 @@ async function getChildAgents(parentAgentId) {
           tool: true
         }
       },
-      config: true,
-      template: true
+      config: true
     },
     orderBy: {
       priority: 'asc'
@@ -174,14 +124,16 @@ async function getChildAgents(parentAgentId) {
 }
 
 /**
- * Busca o agente pai para uma instância/organização
+ * Busca o agente Roteador (se organizationId for nulo) ou um agente Pai de uma organização.
  */
 async function getParentAgent(instanceId, organizationId = null) {
+  const agentType = organizationId ? 'PARENT' : 'ROUTER';
+  
   return await prisma.agent.findFirst({
     where: {
       instanceId,
       organizationId,
-      type: 'PAI',
+      type: agentType,
       isActive: true
     },
     orderBy: {
@@ -196,8 +148,7 @@ async function getParentAgent(instanceId, organizationId = null) {
               tool: true
             }
           },
-          config: true,
-          template: true
+          config: true
         }
       },
       config: true
@@ -234,7 +185,7 @@ async function getOrganizationParentAgents(instanceId) {
   return await prisma.agent.findMany({
     where: {
       instanceId,
-      type: 'PAI',
+      type: 'PARENT',
       isActive: true,
       organizationId: {
         not: null, // Garante que apenas agentes de organizações sejam retornados
@@ -251,7 +202,6 @@ async function getOrganizationParentAgents(instanceId) {
 
 module.exports = {
   createParentAgent,
-  createChildAgentFromTemplate,
   createCustomChildAgent,
   getChildAgents,
   getParentAgent,
