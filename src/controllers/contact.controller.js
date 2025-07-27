@@ -3,16 +3,21 @@ const prisma = new PrismaClient();
 
 exports.listContacts = async (req, res) => {
     const { instanceId } = req.params;
-    const { page, limit } = req.query; // Agora page e limit são números
+    const { page = 1, limit = 10 } = req.query;
+
+    // Converte page e limit para números inteiros, com valores padrão
+    const pageNumber = Math.max(1, parseInt(page));
+    const limitNumber = Math.max(1, parseInt(limit));
 
     const where = { instanceId };
 
     try {
         const totalContacts = await prisma.contact.count({ where });
+
         const contacts = await prisma.contact.findMany({
             where,
-            skip: (page - 1) * limit,
-            take: parseInt(limit) || 10,
+            skip: (pageNumber - 1) * limitNumber,
+            take: limitNumber,
             orderBy: {
                 updatedAt: 'desc',
             },
@@ -22,9 +27,9 @@ exports.listContacts = async (req, res) => {
             data: contacts,
             pagination: {
                 total: totalContacts,
-                page: page,
-                limit: limit,
-                totalPages: Math.ceil(totalContacts / limit),
+                page: pageNumber,
+                limit: limitNumber,
+                totalPages: Math.ceil(totalContacts / limitNumber),
             },
         });
     } catch (error) {
@@ -32,6 +37,7 @@ exports.listContacts = async (req, res) => {
         res.status(500).json({ error: 'Falha ao buscar contatos.' });
     }
 };
+
 
 exports.getContactSummary = async (req, res) => {
     const { instanceId } = req.params;
