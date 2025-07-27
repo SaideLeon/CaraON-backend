@@ -1,24 +1,77 @@
-A rota PUT /api/v1/agents/:agentId já permite a
-  atualização de um agente, e podemos modificá-la para incluir a atualização 
-  do routerAgentId.
+/root/.pm2/logs/caraon-api-out.log last 15 lines:
+18|caraon- | 🔌 Cliente WebSocket desconectado
+18|caraon- | 🔗 Novo cliente WebSocket conectado
+18|caraon- | 🔌 Cliente WebSocket desconectado
+18|caraon- | 🔗 Novo cliente WebSocket conectado
+18|caraon- | 🔌 Cliente WebSocket desconectado
+18|caraon- | 🔗 Novo cliente WebSocket conectado
+18|caraon- | 🔌 Cliente WebSocket desconectado
+18|caraon- | Shutting down all Genkit servers...
+18|caraon- | [dotenv@17.2.0] injecting env (6) from .env (tip: ⚙️  write to custom object with { processEnv: myObject })
+18|caraon- | [dotenv@17.2.0] injecting env (0) from .env (tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild)
+18|caraon- | Registering flow: welcomeFlow
+18|caraon- | ✅ Servidor WebSocket iniciado
+18|caraon- | 🚀 API e WebSocket rodando na porta 3030
+18|caraon- | 📚 Documentação da API disponível em: http://localhost:3030/api-docs
+18|caraon- | ✅ Conectado ao MongoDB para sessões WhatsApp
 
-  Como funciona:
+18|caraon-api  | 🔗 Novo cliente WebSocket conectado
+18|caraon-api  | ▶️ Teste de playground recebido para a instância: 687e78cd6a5d7dda26dfe1b6
+18|caraon-api  | ⚠️ Nenhum Agente Roteador Principal encontrado para a instância Meu WhatsApp Pessoal no playground. Criando um automaticamente.
+18|caraon-api  | Erro ao processar mensagem do WebSocket: PrismaClientValidationError:
+18|caraon-api  | Invalid `prisma.agent.create()` invocation in
+18|caraon-api  | /root/CaraON-backend/src/services/agent.hierarchy.service.js:19:42
+18|caraon-api  |   16   }
+18|caraon-api  |   17 }
+18|caraon-api  |   18
+18|caraon-api  | → 19 const parentAgent = await prisma.agent.create({
+18|caraon-api  |        data: {
+18|caraon-api  |          name: "Roteador - Meu WhatsApp Pessoal",
+18|caraon-api  |          type: "PAI",
+18|caraon-api  |          persona: "Você é o agente roteador principal. Sua função é analisar a mensagem do usuário e direcioná-la para o departamento ou especialista correto (Vendas, Suporte, etc.). Se não tiver certeza, peça ao usuário para esclarecer.",
+18|caraon-api  |          instanceId: "687e78cd6a5d7dda26dfe1b6",
+18|caraon-api  |          organizationId: null,
+18|caraon-api  |          routerAgentId: null,
+18|caraon-api  |          ~~~~~~~~~~~~~
+18|caraon-api  |          isActive: true,
+18|caraon-api  |          priority: 0,
+18|caraon-api  |          config: {
+18|caraon-api  |            create: {
+18|caraon-api  |              maxTokens: 2000,
+18|caraon-api  |              temperature: 0.7,
+18|caraon-api  |              model: "gemini-pro",
+18|caraon-api  |              systemPrompt: "Você é um agente orquestrador que delega tarefas para agentes especializados.",
+18|caraon-api  |              fallbackMessage: "Desculpe, não consegui processar sua solicitação no momento."
+18|caraon-api  |            }
+18|caraon-api  |          },
+18|caraon-api  |      ?   id?: String,
+18|caraon-api  |      ?   parentAgentId?: String | Null,
+18|caraon-api  |      ?   templateId?: String | Null,
+18|caraon-api  |      ?   createdAt?: DateTime,
+18|caraon-api  |      ?   updatedAt?: DateTime,
+18|caraon-api  |      ?   childAgents?: AgentUncheckedCreateNestedManyWithoutParentAgentInput,
+18|caraon-api  |      ?   tools?: AgentToolUncheckedCreateNestedManyWithoutAgentInput,
+18|caraon-api  |      ?   executions?: AgentExecutionUncheckedCreateNestedManyWithoutAgentInput
+18|caraon-api  |        },
+18|caraon-api  |        include: {
+18|caraon-api  |          config: true,
+18|caraon-api  |          childAgents: true
+18|caraon-api  |        }
+18|caraon-api  |      })
+18|caraon-api  | Unknown argument `routerAgentId`. Available options are marked with ?.
+18|caraon-api  |     at Dn (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:29:1363)
+18|caraon-api  |     at ri.handleRequestError (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:121:7102)
+18|caraon-api  |     at ri.handleAndLogRequestError (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:121:6784)
+18|caraon-api  |     at ri.request (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:121:6491)
+18|caraon-api  |     at async l (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:130:9812)
+18|caraon-api  |     at async Object.createParentAgent (/root/CaraON-backend/src/services/agent.hierarchy.service.js:19:23)
+18|caraon-api  |     at async WebSocket.<anonymous> (/root/CaraON-backend/src/services/websocket.service.js:41:27) {
+18|caraon-api  |   clientVersion: '6.12.0'
+18|caraon-api  | }
 
-   1. Rota da API: A rota PUT /api/v1/agents/:agentId em
-      src/api/agent.routes.js é a porta de entrada para a atualização de
-      agentes.
 
-   2. Controlador: O agentController.updateAgent em
-      src/controllers/agent.controller.js recebe a requisição e os dados a
-      serem atualizados.
 
-   3. Lógica de Atualização: O controlador chama o prisma.agent.update para 
-      efetivamente atualizar os dados do agente no banco de dados.
 
-  O que precisa ser alterado:
 
-  Para permitir a atualização do routerAgentId, precisamos fazer uma pequena
-  alteração no agent.controller.js.
 
-ler o agent.schema.js para ver se o routerAgentId já está no schema de  
-  validação. Caso contrário, terá que adicioná-lo.
+

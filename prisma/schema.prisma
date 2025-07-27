@@ -197,7 +197,7 @@ model AgentConfig {
   agentId         String  @unique @db.ObjectId
   maxTokens       Int     @default(1000)
   temperature     Float   @default(0.7)
-  model           String  @default("gemini-pro")
+  model           String  @default("googleai/gemini-2.0-flash")
   systemPrompt    String?
   fallbackMessage String?
   timeoutSeconds  Int     @default(30)

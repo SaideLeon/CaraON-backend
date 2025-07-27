@@ -46,7 +46,7 @@ Responda APENAS com o ID do ${contextType} selecionado. Se nenhum for adequado, 
     const llmResponse = await generateResponse(selectionPrompt, {
       maxTokens: 100,
       temperature: 0.1,
-      model: orchestratorAgent.config?.model || 'gemini-pro',
+      model: orchestratorAgent.config?.model || 'googleai/gemini-2.0-flash',
     });
 
     const selectedId = llmResponse.trim().replace(/"/g, '');
