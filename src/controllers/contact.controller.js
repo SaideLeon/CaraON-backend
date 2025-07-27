@@ -12,7 +12,7 @@ exports.listContacts = async (req, res) => {
         const contacts = await prisma.contact.findMany({
             where,
             skip: (page - 1) * limit,
-            take: limit,
+            take: parseInt(limit) || 10,
             orderBy: {
                 updatedAt: 'desc',
             },
