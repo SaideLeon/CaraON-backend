@@ -1,4 +1,5 @@
-const { geminiPro } = require('@genkit-ai/vertexai');
+const genkit = require('@genkit-ai/core');
+
 
 /**
  * Gera uma resposta usando o modelo Genkit (Gemini Pro).
@@ -8,7 +9,7 @@ const { geminiPro } = require('@genkit-ai/vertexai');
  */
 async function generateResponse(prompt, config = {}) {
   try {
-    const llmResponse = await geminiPro.generate({
+    const llmResponse = await genkit.get.model('vertexai/gemini-pro').generate({
       prompt,
       config: {
         maxOutputTokens: config.maxTokens,

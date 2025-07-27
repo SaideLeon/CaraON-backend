@@ -18,6 +18,7 @@ const messageRoutes = require('./api/message.routes'); // Importa a rota de mens
 const contactRoutes = require('./api/contact.routes'); // Importa a rota de contatos
 const webSocketService = require('./services/websocket.service');
 const { generateOpenApi } = require('./docs/openapi');
+require('./genkit.config');
 const app = express();
 const PORT = process.env.PORT || 3000;
 const API_SERVER_URLS = process.env.API_SERVER_URLS || `http://localhost:${PORT}`;

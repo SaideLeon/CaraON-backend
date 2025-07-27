@@ -2,7 +2,7 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 async function main() {
-  const newModel = 'googleai/gemini-2.0-flash';
+  const newModel = 'gemini-2.0-flash';
   try {
     const result = await prisma.agentConfig.updateMany({
       where: {
