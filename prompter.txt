@@ -1,155 +1,49 @@
-Autenticação
-Endpoints para registro e login de usuários.
-
-
-
-POST
-/api/v1/auth/register
-Realiza o registro de um novo usuário
-
-
-Parameters
-Cancel
-Reset
-No parameters
-
-Request body
-
-application/json
-Edit Value
-Schema
-{
-  "name": "Tony Stark",
-  "email": "tonystark@gmail.com",
-  "password": "Damasco12"
-}
-Execute
-Clear
-Responses
+esponses
 Curl
 
 curl -X 'POST' \
-  'http://localhost:3030/api/v1/auth/register' \
-  -H 'accept: application/json' \
+  'https://app.caraon.qzz.io/api/v1/agents' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODdkNmI5ZTE0YWI2YzFjMjYyM2FlNGEiLCJpYXQiOjE3NTM2OTY2NjN9.9iOYsQ6m1aiz_AsK7fHWmZ8VbloK_nSju9d0SoBO86U' \
   -H 'Content-Type: application/json' \
   -d '{
-  "name": "Tony Stark",
-  "email": "tonystark@gmail.com",
-  "password": "Damasco12"
+  "name": "Roteador Principal da Instância",
+  "persona": "Eu sou o roteador principal. Direciono os clientes para o departamento correto.",
+  "type": "ROUTER",
+  "instanceId": "6886205236771eb0a30adf06"
 }'
 Request URL
-http://localhost:3030/api/v1/auth/register
+https://app.caraon.qzz.io/api/v1/agents
 Server response
 Code	Details
-201	
-Response body
-Download
-{
-  "id": "6887443b3fd1200644e9f338",
-  "name": "Tony Stark",
-  "email": "tonystark@gmail.com"
-}
-Response headers
- access-control-allow-origin: * 
- connection: keep-alive 
- content-length: 83 
- content-type: application/json; charset=utf-8 
- date: Mon,28 Jul 2025 09:34:53 GMT 
- etag: W/"53-WBiEDVOEeeCEHwL5/cHvx6Nk3o8" 
- keep-alive: timeout=5 
- x-powered-by: Express 
-Responses
-Code	Description	Links
-201	
-Usuário registrado com sucesso.
-
-Media type
-
-application/json
-Controls Accept header.
-Example Value
-Schema
-{
-  "id": "string",
-  "name": "string",
-  "email": "user@example.com"
-}
-No links
-409	
-O e-mail fornecido já está em uso.
-
-No links
-
-POST
-/api/v1/auth/login
-Realiza o login de um usuário
-
-
-Parameters
-Cancel
-Reset
-No parameters
-
-Request body
-
-application/json
-Edit Value
-Schema
-{
-  "email": "tonystark@gmail.com",
-  "password": "Damasco12"
-}
-Execute
-Clear
-Responses
-Curl
-
-curl -X 'POST' \
-  'http://localhost:3030/api/v1/auth/login' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
-  -d '{
-  "email": "tonystark@gmail.com",
-  "password": "Damasco12"
-}'
-Request URL
-http://localhost:3030/api/v1/auth/login
-Server response
-Code	Details
-400
-Undocumented
-Error: Bad Request
+400	
+Error: response status is 400
 
 Response headers
  access-control-allow-origin: * 
- connection: keep-alive 
+ alt-svc: h3=":443"; ma=86400 
+ cf-cache-status: DYNAMIC 
+ cf-ray: 9663870c2b79128a-LHR 
  content-length: 0 
- date: Mon,28 Jul 2025 09:35:53 GMT 
- keep-alive: timeout=5 
+ date: Mon,28 Jul 2025 10:00:06 GMT 
+ nel: {"success_fraction":0,"report_to":"cf-nel","max_age":604800} 
+ report-to: {"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v4?s=NxgreC7QhPXSQ4g%2B2IU4ARNkCPTSUlbgr1h2WTAbqkallQ%2FauWY4XCrzbFL8NKj1cCatos57vb2GvGWB2EUxKSdqOSQ9THjV%2B6ky1fLnMQ7H%2FiHk4fDm3H9Ue7httNzXsBM0Rw%3D%3D"}],"group":"cf-nel","max_age":604800} 
+ server: cloudflare 
+ server-timing: cfL4;desc="?proto=QUIC&rtt=320189&min_rtt=318326&rtt_var=69895&sent=12&recv=11&lost=0&retrans=0&sent_bytes=4910&recv_bytes=4957&delivery_rate=4212919&ss_exit_cwnd=0&ss_exit_reason=0&cwnd=16830&unsent_bytes=0&cid=52e877b5270954da&ts=780&inflight_dur=649&x=103" 
  x-powered-by: Express 
 Responses
 Code	Description	Links
-200	
-Login bem-sucedido.
+201	
+Agente criado com sucesso.
 
-Media type
+No links
+400	
+Requisição inválida.
 
-application/json
-Controls Accept header.
-Example Value
-Schema
-{
-  "token": "string",
-  "user": {
-    "id": "string",
-    "name": "string",
-    "email": "user@example.com"
-  }
-}
 No links
 401	
-Credenciais inválidas.
+Não autorizado.
 
 No links
-404	
-Usuário não encontrado.
+500	
+Falha ao criar o agente

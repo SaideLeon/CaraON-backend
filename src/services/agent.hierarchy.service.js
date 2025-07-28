@@ -5,10 +5,10 @@ const prisma = new PrismaClient();
  * Cria um agente PAI (departamento) ou um agente ROUTER (roteador principal).
  */
 async function createParentAgent(data) {
-  const { name, persona, instanceId, organizationId, userId } = data;
+  const { name, persona, type, instanceId, organizationId, userId } = data;
 
-  // Se não há organizationId, é um ROUTER. Se há, é um PARENT (departamento).
-  const agentType = organizationId ? 'PARENT' : 'ROUTER';
+  // O tipo de agente agora é passado diretamente, não mais derivado.
+  const agentType = type;
   let routerAgentId = null;
 
   // Se for um PARENT, ele precisa ser vinculado ao ROUTER da instância.
