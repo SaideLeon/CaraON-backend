@@ -33,7 +33,7 @@ async function generateResponse(prompt, config = {}) {
         // Adicione outros parâmetros de configuração do Genkit aqui, se necessário
       },
     });
-    const responseText = llmResponse.text();
+    const responseText = llmResponse.text;
     console.log(">> generateResponse: Resposta gerada com sucesso:", responseText);
     return responseText;
   } catch (error) {
@@ -73,7 +73,7 @@ export const routerFlow = ai.defineFlow(
         config: { temperature: 0.1 },
       });
 
-      const responseText = result.text();
+      const responseText = result.text;
       console.log('>> routerFlow: Resposta recebida do modelo:', responseText);
 
       const idMatch = responseText.match(/ID:\s*(\S+)/i);
@@ -173,7 +173,7 @@ export const childFlow = ai.defineFlow({
             },
         });
 
-        const responseText = result.text();
+        const responseText = result.text;
         console.log('>> childFlow: Resposta recebida do modelo:', responseText);
         return responseText;
     } catch (error) {

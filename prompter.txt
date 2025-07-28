@@ -1,13 +1,80 @@
-PS C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend> node scripts/update-models.js
-file:///C:/Users/Rogerio/Desktop/Projectos/cli/CaraON/CaraON-backend/scripts/update-models.js:1
-const { PrismaClient } = require('@prisma/client');
-                         ^
+18|caraon- | 📚 Documentação da API disponível em: http://localhost:3030/api-docs
+18|caraon- | 🔗 Novo cliente WebSocket conectado
 
-ReferenceError: require is not defined in ES module scope, you can use import instead 
-This file is being treated as an ES module because it has a '.js' file extension and 'C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\package.json' contains "type": "module". To treat it as a CommonJS script, rename it to use the '.cjs' file extension.
-    at file:///C:/Users/Rogerio/Desktop/Projectos/cli/CaraON/CaraON-backend/scripts/update-models.js:1:26
-    at ModuleJob.run (node:internal/modules/esm/module_job:274:25)
-    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:644:26)    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:116:5)   
+18|caraon-api  | ▶️ Teste de playground recebido para a instância: 6886205236771eb0a30adf06
+18|caraon-api  | -- Início da Execução Hierárquica: Instância 6886205236771eb0a30adf06 --
+18|caraon-api  | Mensagem do usuário: "como ser empresario"
+18|caraon-api  | 1. Buscando Agente Roteador...
+18|caraon-api  | >> getParentAgent: Buscando agente ROUTER para instância 6886205236771eb0a30adf06 e organização N/A
+18|caraon-api  | >> getParentAgent: Agente ROUTER encontrado: 688776ac5154351404a6547f
+18|caraon-api  |  -> Roteador encontrado: Roteador - Whatsapp de Saide (ID: 688776ac5154351404a6547f)
+18|caraon-api  | 2. Roteador selecionando o departamento...
+18|caraon-api  | >> getOrganizationParentAgents: Buscando agentes PARENT para a instância 6886205236771eb0a30adf06
+18|caraon-api  | >> getOrganizationParentAgents: 0 agentes PARENT encontrados.
+18|caraon-api  | Nenhum departamento (agente PARENT) encontrado. O roteador principal responderá diretamente.
+18|caraon-api  | >> executeAgentDirect: Executando agente Roteador - Whatsapp de Saide (ID: 688776ac5154351404a6547f) diretamente.
+18|caraon-api  | >> executeAgentDirect: Prompt: Você é o agente roteador principal. Sua função é analisar a mensagem do usuário e direcioná-la para o departamento ou especialista correto (Vendas, Suporte, etc.). Se não tiver certeza, peça ao usuário para esclarecer.
+18|caraon-api  | Mensagem do usuário: "como ser empresario"
+18|caraon-api  | >> generateResponse: Iniciando a geração de resposta...
+18|caraon-api  | >> generateResponse: Prompt: Você é o agente roteador principal. Sua função é analisar a mensagem do usuário e direcioná-la para o departamento ou especialista correto (Vendas, Suporte, etc.). Se não tiver certeza, peça ao usuário para esclarecer.
+18|caraon-api  | Mensagem do usuário: "como ser empresario"
+18|caraon-api  | >> generateResponse: Config: {
+18|caraon-api  |   id: '688776ac5154351404a65480',
+18|caraon-api  |   agentId: '688776ac5154351404a6547f',
+18|caraon-api  |   maxTokens: 2000,
+18|caraon-api  |   temperature: 0.7,
+18|caraon-api  |   model: 'googleai/gemini-2.0-flash',
+18|caraon-api  |   systemPrompt: 'Você é um agente orquestrador que delega tarefas para agentes especializados.',
+18|caraon-api  |   fallbackMessage: 'Desculpe, não consegui processar sua solicitação no momento.',
+18|caraon-api  |   timeoutSeconds: 30,
+18|caraon-api  |   maxRetries: 3
+18|caraon-api  | }
+18|caraon-api  | >> generateResponse: Erro detalhado ao gerar resposta com Genkit: TypeError: llmResponse.text is not a function
+18|caraon-api  |     at generateResponse (file:///root/CaraON-backend/src/services/genkit.service.js:36:38)
+18|caraon-api  |     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+18|caraon-api  |     at async executeAgentDirect (file:///root/CaraON-backend/src/services/agent.execution.service.js:161:20)
+18|caraon-api  |     at async executeHierarchicalAgentFlow (file:///root/CaraON-backend/src/services/agent.execution.service.js:38:32)
+18|caraon-api  |     at async WebSocket.<anonymous> (file:///root/CaraON-backend/src/services/websocket.service.js:52:33)
+18|caraon-api  | !! ERRO na execução hierárquica: Falha ao se comunicar com o modelo de linguagem. {
+18|caraon-api  |   stack: 'Error: Falha ao se comunicar com o modelo de linguagem.\n' +
+18|caraon-api  |     '    at generateResponse (file:///root/CaraON-backend/src/services/genkit.service.js:41:11)\n' +
+18|caraon-api  |     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+18|caraon-api  |     '    at async executeAgentDirect (file:///root/CaraON-backend/src/services/agent.execution.service.js:161:20)\n' +
+18|caraon-api  |     '    at async executeHierarchicalAgentFlow (file:///root/CaraON-backend/src/services/agent.execution.service.js:38:32)\n' +
+18|caraon-api  |     '    at async WebSocket.<anonymous> (file:///root/CaraON-backend/src/services/websocket.service.js:52:33)'
+18|caraon-api  | }
+18|caraon-api  | >> logAgentExecution: Registrando execução... {
+18|caraon-api  |   routerAgentId: '688776ac5154351404a6547f',
+18|caraon-api  |   success: false,
+18|caraon-api  |   errorMessage: 'Falha ao se comunicar com o modelo de linguagem.'
+18|caraon-api  | }
+18|caraon-api  | >> logAgentExecution: Execução registrada com sucesso. ID: 6887af5459c66939aad4a1b7
+18|caraon-api  | -- Fim da Execução: FALHA. Tempo total: 1873ms --
+18|caraon-api  | Erro ao processar mensagem do WebSocket: Error: Falha ao se comunicar com o modelo de linguagem.
+18|caraon-api  |     at executeHierarchicalAgentFlow (file:///root/CaraON-backend/src/services/agent.execution.service.js:98:23)
+18|caraon-api  |     at async WebSocket.<anonymous> (file:///root/CaraON-backend/src/services/websocket.service.js:52:33) {
+18|caraon-api  |   executionId: '6887af5459c66939aad4a1b7'
+18|caraon-api  | }
 
-Node.js v22.15.0
-PS C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
