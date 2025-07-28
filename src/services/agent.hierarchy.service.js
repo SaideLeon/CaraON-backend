@@ -103,23 +103,31 @@ async function createCustomChildAgent(data) {
  * Busca agentes filhos de um agente pai
  */
 async function getChildAgents(parentAgentId) {
-  return await prisma.agent.findMany({
-    where: {
-      parentAgentId,
-      isActive: true
-    },
-    include: {
-      tools: {
-        include: {
-          tool: true
-        }
+  console.log(`>> getChildAgents: Buscando agentes filhos para o pai ${parentAgentId}`);
+  try {
+    const children = await prisma.agent.findMany({
+      where: {
+        parentAgentId,
+        isActive: true
       },
-      config: true
-    },
-    orderBy: {
-      priority: 'asc'
-    }
-  });
+      include: {
+        tools: {
+          include: {
+            tool: true
+          }
+        },
+        config: true
+      },
+      orderBy: {
+        priority: 'asc'
+      }
+    });
+    console.log(`>> getChildAgents: ${children.length} filhos encontrados.`);
+    return children;
+  } catch (error) {
+    console.error(`>> getChildAgents: Erro ao buscar filhos para ${parentAgentId}:`, error);
+    throw error;
+  }
 }
 
 /**
@@ -127,32 +135,39 @@ async function getChildAgents(parentAgentId) {
  */
 async function getParentAgent(instanceId, organizationId = null) {
   const agentType = organizationId ? 'PARENT' : 'ROUTER';
-  
-  return await prisma.agent.findFirst({
-    where: {
-      instanceId,
-      organizationId,
-      type: agentType,
-      isActive: true
-    },
-    orderBy: {
-      priority: 'desc'
-    },
-    include: {
-      childAgents: {
-        where: { isActive: true },
-        include: {
-          tools: {
-            include: {
-              tool: true
-            }
-          },
-          config: true
-        }
+  console.log(`>> getParentAgent: Buscando agente ${agentType} para instância ${instanceId} e organização ${organizationId || 'N/A'}`);
+  try {
+    const parent = await prisma.agent.findFirst({
+      where: {
+        instanceId,
+        organizationId,
+        type: agentType,
+        isActive: true
       },
-      config: true
-    }
-  });
+      orderBy: {
+        priority: 'desc'
+      },
+      include: {
+        childAgents: {
+          where: { isActive: true },
+          include: {
+            tools: {
+              include: {
+                tool: true
+              }
+            },
+            config: true
+          }
+        },
+        config: true
+      }
+    });
+    console.log(`>> getParentAgent: Agente ${agentType} encontrado:`, parent ? parent.id : 'Nenhum');
+    return parent;
+  } catch (error) {
+    console.error(`>> getParentAgent: Erro ao buscar agente ${agentType}:`, error);
+    throw error;
+  }
 }
 
 /**
@@ -181,22 +196,30 @@ async function deactivateAgent(agentId) {
  * @returns {Promise<Array<object>>} Uma lista de agentes pais de organizações.
  */
 async function getOrganizationParentAgents(instanceId) {
-  return await prisma.agent.findMany({
-    where: {
-      instanceId,
-      type: 'PARENT',
-      isActive: true,
-      organizationId: {
-        not: null, // Garante que apenas agentes de organizações sejam retornados
+  console.log(`>> getOrganizationParentAgents: Buscando agentes PARENT para a instância ${instanceId}`);
+  try {
+    const agents = await prisma.agent.findMany({
+      where: {
+        instanceId,
+        type: 'PARENT',
+        isActive: true,
+        organizationId: {
+          not: null, // Garante que apenas agentes de organizações sejam retornados
+        },
       },
-    },
-    include: {
-      organization: true,
-    },
-    orderBy: {
-      priority: 'desc',
-    },
-  });
+      include: {
+        organization: true,
+      },
+      orderBy: {
+        priority: 'desc',
+      },
+    });
+    console.log(`>> getOrganizationParentAgents: ${agents.length} agentes PARENT encontrados.`);
+    return agents;
+  } catch (error) {
+    console.error(`>> getOrganizationParentAgents: Erro ao buscar agentes PARENT:`, error);
+    throw error;
+  }
 }
 
 export {

@@ -1,35 +1,23 @@
-root@cognick:~/CaraON-backend# pm2 logs 18
-[TAILING] Tailing last 15 lines for [18] process (change the value with --lines option)
-/root/.pm2/logs/caraon-api-out.log last 15 lines:
-18|caraon- | 🔗 Novo cliente WebSocket conectado
-18|caraon- | 🔌 Cliente WebSocket desconectado
-18|caraon- | 🔗 Novo cliente WebSocket conectado
-18|caraon- | 🔌 Cliente WebSocket desconectado
-18|caraon- | 🔗 Novo cliente WebSocket conectado
-18|caraon- | Shutting down all Genkit servers...
-18|caraon- | ✅ Servidor WebSocket iniciado
-18|caraon- | ✅ Conectado ao MongoDB para sessões WhatsApp
+8|caraon- | ✅ Conectado ao MongoDB para sessões WhatsApp
 18|caraon- | 🚀 API e WebSocket rodando na porta 3030
 18|caraon- | 📚 Documentação da API disponível em: http://localhost:3030/api-docs
 18|caraon- | 🔗 Novo cliente WebSocket conectado
-18|caraon- | 🔗 Novo cliente WebSocket conectado
 18|caraon- | ▶️ Teste de playground recebido para a instância: 6886205236771eb0a30adf06
-18|caraon- | ✅ Agente Roteador Principal criado automaticamente para a instância Whatsapp de Saide via playground.
 18|caraon- | Nenhum departamento selecionado. O roteador principal responderá diretamente.
 
 /root/.pm2/logs/caraon-api-error.log last 15 lines:
-18|caraon- |   status: 'NOT_FOUND',
-18|caraon- |   detail: undefined,
-18|caraon- |   code: 404,
-18|caraon- |   originalMessage: "Model 'gemini-pro' not found"
-18|caraon- | }
+18|caraon- |     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+18|caraon- |     at async executeAgentDirect (file:///root/CaraON-backend/src/services/agent.execution.service.js:124:10)
+18|caraon- |     at async executeHierarchicalAgentFlow (file:///root/CaraON-backend/src/services/agent.execution.service.js:36:30)
+18|caraon- |     at async WebSocket.<anonymous> (file:///root/CaraON-backend/src/services/websocket.service.js:52:33)
 18|caraon- | Erro na execução hierárquica de múltiplos níveis: Error: Falha ao se comunicar com o modelo de linguagem.
 18|caraon- |     at generateResponse (file:///root/CaraON-backend/src/services/genkit.service.js:36:11)
+18|caraon- |     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
 18|caraon- |     at async executeAgentDirect (file:///root/CaraON-backend/src/services/agent.execution.service.js:124:10)
 18|caraon- |     at async executeHierarchicalAgentFlow (file:///root/CaraON-backend/src/services/agent.execution.service.js:36:30)
 18|caraon- |     at async WebSocket.<anonymous> (file:///root/CaraON-backend/src/services/websocket.service.js:52:33)
 18|caraon- | Erro ao processar mensagem do WebSocket: Error: Falha ao se comunicar com o modelo de linguagem.
 18|caraon- |     at executeHierarchicalAgentFlow (file:///root/CaraON-backend/src/services/agent.execution.service.js:69:23)
 18|caraon- |     at async WebSocket.<anonymous> (file:///root/CaraON-backend/src/services/websocket.service.js:52:33) {
-18|caraon- |   executionId: '688776ac5154351404a65482'
+18|caraon- |   executionId: '688780417b24087cc85e44de'
 18|caraon- | }

@@ -21,6 +21,9 @@ const { searchProductsTool, toolRegistry } = defineTools(ai);
  * @returns {Promise<string>} A resposta de texto gerada pelo modelo.
  */
 async function generateResponse(prompt, config = {}) {
+  console.log(">> generateResponse: Iniciando a geração de resposta...");
+  console.log(">> generateResponse: Prompt:", prompt);
+  console.log(">> generateResponse: Config:", config);
   try {
     const llmResponse = await ai.generate({
       prompt,
@@ -30,9 +33,11 @@ async function generateResponse(prompt, config = {}) {
         // Adicione outros parâmetros de configuração do Genkit aqui, se necessário
       },
     });
-    return llmResponse.text();
+    const responseText = llmResponse.text();
+    console.log(">> generateResponse: Resposta gerada com sucesso:", responseText);
+    return responseText;
   } catch (error) {
-    console.error('Erro ao gerar resposta com Genkit:', error);
+    console.error('>> generateResponse: Erro ao gerar resposta com Genkit:', error);
     throw new Error('Falha ao se comunicar com o modelo de linguagem.');
   }
 }
@@ -56,35 +61,63 @@ export const routerFlow = ai.defineFlow(
     }),
   },
   async (input) => {
+    console.log('>> routerFlow: Iniciando...', { input });
     const prompt = `Você é um agente roteador que direciona mensagens de clientes para o departamento mais adequado.\n    A mensagem do cliente é: "${input.message}"\n\n    Os departamentos disponíveis são:\n    ${input.organizationAgents.map(a => `- ${a.name} (ID: ${a.id}): ${a.persona || 'Nenhuma persona definida.'}`).join('\n')}\n\n    Baseado na mensagem do cliente, qual departamento (agente PARENT) é o mais adequado para lidar com esta mensagem?\n    Responda **apenas** com o ID do departamento selecionado e uma breve justificativa.\n    Formato da resposta:\n    ID: <ID_DO_DEPARTAMENTO>\n    Justificativa: <SUA_JUSTIFICATIVA>`;
 
-    const result = await ai.generate({
-      prompt: prompt,
-      model: 'googleai/gemini-2.0-flash', // Pode especificar o modelo aqui se for diferente do padrão
-      config: { temperature: 0.1 },
-    });
+    console.log('>> routerFlow: Prompt enviado para o modelo:', prompt);
 
-    const responseText = result.text();
-    const idMatch = responseText.match(/ID:\s*(\S+)/i);
-    const reasonMatch = responseText.match(/Justificativa:\s*(.*)/i);
+    try {
+      const result = await ai.generate({
+        prompt: prompt,
+        model: 'googleai/gemini-2.0-flash', // Pode especificar o modelo aqui se for diferente do padrão
+        config: { temperature: 0.1 },
+      });
 
-    const selectedId = idMatch ? idMatch[1].trim() : null;
-    const reason = reasonMatch ? reasonMatch[1].trim() : 'Nenhuma justificativa fornecida.';
+      const responseText = result.text();
+      console.log('>> routerFlow: Resposta recebida do modelo:', responseText);
 
-    const selectedAgent = input.organizationAgents.find(a => a.id === selectedId);
+      const idMatch = responseText.match(/ID:\s*(\S+)/i);
+      const reasonMatch = responseText.match(/Justificativa:\s*(.*)/i);
 
-    if (!selectedAgent) {
-      console.warn(`RouterFlow: Nenhum agente selecionado ou ID inválido. Fallback para o primeiro agente disponível. Resposta LLM: ${responseText}`);
+      const selectedId = idMatch ? idMatch[1].trim() : null;
+      const reason = reasonMatch ? reasonMatch[1].trim() : 'Nenhuma justificativa fornecida.';
+
+      console.log('>> routerFlow: ID extraído:', selectedId);
+      console.log('>> routerFlow: Justificativa extraída:', reason);
+
+      const selectedAgent = input.organizationAgents.find(a => a.id === selectedId);
+
+      if (!selectedAgent) {
+        console.warn(`>> routerFlow: Nenhum agente correspondente encontrado para o ID: ${selectedId}. Fallback para o primeiro agente.`);
+        const fallbackAgent = input.organizationAgents[0];
+        if (!fallbackAgent) {
+            console.error('>> routerFlow: Nenhum agente de fallback disponível.');
+            throw new Error('Nenhum agente de fallback disponível.');
+        }
+        return {
+          selectedAgentId: fallbackAgent.id,
+          reason: `Não foi possível determinar o departamento. Roteado para o departamento padrão: ${fallbackAgent.name}.`
+        };
+      }
+
+      console.log('>> routerFlow: Agente selecionado:', selectedAgent);
       return {
-        selectedAgentId: input.organizationAgents[0]?.id || '',
-        reason: `Não foi possível determinar o departamento. Roteado para o departamento padrão: ${input.organizationAgents[0]?.name || 'N/A'}.`
+        selectedAgentId: selectedAgent.id,
+        reason: reason,
       };
+    } catch (error) {
+        console.error('>> routerFlow: Erro durante a execução:', error);
+        // Em caso de erro, faz fallback para o primeiro agente para não interromper o fluxo
+        const fallbackAgent = input.organizationAgents[0];
+        if (!fallbackAgent) {
+            console.error('>> routerFlow: Erro e nenhum agente de fallback disponível.');
+            throw new Error('Erro no routerFlow e nenhum agente de fallback disponível.');
+        }
+        return {
+            selectedAgentId: fallbackAgent.id,
+            reason: `Ocorreu um erro ao selecionar o departamento. Roteado para o padrão: ${fallbackAgent.name}.`
+        };
     }
-
-    return {
-      selectedAgentId: selectedAgent.id,
-      reason: reason,
-    };
   }
 );
 
@@ -107,14 +140,25 @@ export const childFlow = ai.defineFlow({
     }),
     outputSchema: z.string(),
 }, async (input) => {
+    console.log('>> childFlow: Iniciando...', { input });
+
     const finalPersona = input.agentPersona || "Você é um assistente útil e amigável.";
-    const modelToUse = "googleai/gemini-2.0-flash"; // O modelo padrão é definido na instância ai
-    //const modelToUse = input.agentConfig?.model || "googleai/gemini-2.0-flash"; // O modelo padrão é definido na instância ai
+    const modelToUse = "googleai/gemini-2.0-flash";
     const temperature = input.agentConfig?.temperature ?? 0.7;
     const maxTokens = input.agentConfig?.maxTokens ?? 1500;
     const systemPrompt = input.agentConfig?.systemPrompt || '';
 
     const promptContent = `${systemPrompt}\n\nPersona: "${finalPersona}".\nResponda à mensagem do cliente: "${input.message}"`;
+
+    console.log('>> childFlow: Parâmetros para geração:', {
+        modelToUse,
+        temperature,
+        maxTokens,
+        finalPersona,
+        systemPrompt,
+        userId: input.userId,
+    });
+    console.log('>> childFlow: Prompt final enviado para o modelo:', promptContent);
 
     try {
         const result = await ai.generate({
@@ -129,10 +173,14 @@ export const childFlow = ai.defineFlow({
             },
         });
 
-        return result.text();
+        const responseText = result.text();
+        console.log('>> childFlow: Resposta recebida do modelo:', responseText);
+        return responseText;
     } catch (error) {
-        console.error("Erro ao gerar resposta do agente filho:", error);
-        return input.agentConfig?.fallbackMessage || "Desculpe, não consigo ajudar com isso agora. Por favor, tente novamente mais tarde.";
+        console.error(">> childFlow: Erro ao gerar resposta do agente filho:", error);
+        const fallbackMessage = input.agentConfig?.fallbackMessage || "Desculpe, não consigo ajudar com isso agora. Por favor, tente novamente mais tarde.";
+        console.log('>> childFlow: Retornando mensagem de fallback:', fallbackMessage);
+        return fallbackMessage;
     }
 });
 
