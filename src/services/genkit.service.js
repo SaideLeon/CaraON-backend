@@ -37,7 +37,7 @@ async function generateResponse(prompt, config = {}) {
     console.log(">> generateResponse: Resposta gerada com sucesso:", responseText);
     return responseText;
   } catch (error) {
-    console.error('>> generateResponse: Erro ao gerar resposta com Genkit:', error);
+    console.error('>> generateResponse: Erro detalhado ao gerar resposta com Genkit:', error);
     throw new Error('Falha ao se comunicar com o modelo de linguagem.');
   }
 }

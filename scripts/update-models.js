@@ -2,23 +2,37 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 async function main() {
-  const newModel = 'gemini-2.0-flash';
+  // O nome completo e correto do modelo
+  const newModel = 'googleai/gemini-2.0-flash'; 
+
   try {
+    console.log(`Iniciando a atualização dos modelos dos agentes para '${newModel}'...`);
+
+    // Atualiza a configuração de todos os tipos de agentes (ROUTER, PARENT, CHILD)
     const result = await prisma.agentConfig.updateMany({
       where: {
-        model: { not: newModel }
+        // Atualiza qualquer configuração que NÃO seja o novo modelo
+        model: { 
+          not: newModel 
+        }
       },
       data: {
         model: newModel
       }
     });
 
-    console.log(`✅ Successfully updated ${result.count} agent configurations to use the model: ${newModel}`);
+    if (result.count > 0) {
+      console.log(`✅ Sucesso! ${result.count} configurações de agentes foram atualizadas para usar o modelo: ${newModel}`);
+    } else {
+      console.log('ℹ️ Nenhuma configuração de agente precisou ser atualizada. Todos já estão usando o modelo correto.');
+    }
+
   } catch (error) {
-    console.error('❌ Failed to update agent configurations:', error);
+    console.error('❌ Falha ao atualizar as configurações dos agentes:', error);
     process.exit(1);
   } finally {
     await prisma.$disconnect();
+    console.log('Desconectado do banco de dados.');
   }
 }
 
