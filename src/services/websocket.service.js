@@ -1,4 +1,4 @@
-import { WebSocketServer } from 'ws';
+import { WebSocketServer, WebSocket } from 'ws';
 import { executeHierarchicalAgentFlow, executeHierarchicalAgentFlowStream } from './agent.execution.service.js';
 import { PrismaClient } from '@prisma/client';
 import * as agentHierarchyService from './agent.hierarchy.service.js';

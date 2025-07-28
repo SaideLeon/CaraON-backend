@@ -1,6 +1,6 @@
 
 /root/.pm2/logs/caraon-api-out.log last 15 lines:
-18|caraon- | 🔌 Cliente WebSocket desconectado
+18|caraon- | 📚 Documentação da API disponível em: http://localhost:3030/api-docs
 18|caraon- | 🔗 Novo cliente WebSocket conectado
 18|caraon- | 🔌 Cliente WebSocket desconectado
 18|caraon- | 🔗 Novo cliente WebSocket conectado
@@ -8,83 +8,26 @@
 18|caraon- | 🔗 Novo cliente WebSocket conectado
 18|caraon- | 🔌 Cliente WebSocket desconectado
 18|caraon- | 🔗 Novo cliente WebSocket conectado
-18|caraon- | 🔌 Cliente WebSocket desconectado
 18|caraon- | Shutting down all Genkit servers...
 18|caraon- | ✅ Conectado ao servidor Redis para histórico de conversas.
 18|caraon- | ✅ Servidor WebSocket iniciado
 18|caraon- | ✅ Conectado ao MongoDB para sessões WhatsApp
 18|caraon- | 🚀 API e WebSocket rodando na porta 3030
 18|caraon- | 📚 Documentação da API disponível em: http://localhost:3030/api-docs
+18|caraon- | 🔗 Novo cliente WebSocket conectado
 
-18|caraon-api  | 🔗 Novo cliente WebSocket conectado
-18|caraon-api  | Erro ao criar instância e roteador padrão: PrismaClientValidationError:
-18|caraon-api  | Invalid `prisma.agent.create()` invocation:
-18|caraon-api  | {
-18|caraon-api  |   data: {
-18|caraon-api  |     name: "Roteador - Equipe de Vendas",
-18|caraon-api  |     persona: "Você é o agente roteador principal. Sua função é analisar a mensagem do usuário e direcioná-la para o departamento ou especialista correto (Vendas, Suporte, etc.). Se não tiver certeza, peça ao usuário para esclarecer.",
-18|caraon-api  |     instanceId: "6887efe98e493585ab5d6620",
-18|caraon-api  |     organizationId: null,
-18|caraon-api  |     routerAgentId: null,
-18|caraon-api  |     isActive: true,
-18|caraon-api  |     priority: 0,
-18|caraon-api  |     config: {
-18|caraon-api  |       create: {
-18|caraon-api  |         maxTokens: 2000,
-18|caraon-api  |         temperature: 0.7,
-18|caraon-api  |         model: "googleai/gemini-2.0-flash",
-18|caraon-api  |         systemPrompt: "Você é um agente orquestrador que delega tarefas para agentes especializados.",
-18|caraon-api  |         fallbackMessage: "Desculpe, não consegui processar sua solicitação no momento."
-18|caraon-api  |       }
-18|caraon-api  |     },
-18|caraon-api  | +   type: AgentType
-18|caraon-api  |   },
-18|caraon-api  |   include: {
-18|caraon-api  |     config: true,
-18|caraon-api  |     childAgents: true
-18|caraon-api  |   }
-18|caraon-api  | }
-18|caraon-api  | Argument `type` is missing.
-18|caraon-api  |     at Dn (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:29:1363)
-18|caraon-api  |     at ri.handleRequestError (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:121:7102)
-18|caraon-api  |     at ri.handleAndLogRequestError (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:121:6784)
-18|caraon-api  |     at ri.request (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:121:6491)
-18|caraon-api  |     at async l (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:130:9812)
-18|caraon-api  |     at async Module.createParentAgent (file:///root/CaraON-backend/src/services/agent.hierarchy.service.js:25:23)
-18|caraon-api  |     at async createInstance (file:///root/CaraON-backend/src/controllers/instances.controller.js:20:5) {
-18|caraon-api  |   clientVersion: '6.12.0'
-18|caraon-api  | }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+18|caraon-api  | Falha ao atualizar o status da instância 687d6b9e14ab6c1c2623ae4a-1753739602291: ReferenceError: WebSocket is not defined
+18|caraon-api  |     at file:///root/CaraON-backend/src/services/websocket.service.js:93:31
+18|caraon-api  |     at Set.forEach (<anonymous>)
+18|caraon-api  |     at Module.broadcast (file:///root/CaraON-backend/src/services/websocket.service.js:92:15)
+18|caraon-api  |     at updateInstanceStatus (file:///root/CaraON-backend/src/services/whatsapp.service.js:20:22)
+18|caraon-api  | 🔑 QR Code gerado para 687d6b9e14ab6c1c2623ae4a-1753739602291. Enviando via WebSocket.
+18|caraon-api  | ReferenceError: WebSocket is not defined
+18|caraon-api  |     at file:///root/CaraON-backend/src/services/websocket.service.js:93:31
+18|caraon-api  |     at Set.forEach (<anonymous>)
+18|caraon-api  |     at Module.broadcast (file:///root/CaraON-backend/src/services/websocket.service.js:92:15)
+18|caraon-api  |     at Client.<anonymous> (file:///root/CaraON-backend/src/services/whatsapp.service.js:154:22)
+18|caraon-api  |     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
 
 
 
