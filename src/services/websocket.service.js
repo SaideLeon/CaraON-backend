@@ -1,5 +1,5 @@
 import { WebSocketServer } from 'ws';
-import { executeHierarchicalAgentFlow } from './agent.execution.service.js';
+import { executeHierarchicalAgentFlow, executeHierarchicalAgentFlowStream } from './agent.execution.service.js';
 import { PrismaClient } from '@prisma/client';
 import * as agentHierarchyService from './agent.hierarchy.service.js';
 
@@ -49,16 +49,26 @@ function init(server) {
             console.log(`✅ Agente Roteador Principal criado automaticamente para a instância ${instance.name} via playground.`);
           }
 
-          const agentResponse = await executeHierarchicalAgentFlow(
+          // Define o callback para o streaming
+          const streamCallback = (chunk) => {
+            ws.send(JSON.stringify({
+              type: 'playground_response_chunk',
+              chunk: chunk,
+            }));
+          };
+
+          // Chama a nova função de fluxo com streaming
+          const { finalResponse, executionId } = await executeHierarchicalAgentFlowStream(
             instanceId,
             messageContent,
-            userPhone || `playground_user_${instanceId}` // Identificador para o teste
+            userPhone || `playground_user_${instanceId}`,
+            streamCallback
           );
 
-          // Envia a resposta de volta para o cliente que solicitou
+          // Envia uma mensagem final para indicar que a resposta está completa
           ws.send(JSON.stringify({
-            type: 'playground_response',
-            response: agentResponse,
+            type: 'playground_response_complete',
+            response: { finalResponse, executionId },
           }));
         }
       } catch (error) {

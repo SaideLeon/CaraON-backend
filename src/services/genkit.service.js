@@ -42,6 +42,41 @@ async function generateResponse(prompt, config = {}) {
   }
 }
 
+/**
+ * Gera uma resposta usando o modelo Genkit (Gemini Pro) com streaming.
+ * @param {string} prompt - O prompt para o modelo.
+ * @param {object} config - Configurações para a geração (maxTokens, temperature, etc.).
+ * @param {(chunk: string) => void} streamCallback - Função para ser chamada com cada pedaço de texto.
+ * @returns {Promise<string>} A resposta de texto completa gerada pelo modelo.
+ */
+async function generateStreamedResponse(prompt, config, streamCallback) {
+  console.log(">> generateStreamedResponse: Iniciando a geração de resposta com stream...");
+  let finalResponse = '';
+  try {
+    const { stream, response } = ai.generateStream({
+      prompt,
+      config: {
+        maxOutputTokens: config.maxTokens,
+        temperature: config.temperature,
+      },
+    });
+
+    for await (const chunk of stream) {
+      const textChunk = chunk.text;
+      if (textChunk) {
+        streamCallback(textChunk);
+        finalResponse += textChunk;
+      }
+    }
+
+    console.log(">> generateStreamedResponse: Stream concluído.");
+    return finalResponse;
+  } catch (error) {
+    console.error('>> generateStreamedResponse: Erro ao gerar resposta com Genkit:', error);
+    throw new Error('Falha ao se comunicar com o modelo de linguagem.');
+  }
+}
+
 export const routerFlow = ai.defineFlow(
   {
     name: 'routerFlow',

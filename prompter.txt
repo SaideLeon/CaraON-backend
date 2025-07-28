@@ -1,9 +1,42 @@
-18|caraon- | 📚 Documentação da API disponível em: http://localhost:3030/api-docs
-18|caraon- | 🔗 Novo cliente WebSocket conectado
+root@cognick:~/CaraON-backend# pm2 logs 18
+[TAILING] Tailing last 15 lines for [18] process (change the value with --lines option)
+/root/.pm2/logs/caraon-api-error.log last 15 lines:
+18|caraon- |     at async executeHierarchicalAgentFlow (file:///root/CaraON-backend/src/services/agent.execution.service.js:38:32)
+18|caraon- |     at async WebSocket.<anonymous> (file:///root/CaraON-backend/src/services/websocket.service.js:52:33)
+18|caraon- | !! ERRO na execução hierárquica: Falha ao se comunicar com o modelo de linguagem. {
+18|caraon- |   stack: 'Error: Falha ao se comunicar com o modelo de linguagem.\n' +
+18|caraon- |     '    at generateResponse (file:///root/CaraON-backend/src/services/genkit.service.js:41:11)\n' +
+18|caraon- |     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+18|caraon- |     '    at async executeAgentDirect (file:///root/CaraON-backend/src/services/agent.execution.service.js:161:20)\n' +
+18|caraon- |     '    at async executeHierarchicalAgentFlow (file:///root/CaraON-backend/src/services/agent.execution.service.js:38:32)\n' +
+18|caraon- |     '    at async WebSocket.<anonymous> (file:///root/CaraON-backend/src/services/websocket.service.js:52:33)'
+18|caraon- | }
+18|caraon- | Erro ao processar mensagem do WebSocket: Error: Falha ao se comunicar com o modelo de linguagem.
+18|caraon- |     at executeHierarchicalAgentFlow (file:///root/CaraON-backend/src/services/agent.execution.service.js:98:23)
+18|caraon- |     at async WebSocket.<anonymous> (file:///root/CaraON-backend/src/services/websocket.service.js:52:33) {
+18|caraon- |   executionId: '6887b047503f0b6304ea5491'
+18|caraon- | }
+
+/root/.pm2/logs/caraon-api-out.log last 15 lines:
+18|caraon- | *   **Localizar lojas físicas que vendem iPhones perto de você?**
+18|caraon- | *   **Comparar preços de iPhones em diferentes lojas?**
+18|caraon- | *   **Saber sobre promoções e descontos em iPhones?**
+18|caraon- | *   **Informações sobre iPhones usados ou recondicionados?**
+18|caraon- |
+18|caraon- | Por favor, me diga o que você precisa para que eu possa te direcionar para o departamento certo ou te dar a informação correta.
+18|caraon- | "
+18|caraon- | >> logAgentExecution: Registrando execução... {
+18|caraon- |   routerAgentId: '688776ac5154351404a6547f',
+18|caraon- |   success: true,
+18|caraon- |   errorMessage: null
+18|caraon- | }
+18|caraon- | >> logAgentExecution: Execução registrada com sucesso. ID: 6887b10f195fb04970f06a49
+18|caraon- | -- Fim da Execução: Resposta direta do Roteador. Tempo total: 1790ms --
+18|caraon- |
 
 18|caraon-api  | ▶️ Teste de playground recebido para a instância: 6886205236771eb0a30adf06
 18|caraon-api  | -- Início da Execução Hierárquica: Instância 6886205236771eb0a30adf06 --
-18|caraon-api  | Mensagem do usuário: "como ser empresario"
+18|caraon-api  | Mensagem do usuário: "como criar rede de negocio"
 18|caraon-api  | 1. Buscando Agente Roteador...
 18|caraon-api  | >> getParentAgent: Buscando agente ROUTER para instância 6886205236771eb0a30adf06 e organização N/A
 18|caraon-api  | >> getParentAgent: Agente ROUTER encontrado: 688776ac5154351404a6547f
@@ -14,10 +47,10 @@
 18|caraon-api  | Nenhum departamento (agente PARENT) encontrado. O roteador principal responderá diretamente.
 18|caraon-api  | >> executeAgentDirect: Executando agente Roteador - Whatsapp de Saide (ID: 688776ac5154351404a6547f) diretamente.
 18|caraon-api  | >> executeAgentDirect: Prompt: Você é o agente roteador principal. Sua função é analisar a mensagem do usuário e direcioná-la para o departamento ou especialista correto (Vendas, Suporte, etc.). Se não tiver certeza, peça ao usuário para esclarecer.
-18|caraon-api  | Mensagem do usuário: "como ser empresario"
+18|caraon-api  | Mensagem do usuário: "como criar rede de negocio"
 18|caraon-api  | >> generateResponse: Iniciando a geração de resposta...
 18|caraon-api  | >> generateResponse: Prompt: Você é o agente roteador principal. Sua função é analisar a mensagem do usuário e direcioná-la para o departamento ou especialista correto (Vendas, Suporte, etc.). Se não tiver certeza, peça ao usuário para esclarecer.
-18|caraon-api  | Mensagem do usuário: "como ser empresario"
+18|caraon-api  | Mensagem do usuário: "como criar rede de negocio"
 18|caraon-api  | >> generateResponse: Config: {
 18|caraon-api  |   id: '688776ac5154351404a65480',
 18|caraon-api  |   agentId: '688776ac5154351404a6547f',
@@ -29,51 +62,80 @@
 18|caraon-api  |   timeoutSeconds: 30,
 18|caraon-api  |   maxRetries: 3
 18|caraon-api  | }
-18|caraon-api  | >> generateResponse: Erro detalhado ao gerar resposta com Genkit: TypeError: llmResponse.text is not a function
-18|caraon-api  |     at generateResponse (file:///root/CaraON-backend/src/services/genkit.service.js:36:38)
-18|caraon-api  |     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
-18|caraon-api  |     at async executeAgentDirect (file:///root/CaraON-backend/src/services/agent.execution.service.js:161:20)
-18|caraon-api  |     at async executeHierarchicalAgentFlow (file:///root/CaraON-backend/src/services/agent.execution.service.js:38:32)
-18|caraon-api  |     at async WebSocket.<anonymous> (file:///root/CaraON-backend/src/services/websocket.service.js:52:33)
-18|caraon-api  | !! ERRO na execução hierárquica: Falha ao se comunicar com o modelo de linguagem. {
-18|caraon-api  |   stack: 'Error: Falha ao se comunicar com o modelo de linguagem.\n' +
-18|caraon-api  |     '    at generateResponse (file:///root/CaraON-backend/src/services/genkit.service.js:41:11)\n' +
-18|caraon-api  |     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
-18|caraon-api  |     '    at async executeAgentDirect (file:///root/CaraON-backend/src/services/agent.execution.service.js:161:20)\n' +
-18|caraon-api  |     '    at async executeHierarchicalAgentFlow (file:///root/CaraON-backend/src/services/agent.execution.service.js:38:32)\n' +
-18|caraon-api  |     '    at async WebSocket.<anonymous> (file:///root/CaraON-backend/src/services/websocket.service.js:52:33)'
-18|caraon-api  | }
+18|caraon-api  | >> generateResponse: Resposta gerada com sucesso: Entendi. Para direcionar sua pergunta ao especialista correto, preciso entender melhor o que você deseja saber sobre como criar uma rede de negócios.
+18|caraon-api  | Você está interessado em:
+18|caraon-api  | *   **Vendas:** Criar uma rede de contatos para aumentar suas vendas?
+18|caraon-api  | *   **Marketing:** Desenvolver uma rede de parceiros para promover seu negócio?
+18|caraon-api  | *   **Desenvolvimento de negócios:** Construir uma rede de relacionamentos estratégicos para expandir sua empresa?
+18|caraon-api  | *   **Networking pessoal:** Aprender a participar de eventos e construir conexões profissionais?
+18|caraon-api  | *   **Outro:** Por favor, especifique.
+18|caraon-api  | Por favor, seja o mais específico possível para que eu possa te conectar com a pessoa certa.
+18|caraon-api  | >> executeAgentDirect: Resposta: "Entendi. Para direcionar sua pergunta ao especialista correto, preciso entender melhor o que você deseja saber sobre como criar uma rede de negócios.
+18|caraon-api  | Você está interessado em:
+18|caraon-api  | *   **Vendas:** Criar uma rede de contatos para aumentar suas vendas?
+18|caraon-api  | *   **Marketing:** Desenvolver uma rede de parceiros para promover seu negócio?
+18|caraon-api  | *   **Desenvolvimento de negócios:** Construir uma rede de relacionamentos estratégicos para expandir sua empresa?
+18|caraon-api  | *   **Networking pessoal:** Aprender a participar de eventos e construir conexões profissionais?
+18|caraon-api  | *   **Outro:** Por favor, especifique.
+18|caraon-api  | Por favor, seja o mais específico possível para que eu possa te conectar com a pessoa certa.
+18|caraon-api  | "
 18|caraon-api  | >> logAgentExecution: Registrando execução... {
 18|caraon-api  |   routerAgentId: '688776ac5154351404a6547f',
-18|caraon-api  |   success: false,
-18|caraon-api  |   errorMessage: 'Falha ao se comunicar com o modelo de linguagem.'
+18|caraon-api  |   success: true,
+18|caraon-api  |   errorMessage: null
 18|caraon-api  | }
-18|caraon-api  | >> logAgentExecution: Execução registrada com sucesso. ID: 6887af5459c66939aad4a1b7
-18|caraon-api  | -- Fim da Execução: FALHA. Tempo total: 1873ms --
-18|caraon-api  | Erro ao processar mensagem do WebSocket: Error: Falha ao se comunicar com o modelo de linguagem.
-18|caraon-api  |     at executeHierarchicalAgentFlow (file:///root/CaraON-backend/src/services/agent.execution.service.js:98:23)
-18|caraon-api  |     at async WebSocket.<anonymous> (file:///root/CaraON-backend/src/services/websocket.service.js:52:33) {
-18|caraon-api  |   executionId: '6887af5459c66939aad4a1b7'
+18|caraon-api  | >> logAgentExecution: Execução registrada com sucesso. ID: 6887b15d195fb04970f06a4a
+18|caraon-api  | -- Fim da Execução: Resposta direta do Roteador. Tempo total: 1427ms --
+18|caraon-api  | ▶️ Teste de playground recebido para a instância: 6886205236771eb0a30adf06
+18|caraon-api  | -- Início da Execução Hierárquica: Instância 6886205236771eb0a30adf06 --
+18|caraon-api  | Mensagem do usuário: "onde que é maganize"
+18|caraon-api  | 1. Buscando Agente Roteador...
+18|caraon-api  | >> getParentAgent: Buscando agente ROUTER para instância 6886205236771eb0a30adf06 e organização N/A
+18|caraon-api  | >> getParentAgent: Agente ROUTER encontrado: 688776ac5154351404a6547f
+18|caraon-api  |  -> Roteador encontrado: Roteador - Whatsapp de Saide (ID: 688776ac5154351404a6547f)
+18|caraon-api  | 2. Roteador selecionando o departamento...
+18|caraon-api  | >> getOrganizationParentAgents: Buscando agentes PARENT para a instância 6886205236771eb0a30adf06
+18|caraon-api  | >> getOrganizationParentAgents: 0 agentes PARENT encontrados.
+18|caraon-api  | Nenhum departamento (agente PARENT) encontrado. O roteador principal responderá diretamente.
+18|caraon-api  | >> executeAgentDirect: Executando agente Roteador - Whatsapp de Saide (ID: 688776ac5154351404a6547f) diretamente.
+18|caraon-api  | >> executeAgentDirect: Prompt: Você é o agente roteador principal. Sua função é analisar a mensagem do usuário e direcioná-la para o departamento ou especialista correto (Vendas, Suporte, etc.). Se não tiver certeza, peça ao usuário para esclarecer.
+18|caraon-api  | Mensagem do usuário: "onde que é maganize"
+18|caraon-api  | >> generateResponse: Iniciando a geração de resposta...
+18|caraon-api  | >> generateResponse: Prompt: Você é o agente roteador principal. Sua função é analisar a mensagem do usuário e direcioná-la para o departamento ou especialista correto (Vendas, Suporte, etc.). Se não tiver certeza, peça ao usuário para esclarecer.
+18|caraon-api  | Mensagem do usuário: "onde que é maganize"
+18|caraon-api  | >> generateResponse: Config: {
+18|caraon-api  |   id: '688776ac5154351404a65480',
+18|caraon-api  |   agentId: '688776ac5154351404a6547f',
+18|caraon-api  |   maxTokens: 2000,
+18|caraon-api  |   temperature: 0.7,
+18|caraon-api  |   model: 'googleai/gemini-2.0-flash',
+18|caraon-api  |   systemPrompt: 'Você é um agente orquestrador que delega tarefas para agentes especializados.',
+18|caraon-api  |   fallbackMessage: 'Desculpe, não consegui processar sua solicitação no momento.',
+18|caraon-api  |   timeoutSeconds: 30,
+18|caraon-api  |   maxRetries: 3
 18|caraon-api  | }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+18|caraon-api  | >> generateResponse: Resposta gerada com sucesso: Compreendo que você está procurando por uma loja chamada "maganize".
+18|caraon-api  | Para te ajudar melhor, preciso saber:
+18|caraon-api  | *   **Você pode confirmar se o nome da loja é realmente "maganize"?** Talvez tenha ocorrido um erro de digitação.
+18|caraon-api  | *   **Você está procurando por uma loja física ou online?**
+18|caraon-api  | *   **Você sabe qual tipo de produtos essa loja vende?** (Ex: roupas, eletrônicos, livros, etc.)
+18|caraon-api  | *   **Você está procurando por essa loja em alguma cidade ou região específica?**
+18|caraon-api  | Com mais informações, posso te direcionar para o departamento ou especialista mais adequado para te ajudar a encontrar o que você procura.
+18|caraon-api  | >> executeAgentDirect: Resposta: "Compreendo que você está procurando por uma loja chamada "maganize".
+18|caraon-api  | Para te ajudar melhor, preciso saber:
+18|caraon-api  | *   **Você pode confirmar se o nome da loja é realmente "maganize"?** Talvez tenha ocorrido um erro de digitação.
+18|caraon-api  | *   **Você está procurando por uma loja física ou online?**
+18|caraon-api  | *   **Você sabe qual tipo de produtos essa loja vende?** (Ex: roupas, eletrônicos, livros, etc.)
+18|caraon-api  | *   **Você está procurando por essa loja em alguma cidade ou região específica?**
+18|caraon-api  | Com mais informações, posso te direcionar para o departamento ou especialista mais adequado para te ajudar a encontrar o que você procura.
+18|caraon-api  | "
+18|caraon-api  | >> logAgentExecution: Registrando execução... {
+18|caraon-api  |   routerAgentId: '688776ac5154351404a6547f',
+18|caraon-api  |   success: true,
+18|caraon-api  |   errorMessage: null
+18|caraon-api  | }
+18|caraon-api  | >> logAgentExecution: Execução registrada com sucesso. ID: 6887b1b3195fb04970f06a4b
+18|caraon-api  | -- Fim da Execução: Resposta direta do Roteador. Tempo total: 1342ms --
 
 
 
