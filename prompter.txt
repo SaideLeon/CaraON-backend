@@ -1,41 +1,39 @@
-Para resolver as inconsistências e evitar futuros erros de "Bad
-  Request", vou realizar uma análise profunda e sistemática do seu código. A
-  minha abordagem será a seguinte:
-
-   1. Análise do Schema Prisma: Vou começar por analisar detalhadamente o seu
-      schema.prisma para ter um entendimento claro dos modelos de dados e das
-      suas relações. Este será o meu ponto de partida e a fonte da verdade sobre      
-      a estrutura da sua base de dados.
-   2. Revisão dos Controladores e Serviços: Em seguida, vou percorrer cada
-      controlador e os seus respetivos serviços, comparando a lógica de negócio       
-      com o schema do Prisma. O meu foco será em:
-       * Lógica de Criação e Atualização: Garantir que os dados passados para as      
-         funções prisma.create e prisma.update correspondem exatamente ao que os      
-         modelos do Prisma esperam.
-       * Lógica de Validação: Verificar se os schemas Zod (nos ficheiros
-         *.schema.js) estão alinhados com os modelos do Prisma e com a lógica dos     
-         controladores.
-       * Transformação de Dados: Identificar quaisquer transformações de dados        
-         que possam estar a introduzir inconsistências antes de os dados serem        
-         enviados para a base de dados.
-   3. Correção de Inconsistências: À medida que for encontrando problemas, irei       
-      corrigi-los. Isto poderá incluir a atualização dos schemas Zod, o ajuste da     
-      lógica nos controladores ou a modificação dos serviços para estarem em
-      conformidade com o Prisma.
-
-  Começarei por restaurar a validação que foi removida da rota de registo, pois a 
-   sua ausência pode mascarar outros problemas.
- ╭───────────────────────────────────────────────────────────────────────────────╮
- │ ✔  Edit src\api\auth.routes.js: import authController from '..... => import … │
- │                                                                               │
- │    1   import express from 'express';                                         │
- │    2   const router = express.Router();                                       │
- │    3   import authController from                                             │
- │        '../controllers/auth.controller.js';                                   │
- │    4 + import validate from                                                   │
- │      '../middlewares/validate.middleware.js';                                 │
- │    5 + import { userRegistrationSchema, userLoginSchema } from                │    
- │      '../schemas/user.schema.js';                                             │    
- │    6                                                                          │    
- │    7   /**                                                                    │    
- │    8    * @swagger          
+mon] starting `node src/server.js`
+[0] ✅ Servidor WebSocket iniciado
+[0] ✅ Conectado ao MongoDB para sessões WhatsApp
+[0] 🚀 API e WebSocket rodando na porta 3030
+[0] 📚 Documentação da API disponível em: http://localhost:3030/api-docs
+[0] Validation Error: TypeError: Cannot set property query of #<IncomingMessage> which has only a getter
+[0]     at file:///C:/Users/Rogerio/Desktop/Projectos/cli/CaraON/CaraON-backend/src/middlewares/validate.middleware.js:9:15
+[0]     at Layer.handleRequest (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\lib\layer.js:152:17)
+[0]     at next (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\lib\route.js:157:13)
+[0]     at default (file:///C:/Users/Rogerio/Desktop/Projectos/cli/CaraON/CaraON-backend/src/middlewares/auth.middleware.js:9:5)
+[0]     at Layer.handleRequest (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\lib\layer.js:152:17)
+[0]     at next (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\lib\route.js:157:13)
+[0]     at Route.dispatch (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\lib\route.js:117:3)
+[0]     at handle (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\index.js:435:11)
+[0]     at Layer.handleRequest (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\lib\layer.js:152:17)
+[0]     at C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\index.js:295:15
+[0]     at param (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\index.js:600:14)
+[0]     at param (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\index.js:610:14)
+[0]     at processParams (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\index.js:664:3)
+[0]     at next (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\index.js:291:5)
+[0]     at Function.handle (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\index.js:186:3)
+[0]     at router (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\index.js:60:12)
+[0] Validation Error: TypeError: Cannot set property query of #<IncomingMessage> which has only a getter
+[0]     at file:///C:/Users/Rogerio/Desktop/Projectos/cli/CaraON/CaraON-backend/src/middlewares/validate.middleware.js:9:15
+[0]     at Layer.handleRequest (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\lib\layer.js:152:17)
+[0]     at next (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\lib\route.js:157:13)
+[0]     at default (file:///C:/Users/Rogerio/Desktop/Projectos/cli/CaraON/CaraON-backend/src/middlewares/auth.middleware.js:9:5)
+[0]     at Layer.handleRequest (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\lib\layer.js:152:17)
+[0]     at next (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\lib\route.js:157:13)
+[0]     at Route.dispatch (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\lib\route.js:117:3)
+[0]     at handle (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\index.js:435:11)
+[0]     at Layer.handleRequest (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\lib\layer.js:152:17)
+[0]     at C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\index.js:295:15
+[0]     at param (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\index.js:600:14)
+[0]     at param (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\index.js:610:14)
+[0]     at processParams (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\index.js:664:3)
+[0]     at next (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\index.js:291:5)
+[0]     at Function.handle (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\index.js:186:3)
+[0]     at router (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\index.js:60:12)

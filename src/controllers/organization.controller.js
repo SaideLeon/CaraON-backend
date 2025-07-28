@@ -2,8 +2,8 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient(); 
 
 const createOrganization = async (req, res) => {
-  const { instanceId } = req.params;
-  const { name } = req.body;
+  const { instanceId } = req.validatedData.params;
+  const { name } = req.validatedData.body;
 
   try {
     const instance = await prisma.instance.findUnique({ where: { id: instanceId } });
@@ -22,7 +22,7 @@ const createOrganization = async (req, res) => {
 };
 
 const listOrganizations = async (req, res) => {
-  const { instanceId } = req.params;
+  const { instanceId } = req.validatedData.params;
 
   try {
     const instance = await prisma.instance.findUnique({ where: { id: instanceId } });

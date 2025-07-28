@@ -98,7 +98,7 @@ const getInstanceStatus = async (req, res) => {
 };
 
 const deleteInstance = async (req, res) => {
-  const { instanceId } = req.params;
+  const { instanceId } = req.validatedData.params;
   try {
     const instance = await prisma.instance.findUnique({ where: { id: instanceId } });
     if (!instance || instance.userId !== req.user.userId) {

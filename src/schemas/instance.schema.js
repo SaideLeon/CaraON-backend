@@ -19,9 +19,20 @@ const instanceSchema = z.object({
   updatedAt: z.string().datetime(),
 }).openapi({ refId: 'Instance' });
 
+// New schema for createInstance
+const CreateInstanceBody = z.object({
+  name: z.string().min(3, 'O nome da instância precisa ter no mínimo 3 caracteres.'),
+});
+
+const createInstanceSchema = z.object({
+  body: CreateInstanceBody.openapi({ refId: 'CreateInstance' }),
+});
+
 registry.register('Instance', instanceSchema);
+registry.register('CreateInstance', CreateInstanceBody); // Register the new schema
 
 export {
   instanceActionSchema,
   instanceSchema,
+  createInstanceSchema, // Export the new schema
 };

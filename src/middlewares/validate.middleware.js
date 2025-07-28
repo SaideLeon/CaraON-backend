@@ -5,11 +5,10 @@ const validate = (schema) => (req, res, next) => {
       query: req.query,
       params: req.params,
     });
-    req.body = parsedSchema.body;
-    req.query = parsedSchema.query;
-    req.params = parsedSchema.params;
+    req.validatedData = parsedSchema;
     next();
   } catch (err) {
+    console.error('Validation Error:', err);
     return res.status(400).send(JSON.stringify(err.errors));
   }
 };

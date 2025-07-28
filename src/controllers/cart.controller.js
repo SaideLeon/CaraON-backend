@@ -170,6 +170,12 @@ const updateCart = async (req, res) => {
       return res.status(404).json({ error: 'Item não encontrado no carrinho.' });
     }
 
+    // If quantity is 0, remove the item from the cart
+    if (quantity === 0) {
+      await prisma.cartItem.delete({ where: { id: existingCartItem.id } });
+      return res.status(204).send(); // No content, successful deletion
+    }
+
     // Verifica o estoque
     if (existingCartItem.product.stock < quantity) {
       return res.status(400).json({ error: 'Estoque insuficiente.' });

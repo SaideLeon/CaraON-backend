@@ -2,7 +2,7 @@ import express from 'express';
 const router = express.Router();
 import instanceController from '../controllers/instances.controller.js';
 import validate from '../middlewares/validate.middleware.js';
-import { instanceActionSchema } from '../schemas/instance.schema.js';
+import { instanceActionSchema, createInstanceSchema } from '../schemas/instance.schema.js';
 import auth from '../middlewares/auth.middleware.js';
 
 /**
@@ -90,7 +90,7 @@ import auth from '../middlewares/auth.middleware.js';
  *                     updatedAt: "2025-07-22T15:00:00.000Z"
  */
 
-router.post('/new/instance', auth, instanceController.createInstance);
+router.post('/new/instance', auth, validate(createInstanceSchema), instanceController.createInstance);
 router.get('/user/instances', auth, instanceController.listInstances);
 
 /**

@@ -5,12 +5,12 @@ const productStatusEnum = z.enum(['DRAFT', 'ACTIVE', 'INACTIVE', 'ARCHIVED']);
 
 
 const productSchema = z.object({
-  id: z.string().regex(/^[0-9a-fA-F]{24}$/, 'ID inválido'),
+  id: z.string().regex(/^[0-9a-fA-F]{24}$/, 'ID inválido').optional(),
   name: z.string().min(3, 'O nome do produto precisa ter no mínimo 3 caracteres.'),
   slug: z.string().min(3, 'O slug do produto precisa ter no mínimo 3 caracteres.').regex(/^[a-z0-9-]+$/, 'O slug deve conter apenas letras minúsculas, números e hifens.'),
   description: z.string().optional(),
   shortDescription: z.string().optional(),
-  sku: z.string().min(3, 'O SKU precisa ter no mínimo 3 caracteres.').optional(),
+  sku: z.string().min(3, 'O SKU precisa ter no mínimo 3 caracteres.'),
   price: z.number().positive('O preço deve ser um número positivo.'),
   comparePrice: z.number().positive('O preço de comparação deve ser um número positivo.').optional(),
   cost: z.number().positive('O custo deve ser um número positivo.').optional(),
