@@ -31,7 +31,7 @@ function init(server) {
           let routerAgent = await prisma.agent.findFirst({
             where: {
               instanceId: instance.id,
-              type: 'PAI',
+              type: 'ROUTER',
               organizationId: null,
             },
           });
@@ -51,7 +51,7 @@ function init(server) {
           const agentResponse = await executeHierarchicalAgentFlow(
             instanceId,
             messageContent,
-            userPhone || 'playground_user' // Identificador para o teste
+            userPhone || `playground_user_${instanceId}` // Identificador para o teste
           );
 
           // Envia a resposta de volta para o cliente que solicitou
@@ -65,6 +65,7 @@ function init(server) {
         ws.send(JSON.stringify({
           type: 'playground_error',
           error: error.message,
+          executionId: error.executionId || null,
         }));
       }
     });
