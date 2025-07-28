@@ -44,6 +44,7 @@ function init(server) {
               instanceId: instance.id,
               organizationId: null,
               userId: instance.userId,
+              type: 'ROUTER', // Adicionado o tipo explicitamente aqui
             });
             console.log(`✅ Agente Roteador Principal criado automaticamente para a instância ${instance.name} via playground.`);
           }

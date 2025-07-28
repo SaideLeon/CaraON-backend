@@ -1,3 +1,41 @@
+root@cognick:~/CaraON-backend# npx prisma generate
+Environment variables loaded from .env
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v6.12.0) to ./node_modules/@prisma/client in 418ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Need your database queries to be 1000x faster? Accelerate offers you that and more: https://pris.ly/tip-2-accelerate
+
+root@cognick:~/CaraON-backend# pm2 restart caraon-api
+Use --update-env to update environment variables
+[PM2] Applying action restartProcessId on app [caraon-api](ids: [ 18 ])
+[PM2] [caraon-api](18) ✓
+┌────┬───────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name              │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼───────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 18 │ caraon-api        │ default     │ 1.0.0   │ fork    │ 3340000  │ 0s     │ 450… │ online    │ 0%       │ 18.3mb   │ root     │ disabled │
+│ 0  │ whatsapp-agent    │ default     │ N/A     │ fork    │ 3313232  │ 5m     │ 16   │ online    │ 0%       │ 108.9mb  │ root     │ disabled │
+└────┴───────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+root@cognick:~/CaraON-backend# pm2 logs 18
+[TAILING] Tailing last 15 lines for [18] process (change the value with --lines option)
+/root/.pm2/logs/caraon-api-out.log last 15 lines:
+18|caraon- | 🔗 Novo cliente WebSocket conectado
+18|caraon- | 🔌 Cliente WebSocket desconectado
+18|caraon- | 🔗 Novo cliente WebSocket conectado
+18|caraon- | 🔌 Cliente WebSocket desconectado
+18|caraon- | 🔗 Novo cliente WebSocket conectado
+18|caraon- | 🔌 Cliente WebSocket desconectado
+18|caraon- | 🔗 Novo cliente WebSocket conectado
+18|caraon- | Shutting down all Genkit servers...
+18|caraon- | ✅ Servidor WebSocket iniciado
+18|caraon- | ✅ Conectado ao MongoDB para sessões WhatsApp
+18|caraon- | 🚀 API e WebSocket rodando na porta 3030
+18|caraon- | 📚 Documentação da API disponível em: http://localhost:3030/api-docs
+18|caraon- | 🔗 Novo cliente WebSocket conectado
+18|caraon- | 🔗 Novo cliente WebSocket conectado
+18|caraon- | ▶️ Teste de playground recebido para a instância: 6886205236771eb0a30adf06
 
 /root/.pm2/logs/caraon-api-error.log last 15 lines:
 18|caraon- |     config: true,
@@ -5,13 +43,17 @@
 18|caraon- |   }
 18|caraon- | }
 18|caraon- |
-18|caraon- | Invalid value for argument `type`. Expected AgentType.
+18|caraon- | Argument `type` is missing.
 18|caraon- |     at Dn (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:29:1363)
 18|caraon- |     at ri.handleRequestError (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:121:7102)
 18|caraon- |     at ri.handleAndLogRequestError (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:121:6784)
 18|caraon- |     at ri.request (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:121:6491)
 18|caraon- |     at async l (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:130:9812)
 18|caraon- |     at async Module.createParentAgent (file:///root/CaraON-backend/src/services/agent.hierarchy.service.js:25:23)
-18|caraon- |     at async createAgent (file:///root/CaraON-backend/src/controllers/agent.controller.js:38:17) {
+18|caraon- |     at async WebSocket.<anonymous> (file:///root/CaraON-backend/src/services/websocket.service.js:41:27) {
 18|caraon- |   clientVersion: '6.12.0'
 18|caraon- | }
+
+
+
+
