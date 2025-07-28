@@ -15,7 +15,7 @@ import { Parser } from 'json2csv';
 
 // Cria um Agente (ROUTER, PARENT, ou CHILD)
 const createAgent = async (req, res) => {
-  const { name, persona, type, toolIds, instanceId, organizationId, parentAgentId } = req.body;
+  const { name, persona, type, toolIds, instanceId, organizationId, parentAgentId } = req.validatedData.body;
   const { userId } = req.user;
 
   try {

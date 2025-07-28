@@ -1,39 +1,223 @@
-mon] starting `node src/server.js`
-[0] ✅ Servidor WebSocket iniciado
-[0] ✅ Conectado ao MongoDB para sessões WhatsApp
-[0] 🚀 API e WebSocket rodando na porta 3030
-[0] 📚 Documentação da API disponível em: http://localhost:3030/api-docs
-[0] Validation Error: TypeError: Cannot set property query of #<IncomingMessage> which has only a getter
-[0]     at file:///C:/Users/Rogerio/Desktop/Projectos/cli/CaraON/CaraON-backend/src/middlewares/validate.middleware.js:9:15
-[0]     at Layer.handleRequest (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\lib\layer.js:152:17)
-[0]     at next (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\lib\route.js:157:13)
-[0]     at default (file:///C:/Users/Rogerio/Desktop/Projectos/cli/CaraON/CaraON-backend/src/middlewares/auth.middleware.js:9:5)
-[0]     at Layer.handleRequest (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\lib\layer.js:152:17)
-[0]     at next (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\lib\route.js:157:13)
-[0]     at Route.dispatch (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\lib\route.js:117:3)
-[0]     at handle (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\index.js:435:11)
-[0]     at Layer.handleRequest (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\lib\layer.js:152:17)
-[0]     at C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\index.js:295:15
-[0]     at param (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\index.js:600:14)
-[0]     at param (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\index.js:610:14)
-[0]     at processParams (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\index.js:664:3)
-[0]     at next (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\index.js:291:5)
-[0]     at Function.handle (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\index.js:186:3)
-[0]     at router (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\index.js:60:12)
-[0] Validation Error: TypeError: Cannot set property query of #<IncomingMessage> which has only a getter
-[0]     at file:///C:/Users/Rogerio/Desktop/Projectos/cli/CaraON/CaraON-backend/src/middlewares/validate.middleware.js:9:15
-[0]     at Layer.handleRequest (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\lib\layer.js:152:17)
-[0]     at next (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\lib\route.js:157:13)
-[0]     at default (file:///C:/Users/Rogerio/Desktop/Projectos/cli/CaraON/CaraON-backend/src/middlewares/auth.middleware.js:9:5)
-[0]     at Layer.handleRequest (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\lib\layer.js:152:17)
-[0]     at next (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\lib\route.js:157:13)
-[0]     at Route.dispatch (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\lib\route.js:117:3)
-[0]     at handle (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\index.js:435:11)
-[0]     at Layer.handleRequest (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\lib\layer.js:152:17)
-[0]     at C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\index.js:295:15
-[0]     at param (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\index.js:600:14)
-[0]     at param (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\index.js:610:14)
-[0]     at processParams (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\index.js:664:3)
-[0]     at next (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\index.js:291:5)
-[0]     at Function.handle (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\index.js:186:3)
-[0]     at router (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\node_modules\router\index.js:60:12)
+servidor vs local
+
+local:
+
+Agentes
+Gerenciamento da hierarquia e configuração de agentes de IA.
+
+
+
+POST
+/api/v1/agents
+Cria um novo Agente (ROUTER, PARENT, ou CHILD)
+
+
+Parameters
+Cancel
+Reset
+No parameters
+
+Request body
+
+application/json
+Examples: 
+[Modified value]
+Edit Value
+Schema
+{
+  "name": "Roteador Principal da Instância",
+  "persona": "Eu sou o roteador principal. Direciono os clientes para o departamento correto.",
+  "type": "ROUTER",
+  "instanceId": "687e78cd6a5d7dda26dfe1b6"
+}
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'POST' \
+  'http://localhost:3030/api/v1/agents' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODdkNmI5ZTE0YWI2YzFjMjYyM2FlNGEiLCJpYXQiOjE3NTM3MDA5Mzd9.MFala6eqk4sWSyMNC_do5IJ5G-6QrqEpCyme2Ydq6BQ' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "name": "Roteador Principal da Instância",
+  "persona": "Eu sou o roteador principal. Direciono os clientes para o departamento correto.",
+  "type": "ROUTER",
+  "instanceId": "687e78cd6a5d7dda26dfe1b6"
+}'
+Request URL
+http://localhost:3030/api/v1/agents
+Server response
+Code	Details
+201	
+Response body
+Download
+{
+  "id": "68875a917b03b804f3c7740b",
+  "name": "Roteador Principal da Instância",
+  "type": "ROUTER",
+  "persona": "Eu sou o roteador principal. Direciono os clientes para o departamento correto.",
+  "instanceId": "687e78cd6a5d7dda26dfe1b6",
+  "organizationId": null,
+  "parentAgentId": null,
+  "routerAgentId": null,
+  "isActive": true,
+  "priority": 0,
+  "createdAt": "2025-07-28T11:10:06.508Z",
+  "updatedAt": "2025-07-28T11:10:06.508Z",
+  "config": {
+    "id": "68875a927b03b804f3c7740c",
+    "agentId": "68875a917b03b804f3c7740b",
+    "maxTokens": 2000,
+    "temperature": 0.7,
+    "model": "googleai/gemini-pro",
+    "systemPrompt": "Você é um agente orquestrador que delega tarefas para agentes especializados.",
+    "fallbackMessage": "Desculpe, não consegui processar sua solicitação no momento.",
+    "timeoutSeconds": 30,
+    "maxRetries": 3
+  },
+  "childAgents": []
+}
+Response headers
+ access-control-allow-origin: * 
+ connection: keep-alive 
+ content-length: 772 
+ content-type: application/json; charset=utf-8 
+ date: Mon,28 Jul 2025 11:10:12 GMT 
+ etag: W/"304-yepLewnxDx7ZZqehlk0SK+RbzUg" 
+ keep-alive: timeout=5 
+ x-powered-by: Express 
+Responses
+Code	Description	Links
+201	
+Agente criado com sucesso.
+
+No links
+400	
+Requisição inválida.
+
+No links
+401	
+Não autorizado.
+
+No links
+500	
+Falha ao criar o agente.
+
+
+sevidor: 
+Agentes
+Gerenciamento da hierarquia e configuração de agentes de IA.
+
+
+
+POST
+/api/v1/agents
+Cria um novo Agente (ROUTER, PARENT, ou CHILD)
+
+
+Parameters
+Try it out
+Reset
+No parameters
+
+Request body
+
+application/json
+Examples: 
+[Modified value]
+Example Value
+Schema
+{
+  "name": "Roteador Principal da Instância",
+  "persona": "Eu sou o roteador principal. Direciono os clientes para o departamento correto.",
+  "type": "ROUTER",
+  "instanceId": "687e78cd6a5d7dda26dfe1b6"
+}
+Responses
+Curl
+
+curl -X 'POST' \
+  'https://app.caraon.qzz.io/api/v1/agents' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODdkNmI5ZTE0YWI2YzFjMjYyM2FlNGEiLCJpYXQiOjE3NTM3MDA2MzB9.EcLdLE_EkW_S9HCcQI6nQoF175FGDrDsOfq_mEUYvzo' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "name": "Roteador Principal da Instância",
+  "persona": "Eu sou o roteador principal. Direciono os clientes para o departamento correto.",
+  "type": "ROUTER",
+  "instanceId": "687e78cd6a5d7dda26dfe1b6"
+}'
+Request URL
+https://app.caraon.qzz.io/api/v1/agents
+Server response
+Code	Details
+500	
+Error: response status is 500
+
+Response body
+Download
+{
+  "error": "Falha ao criar o agente ROUTER."
+}
+Response headers
+ content-length: 43 
+ content-type: application/json; charset=utf-8 
+Responses
+Code	Description	Links
+201	
+Agente criado com sucesso.
+
+No links
+400	
+Requisição inválida.
+
+No links
+401	
+Não autorizado.
+
+No links
+500	
+Falha ao criar o agente.
+
+No links
+
+18|caraon-api  | Erro ao criar agente do tipo ROUTER: PrismaClientValidationError:
+18|caraon-api  | Invalid `prisma.agent.create()` invocation:
+18|caraon-api  | {
+18|caraon-api  |   data: {
+18|caraon-api  |     name: "Roteador Principal da Instância",
+18|caraon-api  |     type: "ROUTER",
+18|caraon-api  |           ~~~~~~~~
+18|caraon-api  |     persona: "Eu sou o roteador principal. Direciono os clientes para o departamento correto.",
+18|caraon-api  |     instanceId: "687e78cd6a5d7dda26dfe1b6",
+18|caraon-api  |     organizationId: undefined,
+18|caraon-api  |     routerAgentId: null,
+18|caraon-api  |     isActive: true,
+18|caraon-api  |     priority: 0,
+18|caraon-api  |     config: {
+18|caraon-api  |       create: {
+18|caraon-api  |         maxTokens: 2000,
+18|caraon-api  |         temperature: 0.7,
+18|caraon-api  |         model: "googleai/gemini-pro",
+18|caraon-api  |         systemPrompt: "Você é um agente orquestrador que delega tarefas para agentes especializados.",
+18|caraon-api  |         fallbackMessage: "Desculpe, não consegui processar sua solicitação no momento."
+18|caraon-api  |       }
+18|caraon-api  |     }
+18|caraon-api  |   },
+18|caraon-api  |   include: {
+18|caraon-api  |     config: true,
+18|caraon-api  |     childAgents: true
+18|caraon-api  |   }
+18|caraon-api  | }
+18|caraon-api  | Invalid value for argument `type`. Expected AgentType.
+18|caraon-api  |     at Dn (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:29:1363)
+18|caraon-api  |     at ri.handleRequestError (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:121:7102)
+18|caraon-api  |     at ri.handleAndLogRequestError (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:121:6784)
+18|caraon-api  |     at ri.request (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:121:6491)
+18|caraon-api  |     at async l (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:130:9812)
+18|caraon-api  |     at async Module.createParentAgent (file:///root/CaraON-backend/src/services/agent.hierarchy.service.js:25:23)
+18|caraon-api  |     at async createAgent (file:///root/CaraON-backend/src/controllers/agent.controller.js:38:17) {
+18|caraon-api  |   clientVersion: '6.12.0'
+18|caraon-api  | }
