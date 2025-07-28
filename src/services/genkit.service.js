@@ -7,7 +7,7 @@ import { defineTools } from './tool-definitions.js';
 // Esta instância será usada em todo o aplicativo para definir fluxos, ferramentas e gerar conteúdo.
 export const ai = genkit({
   plugins: [googleAI()],
-  model: 'gemini-pro', // Define um modelo padrão, pode ser substituído em chamadas específicas.
+  model: 'googleai/gemini-2.0-flash', // Define um modelo padrão, pode ser substituído em chamadas específicas.
   logLevel: 'debug',
 });
 
@@ -60,7 +60,7 @@ export const routerFlow = ai.defineFlow(
 
     const result = await ai.generate({
       prompt: prompt,
-      model: 'gemini-pro', // Pode especificar o modelo aqui se for diferente do padrão
+      model: 'googleai/gemini-2.0-flash', // Pode especificar o modelo aqui se for diferente do padrão
       config: { temperature: 0.1 },
     });
 
@@ -108,7 +108,8 @@ export const childFlow = ai.defineFlow({
     outputSchema: z.string(),
 }, async (input) => {
     const finalPersona = input.agentPersona || "Você é um assistente útil e amigável.";
-    const modelToUse = input.agentConfig?.model || "gemini-pro"; // O modelo padrão é definido na instância ai
+    const modelToUse = "googleai/gemini-2.0-flash"; // O modelo padrão é definido na instância ai
+    //const modelToUse = input.agentConfig?.model || "googleai/gemini-2.0-flash"; // O modelo padrão é definido na instância ai
     const temperature = input.agentConfig?.temperature ?? 0.7;
     const maxTokens = input.agentConfig?.maxTokens ?? 1500;
     const systemPrompt = input.agentConfig?.systemPrompt || '';

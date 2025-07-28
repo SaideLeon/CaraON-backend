@@ -36,7 +36,7 @@ async function createParentAgent(data) {
         create: {
           maxTokens: 2000,
           temperature: 0.7,
-          model: 'googleai/gemini-pro',
+          model: 'googleai/gemini-2.0-flash',
           systemPrompt: 'Você é um agente orquestrador que delega tarefas para agentes especializados.',
           fallbackMessage: 'Desculpe, não consegui processar sua solicitação no momento.'
         }
@@ -72,7 +72,7 @@ async function createCustomChildAgent(data) {
         create: {
           maxTokens: 1200,
           temperature: 0.9,
-          model: 'googleai/gemini-pro',
+          model: 'googleai/gemini-2.0-flash',
           systemPrompt: 'Você é um agente especialista personalizado.',
           fallbackMessage: 'Não consegui processar sua solicitação personalizada.'
         }
