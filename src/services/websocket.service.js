@@ -1,13 +1,13 @@
-const WebSocket = require('ws');
-const { executeHierarchicalAgentFlow } = require('./agent.execution.service');
-const { PrismaClient } = require('@prisma/client');
-const agentHierarchyService = require('./agent.hierarchy.service');
+import { WebSocketServer } from 'ws';
+import { executeHierarchicalAgentFlow } from './agent.execution.service.js';
+import { PrismaClient } from '@prisma/client';
+import * as agentHierarchyService from './agent.hierarchy.service.js';
 
 const prisma = new PrismaClient();
 let wss;
 
 function init(server) {
-  wss = new WebSocket.Server({ server });
+  wss = new WebSocketServer({ server });
   console.log('✅ Servidor WebSocket iniciado');
 
   wss.on('connection', (ws) => {
@@ -88,7 +88,7 @@ function isReady() {
   return !!wss;
 }
 
-module.exports = {
+export {
   init,
   broadcast,
   isReady,

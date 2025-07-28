@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Backend da aplicação CaraON - gerenciamento de instâncias WhatsApp com IA",
   "main": "src/server.js",
+  "type": "module",
   "scripts": {
     "dev": "concurrently \"nodemon src/server.js\"",
     "pm2-start": "pm2 start src/server.js --name caraon-api",

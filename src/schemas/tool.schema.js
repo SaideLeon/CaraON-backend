@@ -1,4 +1,4 @@
-const { z } = require('zod');
+import { z } from 'zod';
 
 const toolTypeEnum = z.enum(['DATABASE', 'API', 'WEBHOOK', 'GENKIT_FLOW', 'CUSTOM']);
 
@@ -69,7 +69,7 @@ const toolIdParamSchema = z.object({
 });
 
 
-module.exports = {
+export {
   createToolSchema,
   toolIdParamSchema
 };

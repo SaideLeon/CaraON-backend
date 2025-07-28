@@ -1,7 +1,7 @@
-const { PrismaClient } = require('@prisma/client');
+import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient(); 
 
-exports.createOrganization = async (req, res) => {
+const createOrganization = async (req, res) => {
   const { instanceId } = req.params;
   const { name } = req.body;
 
@@ -21,7 +21,7 @@ exports.createOrganization = async (req, res) => {
   }
 };
 
-exports.listOrganizations = async (req, res) => {
+const listOrganizations = async (req, res) => {
   const { instanceId } = req.params;
 
   try {
@@ -38,4 +38,9 @@ exports.listOrganizations = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: 'Falha ao listar as organizações.' });
   }
+};
+
+export default {
+  createOrganization,
+  listOrganizations,
 };

@@ -1,9 +1,9 @@
-const { PrismaClient } = require('@prisma/client');
+import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
-const whatsappService = require('../services/whatsapp.service'); 
-const agentHierarchyService = require('../services/agent.hierarchy.service');
+import * as whatsappService from '../services/whatsapp.service.js'; 
+import * as agentHierarchyService from '../services/agent.hierarchy.service.js';
 
-exports.createInstance = async (req, res) => {
+const createInstance = async (req, res) => {
   const { name } = req.body;
   const { userId } = req.user; // Obtém o userId do token
 
@@ -38,14 +38,14 @@ exports.createInstance = async (req, res) => {
   }
 };
 
-exports.listInstances = async (req, res) => {
+const listInstances = async (req, res) => {
   const instances = await prisma.instance.findMany({
     where: { userId: req.user.userId }
   });
   res.json(instances);
 };
 
-exports.reconnectInstance = async (req, res) => {
+const reconnectInstance = async (req, res) => {
   const { instanceId } = req.params;
   try {
     const instance = await prisma.instance.findUnique({ where: { id: instanceId } });
@@ -62,7 +62,7 @@ exports.reconnectInstance = async (req, res) => {
   }
 };
 
-exports.disconnectInstance = async (req, res) => {
+const disconnectInstance = async (req, res) => {
   const { instanceId } = req.params;
   try {
     const instance = await prisma.instance.findUnique({ where: { id: instanceId } });
@@ -82,7 +82,7 @@ exports.disconnectInstance = async (req, res) => {
   }
 };
 
-exports.getInstanceStatus = async (req, res) => {
+const getInstanceStatus = async (req, res) => {
   const { instanceId } = req.params;
   try {
     const instance = await prisma.instance.findUnique({ where: { id: instanceId } });
@@ -97,7 +97,7 @@ exports.getInstanceStatus = async (req, res) => {
   }
 };
 
-exports.deleteInstance = async (req, res) => {
+const deleteInstance = async (req, res) => {
   const { instanceId } = req.params;
   try {
     const instance = await prisma.instance.findUnique({ where: { id: instanceId } });
@@ -120,4 +120,13 @@ exports.deleteInstance = async (req, res) => {
     }
     res.status(500).json({ error: 'Falha ao deletar a instância.' });
   }
+};
+
+export default {
+  createInstance,
+  listInstances,
+  reconnectInstance,
+  disconnectInstance,
+  getInstanceStatus,
+  deleteInstance,
 };

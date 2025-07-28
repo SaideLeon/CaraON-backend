@@ -1,9 +1,9 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const contactController = require('../controllers/contact.controller');
-const { validate } = require('../middlewares/validate.middleware');
-const { listContactsSchema } = require('../schemas/contact.schema');
-const auth = require('../middlewares/auth.middleware');
+import contactController from '../controllers/contact.controller.js';
+import validate from '../middlewares/validate.middleware.js';
+import { listContactsSchema } from '../schemas/contact.schema.js';
+import auth from '../middlewares/auth.middleware.js';
 
 /**
  * @swagger
@@ -69,4 +69,4 @@ router.get('/instances/:instanceId/contacts', auth, validate(listContactsSchema)
 router.get('/instances/:instanceId/contacts/summary', auth, validate(listContactsSchema), contactController.getContactSummary);
 
 
-module.exports = router;
+export default router;

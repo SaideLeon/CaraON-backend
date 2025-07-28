@@ -1,8 +1,6 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const authController = require('../controllers/auth.controller');
-const { validate } = require('../middlewares/validate.middleware');
-const { userRegistrationSchema, userLoginSchema } = require('../schemas/user.schema');
+import authController from '../controllers/auth.controller.js';  
 
 /**
  * @swagger
@@ -33,7 +31,7 @@ const { userRegistrationSchema, userLoginSchema } = require('../schemas/user.sch
  *       409:
  *         description: O e-mail fornecido já está em uso.
  */
-router.post('/register', validate(userRegistrationSchema), authController.register);
+router.post('/register', authController.register);
 
 /**
  * @swagger
@@ -59,6 +57,6 @@ router.post('/register', validate(userRegistrationSchema), authController.regist
  *       404:
  *         description: Usuário não encontrado.
  */
-router.post('/login', validate(userLoginSchema), authController.login);
+router.post('/login', authController.login);
 
-module.exports = router;
+export default router;

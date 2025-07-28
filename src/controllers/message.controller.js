@@ -1,7 +1,7 @@
-const { PrismaClient } = require('@prisma/client');
+import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
-exports.listMessages = async (req, res) => {
+const listMessages = async (req, res) => {
   const { instanceId } = req.params;
   const { contactId, page, limit } = req.query;
   const pageNum = parseInt(page, 10);
@@ -50,7 +50,7 @@ exports.listMessages = async (req, res) => {
   }
 };
 
-exports.deleteMessage = async (req, res) => {
+const deleteMessage = async (req, res) => {
   const { messageId } = req.params;
   // Adicionar verificação de permissão (se o usuário pode deletar esta mensagem)
 
@@ -66,4 +66,9 @@ exports.deleteMessage = async (req, res) => {
     console.error('Erro ao deletar mensagem:', error);
     res.status(500).json({ error: 'Falha ao deletar a mensagem.' });
   }
+};
+
+export default {
+  listMessages,
+  deleteMessage,
 };

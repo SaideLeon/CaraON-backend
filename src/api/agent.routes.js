@@ -1,8 +1,8 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const agentController = require('../controllers/agent.controller');
-const { validate } = require('../middlewares/validate.middleware');
-const { 
+import agentController from '../controllers/agent.controller.js';
+import validate from '../middlewares/validate.middleware.js';
+import { 
     createAgentSchema, 
     listChildAgentsSchema, 
     updateAgentPersonaSchema, 
@@ -11,8 +11,8 @@ const {
     listParentAgentsSchema, 
     deleteAgentSchema, 
     updateAgentSchema 
-} = require('../schemas/agent.schema');
-const auth = require('../middlewares/auth.middleware');
+} from '../schemas/agent.schema.js';
+import auth from '../middlewares/auth.middleware.js';
 
 /**
  * @swagger
@@ -340,4 +340,4 @@ router.get('/analytics/export', auth, validate(exportAgentAnalyticsSchema), agen
 router.get('/analytics/export/csv', auth, validate(exportAgentAnalyticsSchema), agentController.exportAgentAnalyticsCsv);
 
 
-module.exports = router;
+export default router;

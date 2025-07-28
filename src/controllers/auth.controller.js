@@ -1,24 +1,15 @@
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const { PrismaClient } = require('@prisma/client');
-const { z } = require('zod');
-const { userRegistrationSchema, userLoginSchema } = require('../schemas/user.schema');
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import { PrismaClient } from '@prisma/client';
+import { z } from 'zod';
+import { userRegistrationSchema, userLoginSchema, UserResponseSchema, TokenResponseSchema } from '../schemas/user.schema.js';
 
 const prisma = new PrismaClient();
 
-// Define response schemas for OpenAPI
-const UserResponseSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  email: z.string().email(),
-});
 
-const TokenResponseSchema = z.object({
-  token: z.string(),
-  user: UserResponseSchema,
-});
 
-exports.register = async (req, res) => {
+const register = async (req, res) => {
+  console.log('Request body:', req.body);
   const { name, email, password } = req.body;
   try {
     const hashed = await bcrypt.hash(password, 10);
@@ -36,7 +27,7 @@ exports.register = async (req, res) => {
   }
 };
 
-exports.login = async (req, res) => {
+const login = async (req, res) => {
   const { email, password } = req.body;
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user) return res.status(404).json({ error: 'Usuário não encontrado' });
@@ -47,4 +38,9 @@ exports.login = async (req, res) => {
   const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET);
   const { password: _, ...userWithoutPassword } = user;
   res.json({ token, user: userWithoutPassword });
+};
+
+export default {
+  register,
+  login,
 };

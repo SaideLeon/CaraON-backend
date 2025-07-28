@@ -1,6 +1,6 @@
-const { PrismaClient } = require('@prisma/client');
+import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
-const { z } = require('zod');
+import { z } from 'zod';
 
 const CartItemSchema = z.object({
   productId: z.string(),
@@ -49,7 +49,7 @@ const calculateCartTotals = (cartItems) => {
   };
 };
 
-exports.getCart = async (req, res) => {
+const getCart = async (req, res) => {
   const { userId } = req.user;
 
   try {
@@ -87,7 +87,7 @@ exports.getCart = async (req, res) => {
   }
 };
 
-exports.addToCart = async (req, res) => {
+const addToCart = async (req, res) => {
   const { userId } = req.user;
   const { productId, quantity } = req.body;
 
@@ -156,7 +156,7 @@ exports.addToCart = async (req, res) => {
   }
 };
 
-exports.updateCart = async (req, res) => {
+const updateCart = async (req, res) => {
   const { userId } = req.user;
   const { productId, quantity } = req.body;
 
@@ -206,7 +206,7 @@ exports.updateCart = async (req, res) => {
   }
 };
 
-exports.removeFromCart = async (req, res) => {
+const removeFromCart = async (req, res) => {
   const { userId } = req.user;
   const { productId } = req.body;
 
@@ -226,4 +226,11 @@ exports.removeFromCart = async (req, res) => {
     console.error('Erro ao remover do carrinho:', error);
     res.status(500).json({ error: 'Falha ao remover o item do carrinho.' });
   }
+};
+
+export default {
+  getCart,
+  addToCart,
+  updateCart,
+  removeFromCart,
 };

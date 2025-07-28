@@ -1,6 +1,6 @@
-const { PrismaClient } = require('@prisma/client');
+import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
-const { availableFlows } = require('./genkit.flows'); // Importa os flows disponíveis
+import { availableFlows } from './genkit.flows.js'; // Importa os flows disponíveis
 
 // Mapeamento explícito de nomes de tabela para nomes de modelo Prisma
 const tableToModelMap = {
@@ -339,7 +339,7 @@ async function createCustomTool(data) {
   });
 }
 
-module.exports = {
+export {
   createSystemTools,
   executeToolFunction,
   getAllTools,

@@ -1,8 +1,8 @@
-const { PrismaClient } = require('@prisma/client');
-const { generateResponse } = require('./genkit.service');
-const { executeToolFunction } = require('./tools.service');
-const agentHierarchyService = require('./agent.hierarchy.service');
-const { selectAgent } = require('./agent.selection.service');
+import { PrismaClient } from '@prisma/client';
+import { generateResponse } from './genkit.service.js';
+import { executeToolFunction } from './tools.service.js';
+import * as agentHierarchyService from './agent.hierarchy.service.js';
+import { selectAgent } from './agent.selection.service.js';
 
 const prisma = new PrismaClient();
 
@@ -227,6 +227,6 @@ async function logAgentExecution(routerAgentId, instanceId, userMessage, finalRe
   }
 }
 
-module.exports = {
+export {
   executeHierarchicalAgentFlow,
 };

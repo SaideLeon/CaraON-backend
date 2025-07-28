@@ -1,4 +1,4 @@
-const { z } = require('zod');
+import { z } from 'zod';
 // const { ProductStatus } = require('@prisma/client');
 const productStatusEnum = z.enum(['DRAFT', 'ACTIVE', 'INACTIVE', 'ARCHIVED']);
 
@@ -73,7 +73,7 @@ const ProductListResponseSchema = z.object({
   }),
 });
 
-module.exports = {
+export {
   createProductSchema,
   updateProductSchema,
   listProductsSchema,

@@ -1,9 +1,9 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const messageController = require('../controllers/message.controller');
-const { validate } = require('../middlewares/validate.middleware');
-const { listMessagesSchema, deleteMessageSchema } = require('../schemas/message.schema');
-const auth = require('../middlewares/auth.middleware');
+import messageController from '../controllers/message.controller.js';
+import validate from '../middlewares/validate.middleware.js';
+import { listMessagesSchema, deleteMessageSchema } from '../schemas/message.schema.js';
+import auth from '../middlewares/auth.middleware.js';
 
 /**
  * @swagger
@@ -75,4 +75,4 @@ router.get('/instances/:instanceId/messages', auth, validate(listMessagesSchema)
  */
 router.delete('/messages/:messageId', auth, validate(deleteMessageSchema), messageController.deleteMessage);
 
-module.exports = router;
+export default router;

@@ -1,6 +1,6 @@
-const { z } = require('zod');
-const { registry } = require('../docs/openapi.registry');
-const { extendZodWithOpenApi } = require('@asteasolutions/zod-to-openapi');
+import { z } from 'zod';
+import { registry } from '../docs/openapi.registry.js';
+import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 
 extendZodWithOpenApi(z);
 
@@ -32,7 +32,7 @@ const listBrandsSchema = z.object({
 
 registry.register('Brand', BrandSchema);
 
-module.exports = {
+export {
   createBrandSchema,
   updateBrandSchema,
   listBrandsSchema,

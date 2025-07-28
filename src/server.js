@@ -1,24 +1,24 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const mongoose = require('mongoose');
-const http = require('http');
-const authRoutes = require('./api/auth.routes');
-const instanceRoutes = require('./api/instances.routes');
-const organizationRoutes = require('./api/organization.routes');
-const agentRoutes = require('./api/agent.routes');
-const productRoutes = require('./api/products.routes');
-const cartRoutes = require('./api/cart.routes');
-
-const toolRoutes = require('./api/tool.routes');
-const categoryRoutes = require('./api/category.routes');
-const brandRoutes = require('./api/brand.routes');
-const healthRoutes = require('./api/health.routes'); // Importa a nova rota
-const messageRoutes = require('./api/message.routes'); // Importa a rota de mensagens
-const contactRoutes = require('./api/contact.routes'); // Importa a rota de contatos
-const webSocketService = require('./services/websocket.service');
-const { generateOpenApi } = require('./docs/openapi');
-require('../genkit.config.js');
+import 'dotenv/config';
+import express from 'express';
+import cors from 'cors';
+import mongoose from 'mongoose';
+import http from 'http';
+import authRoutes from './api/auth.routes.js';
+import instanceRoutes from './api/instances.routes.js';
+import organizationRoutes from './api/organization.routes.js';
+import agentRoutes from './api/agent.routes.js';
+import productRoutes from './api/products.routes.js';
+import orderRoutes from './api/orders.routes.js';
+import cartRoutes from './api/cart.routes.js';
+import toolRoutes from './api/tool.routes.js';
+import categoryRoutes from './api/category.routes.js';
+import brandRoutes from './api/brand.routes.js';
+import healthRoutes from './api/health.routes.js';
+import messageRoutes from './api/message.routes.js';
+import contactRoutes from './api/contact.routes.js';
+import * as webSocketService from './services/websocket.service.js';
+import generateOpenApi from './docs/openapi.js';
+import '../genkit.config.js';
 const app = express();
 const PORT = process.env.PORT || 3000;
 const API_SERVER_URLS = process.env.API_SERVER_URLS || `http://localhost:${PORT}`;
@@ -30,7 +30,7 @@ generateOpenApi(app, servers);
 app.use(cors({ origin: '*' }));
 app.use(express.json());
 
-const { createSystemTools } = require('./services/tools.service');
+import { createSystemTools } from './services/tools.service.js';
 
 mongoose.connect(process.env.MONGODB_SESSION_URI).then(() => {
   console.log('✅ Conectado ao MongoDB para sessões WhatsApp');
@@ -46,6 +46,7 @@ app.use('/api/v1', organizationRoutes);
 app.use('/api/v1/agents', agentRoutes);
 app.use('/api/v1', productRoutes);
 app.use('/api/v1', cartRoutes);
+app.use('/api/v1', orderRoutes);
 
 app.use('/api/v1/tools', toolRoutes);
 app.use('/api/v1', categoryRoutes);

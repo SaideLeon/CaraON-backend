@@ -10,8 +10,8 @@ const validate = (schema) => (req, res, next) => {
     req.params = parsedSchema.params;
     next();
   } catch (err) {
-    return res.status(400).send(err.errors);
+    return res.status(400).send(JSON.stringify(err.errors));
   }
 };
 
-module.exports = { validate };
+export default validate;

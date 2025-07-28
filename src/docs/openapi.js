@@ -1,29 +1,30 @@
-const { OpenAPIRegistry, OpenApiGeneratorV3, extendZodWithOpenApi } = require('@asteasolutions/zod-to-openapi');
-const swaggerUi = require('swagger-ui-express');
-const swaggerJsdoc = require('swagger-jsdoc');
-const { z } = require('zod');
-const path = require('path');
+import { OpenAPIRegistry, OpenApiGeneratorV3, extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
+import swaggerUi from 'swagger-ui-express';
+import swaggerJsdoc from 'swagger-jsdoc';
+import { z } from 'zod';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 // Estende os métodos do Zod com suporte ao OpenAPI (.openapi())
 extendZodWithOpenApi(z);
 
 // Instância única do registry (importada pelos schemas para registrar)
-const { registry } = require('./openapi.registry');
+import { registry } from './openapi.registry.js';
 
 // Importação dos schemas — cada um deve usar `registry.register(...)` internamente
-require('../schemas/agent.schema');
-require('../schemas/brand.schema');
-require('../schemas/cart.schema');
-require('../schemas/category.schema');
-require('../schemas/instance.schema');
-require('../schemas/order.schema');
-require('../schemas/organization.schema');
-require('../schemas/product.schema');
-require('../schemas/template.schema');
-require('../schemas/tool.schema');
-require('../schemas/user.schema');
-require('../schemas/message.schema');
-require('../schemas/contact.schema');
+import '../schemas/agent.schema.js';
+import '../schemas/brand.schema.js';
+import '../schemas/cart.schema.js';
+import '../schemas/category.schema.js';
+import '../schemas/instance.schema.js';
+import '../schemas/order.schema.js';
+import '../schemas/organization.schema.js';
+import '../schemas/product.schema.js';
+import '../schemas/template.schema.js';
+import '../schemas/tool.schema.js';
+import '../schemas/user.schema.js';
+import '../schemas/message.schema.js';
+import '../schemas/contact.schema.js';
 
 /**
  * Gera a documentação OpenAPI e monta o middleware Swagger.
@@ -36,6 +37,9 @@ function generateOpenApi(app, servers) {
   const zodSchemas = generator.generateComponents();
 
   // 2. Configura o swagger-jsdoc para ler os comentários JSDoc
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+
   const options = {
     definition: {
       openapi: '3.0.0',
@@ -77,6 +81,4 @@ function generateOpenApi(app, servers) {
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openApiSpec));
 }
 
-module.exports = {
-  generateOpenApi,
-};
+export default generateOpenApi;

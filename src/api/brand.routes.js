@@ -1,9 +1,9 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const brandController = require('../controllers/brand.controller');
-const { validate } = require('../middlewares/validate.middleware');
-const { createBrandSchema, updateBrandSchema, listBrandsSchema } = require('../schemas/brand.schema');
-const auth = require('../middlewares/auth.middleware');
+import brandController from '../controllers/brand.controller.js';
+import validate from '../middlewares/validate.middleware.js';
+import { createBrandSchema, updateBrandSchema, listBrandsSchema } from '../schemas/brand.schema.js';
+import auth from '../middlewares/auth.middleware.js';
 
 /**
  * @swagger
@@ -161,4 +161,4 @@ router.get('/brands/:id', brandController.getBrandById);
 router.put('/brands/:id', auth, validate(updateBrandSchema), brandController.updateBrand);
 router.delete('/brands/:id', auth, brandController.deleteBrand);
 
-module.exports = router;
+export default router;

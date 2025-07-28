@@ -1,4 +1,4 @@
-const { z } = require('zod');
+import { z } from 'zod';
 
 const categorySchema = z.object({
   name: z.string().min(2, 'O nome da categoria deve ter pelo menos 2 caracteres.').max(100),
@@ -25,7 +25,7 @@ const listCategoriesSchema = z.object({
   }).optional(),
 });
 
-module.exports = {
+export {
   createCategorySchema,
   updateCategorySchema,
   listCategoriesSchema,

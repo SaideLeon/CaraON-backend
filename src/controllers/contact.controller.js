@@ -1,7 +1,7 @@
-const { PrismaClient } = require('@prisma/client');
+import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
-exports.listContacts = async (req, res) => {
+const listContacts = async (req, res) => {
   const { instanceId } = req.params;
   const { page = 1, limit = 10 } = req.query;
 
@@ -38,19 +38,18 @@ exports.listContacts = async (req, res) => {
   }
 };
 
-
-exports.getContactSummary = async (req, res) => {
+const getContactSummary = async (req, res) => {
   const { instanceId } = req.params;
+  const where = { instanceId };
 
   try {
-    const totalContacts = await prisma.contact.count({
-      where: { instanceId },
-    });
-
+    const totalContacts = await prisma.contact.count({ where });
     const contacts = await prisma.contact.findMany({
-      where: { instanceId },
+      where,
       select: {
         phoneNumber: true,
+        name: true,
+        pushName: true,
       },
       orderBy: {
         updatedAt: 'desc',
@@ -58,39 +57,22 @@ exports.getContactSummary = async (req, res) => {
     });
 
     res.status(200).json({
-      totalContacts,
-      phoneNumbers: contacts.map(c => c.phoneNumber),
+      total: totalContacts,
+      contacts: contacts.map(c => ({
+        number: c.phoneNumber,
+        name: c.name || c.pushName,
+      })),
     });
   } catch (error) {
     console.error('Erro ao obter resumo de contatos:', error);
-    res.status(500).json({ error: 'Falha ao obter resumo de contatos.' });
+    res.status(500).json({ error: 'Falha ao buscar resumo de contatos.' });
   }
 };
 
-exports.getContactSummary = async (req, res) => {
-  const { instanceId } = req.params;
 
-  try {
-    const totalContacts = await prisma.contact.count({
-      where: { instanceId },
-    });
 
-    const contacts = await prisma.contact.findMany({
-      where: { instanceId },
-      select: {
-        phoneNumber: true,
-      },
-      orderBy: {
-        updatedAt: 'desc',
-      },
-    });
 
-    res.status(200).json({
-      totalContacts,
-      phoneNumbers: contacts.map(c => c.phoneNumber),
-    });
-  } catch (error) {
-    console.error('Erro ao obter resumo de contatos:', error);
-    res.status(500).json({ error: 'Falha ao obter resumo de contatos.' });
-  }
+export default {
+  listContacts,
+  getContactSummary,
 };

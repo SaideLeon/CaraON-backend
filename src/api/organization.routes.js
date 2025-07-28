@@ -1,9 +1,9 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const organizationController = require('../controllers/organization.controller');
-const { validate } = require('../middlewares/validate.middleware');
-const { createOrganizationSchema, listOrganizationsSchema } = require('../schemas/organization.schema');
-const auth = require('../middlewares/auth.middleware');
+import organizationController from '../controllers/organization.controller.js';
+import validate from '../middlewares/validate.middleware.js';
+import { createOrganizationSchema, listOrganizationsSchema } from '../schemas/organization.schema.js';
+import auth from '../middlewares/auth.middleware.js';
 
 /**
  * @swagger
@@ -88,4 +88,4 @@ router.get(
   organizationController.listOrganizations
 );
 
-module.exports = router;
+export default router;

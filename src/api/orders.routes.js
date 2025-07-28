@@ -1,9 +1,9 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const orderController = require('../controllers/orders.controller');
-const { validate } = require('../middlewares/validate.middleware');
-const { createOrderSchema, updateOrderStatusSchema } = require('../schemas/order.schema');
-const auth = require('../middlewares/auth.middleware');
+import orderController from '../controllers/orders.controller.js';
+import validate from '../middlewares/validate.middleware.js';
+import { createOrderSchema, updateOrderStatusSchema } from '../schemas/order.schema.js';
+import auth from '../middlewares/auth.middleware.js';
 
 /**
  * @swagger
@@ -127,4 +127,44 @@ router.get('/orders/:id', auth, orderController.getOrderById);
  */
 router.patch('/orders/:id/status', auth, validate(updateOrderStatusSchema), orderController.updateOrderStatus);
 
-module.exports = router;
+/**
+ * @swagger
+ * /api/v1/orders/payment-notification:
+ *   post:
+ *     summary: Recebe notificações de pagamento de provedores externos (Webhook)
+ *     tags: [Pedidos]
+ *     description: 'Endpoint para receber webhooks de provedores de pagamento (ex: M-Pesa, M-Mola, Stripe). Não requer autenticação, pois a segurança é baseada na validação da origem da notificação (não implementado neste exemplo).'
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               transactionId:
+ *                 type: string
+ *                 description: O ID da transação do provedor.
+ *               status:
+ *                 type: string
+ *                 enum: [PAID, FAILED, CANCELED]
+ *                 description: O status final da transação.
+ *               provider:
+ *                 type: string
+ *                 description: 'O nome do provedor de pagamento (ex: mpesa, mmola).'
+ *               amount:
+ *                 type: number
+ *                 description: O valor da transação.
+ *             example:
+ *               transactionId: "qwerty12345"
+ *               status: "PAID"
+ *               provider: "mpesa"
+ *               amount: 2500.50
+ *     responses:
+ *       200:
+ *         description: Notificação processada com sucesso.
+ *       500:
+ *         description: Erro ao processar a notificação.
+ */
+router.post('/orders/payment-notification', orderController.handlePaymentNotification);
+
+export default router;

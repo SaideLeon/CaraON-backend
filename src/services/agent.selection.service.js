@@ -1,5 +1,5 @@
-const { generateResponse } = require('./genkit.service');
-const { PrismaClient } = require('@prisma/client');
+import { generateResponse } from './genkit.service.js';
+import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 // Função para validar se um ID tem o formato ObjectId do MongoDB
@@ -79,6 +79,6 @@ Responda APENAS com o ID do ${contextType} selecionado. Se nenhum for adequado, 
   }
 }
 
-module.exports = {
+export {
   selectAgent,
 };

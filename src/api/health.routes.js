@@ -1,7 +1,7 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const mongoose = require('mongoose');
-const webSocketService = require('../services/websocket.service');
+import mongoose from 'mongoose';
+import * as webSocketService from '../services/websocket.service.js';
 
 /**
  * @swagger
@@ -85,4 +85,4 @@ router.get('/health', (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

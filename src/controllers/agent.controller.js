@@ -1,23 +1,21 @@
-const { PrismaClient } = require('@prisma/client');
+import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
-const { 
+import { 
   updateAgentPersonaSchema, 
   createAgentSchema, // Schema unificado para criação
-  createCustomChildAgentSchema, 
   listChildAgentsSchema, 
   exportAgentAnalyticsSchema,
   listParentAgentsSchema,
   deleteAgentSchema,
   updateAgentSchema
-} = require('../schemas/agent.schema');
-const agentHierarchyService = require('../services/agent.hierarchy.service');
-const agentAnalyticsService = require('../services/agent.analytics.service');
-const { Parser } = require('json2csv');
+} from '../schemas/agent.schema.js';
+import * as agentHierarchyService from '../services/agent.hierarchy.service.js';
+import * as agentAnalyticsService from '../services/agent.analytics.service.js';
+import { Parser } from 'json2csv';
 
 // Cria um Agente (ROUTER, PARENT, ou CHILD)
-exports.createAgent = async (req, res) => {
-  const { instanceId, organizationId, parentAgentId } = req.params;
-  const { name, persona, type, toolIds } = req.body;
+const createAgent = async (req, res) => {
+  const { name, persona, type, toolIds, instanceId, organizationId, parentAgentId } = req.body;
   const { userId } = req.user;
 
   try {
@@ -52,7 +50,7 @@ exports.createAgent = async (req, res) => {
 };
 
 
-exports.updateAgentPersona = async (req, res) => {
+const updateAgentPersona = async (req, res) => {
   const { agentId } = req.params;
   const { persona } = req.body;
 
@@ -70,7 +68,7 @@ exports.updateAgentPersona = async (req, res) => {
   }
 };
 
-exports.updateAgent = async (req, res) => {
+const updateAgent = async (req, res) => {
   const { agentId } = req.params;
   const { name, persona, priority } = req.body;
 
@@ -88,33 +86,7 @@ exports.updateAgent = async (req, res) => {
   }
 };
 
-exports.createCustomChildAgent = async (req, res) => {
-  const { parentAgentId } = req.params;
-  const { name, persona, toolIds } = req.body;
-
-  try {
-    const parentAgent = await prisma.agent.findUnique({ where: { id: parentAgentId } });
-    if (!parentAgent) {
-      return res.status(404).json({ error: 'Agente pai não encontrado' });
-    }
-
-    const agent = await agentHierarchyService.createCustomChildAgent({
-      name,
-      persona,
-      toolIds,
-      parentAgentId,
-      instanceId: parentAgent.instanceId,
-      organizationId: parentAgent.organizationId,
-    });
-    res.status(201).json(agent);
-  } catch (error) {
-    console.error('Erro ao criar agente filho customizado:', error);
-    res.status(500).json({ error: 'Falha ao criar o agente filho customizado.' });
-  }
-};
-
-
-exports.listChildAgents = async (req, res) => {
+const listChildAgents = async (req, res) => {
   const { parentAgentId } = req.params;
 
   try {
@@ -126,7 +98,7 @@ exports.listChildAgents = async (req, res) => {
   }
 };
 
-exports.getAgentById = async (req, res) => {
+const getAgentById = async (req, res) => {
   const { agentId } = req.params;
 
   try {
@@ -150,7 +122,7 @@ exports.getAgentById = async (req, res) => {
   }
 };
 
-exports.exportAgentAnalytics = async (req, res) => {
+const exportAgentAnalytics = async (req, res) => {
   const { instanceId, organizationId } = req.query;
 
   try {
@@ -162,7 +134,7 @@ exports.exportAgentAnalytics = async (req, res) => {
   }
 };
 
-exports.exportAgentAnalyticsCsv = async (req, res) => {
+const exportAgentAnalyticsCsv = async (req, res) => {
   const { instanceId, organizationId } = req.query;
 
   try {
@@ -193,7 +165,7 @@ exports.exportAgentAnalyticsCsv = async (req, res) => {
   }
 };
 
-exports.listParentAgents = async (req, res) => {
+const listParentAgents = async (req, res) => {
   const { instanceId } = req.params;
 
   try {
@@ -215,7 +187,7 @@ exports.listParentAgents = async (req, res) => {
   }
 };
 
-exports.listUserParentAgents = async (req, res) => {
+const listUserParentAgents = async (req, res) => {
   const { userId } = req.user;
 
   try {
@@ -245,7 +217,7 @@ exports.listUserParentAgents = async (req, res) => {
   }
 };
 
-exports.deleteAgent = async (req, res) => {
+const deleteAgent = async (req, res) => {
   const { agentId } = req.params;
 
   try {
@@ -258,4 +230,17 @@ exports.deleteAgent = async (req, res) => {
     }
     res.status(500).json({ error: 'Falha ao deletar o agente.' });
   }
+};
+
+export default {
+  createAgent,
+  updateAgentPersona,
+  updateAgent,
+  listChildAgents,
+  getAgentById,
+  exportAgentAnalytics,
+  exportAgentAnalyticsCsv,
+  listParentAgents,
+  listUserParentAgents,
+  deleteAgent,
 };

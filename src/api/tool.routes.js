@@ -1,9 +1,9 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const toolController = require('../controllers/tool.controller');
-const { validate } = require('../middlewares/validate.middleware');
-const { createToolSchema, toolIdParamSchema } = require('../schemas/tool.schema');
-const auth = require('../middlewares/auth.middleware');
+import toolController from '../controllers/tool.controller.js';
+import validate from '../middlewares/validate.middleware.js';
+import { createToolSchema, toolIdParamSchema } from '../schemas/tool.schema.js';
+import auth from '../middlewares/auth.middleware.js';
 
 /**
  * @swagger
@@ -110,4 +110,4 @@ router.get('/', auth, toolController.getTools);
  */
 router.get('/:toolId', auth, validate(toolIdParamSchema), toolController.getToolById);
 
-module.exports = router;
+export default router;

@@ -1,46 +1,155 @@
-caraon-backend@1.0.0 dev
-> concurrently "nodemon src/server.js"
-
-[0] [nodemon] 3.1.10
-[0] [nodemon] to restart at any time, enter `rs`  
-[0] [nodemon] watching path(s): *.*
-[0] [nodemon] watching extensions: js,mjs,cjs,json
-[0] [nodemon] starting `node src/server.js`       
-[0] [dotenv@17.2.0] injecting env (6) from .env (tip: 🛠️  run anywhere with `dotenvx
- run -- yourcommand`)
-[0] [dotenv@17.2.0] injecting env (0) from .env (tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit)
-[0] Registering flow: welcomeFlow
-[0] C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\genkit.config.js:4  
-[0] module.exports = configureGenkit({
-[0]                  ^
-[0] 
-[0] TypeError: configureGenkit is not a function
-[0]     at Object.<anonymous> (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\genkit.config.js:4:18)
-[0]     at Module._compile (node:internal/modules/cjs/loader:1730:14)
-[0]     at Object..js (node:internal/modules/cjs/loader:1895:10)
-[0]     at Module.load (node:internal/modules/cjs/loader:1465:32)
-[0]     at Function._load (node:internal/modules/cjs/loader:1282:12)
-[0]     at TracingChannel.traceSync (node:diagnostics_channel:322:14)
-[0]     at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
-[0]     at Module.require (node:internal/modules/cjs/loader:1487:12)
-[0]     at require (node:internal/modules/helpers:135:16)
-[0]     at Object.<anonymous> (C:\Users\Rogerio\Desktop\Projectos\cli\CaraON\CaraON-backend\src\server.js:21:1)
-[0]     at Module._compile (node:internal/modules/cjs/loader:1730:14)
-[0]     at Object..js (node:internal/modules/cjs/loader:1895:10)
-[0]     at Module.load (node:internal/modules/cjs/loader:1465:32)
-[0]     at Function._load (node:internal/modules/cjs/loader:1282:12)
-[0]     at TracingChannel.traceSync (node:diagnostics_channel:322:14)
-[0]     at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
-[0] 
-[0] Node.js v22.15.0
-[0] [nodemon] app crashed - waiting for file changes before starting...
+Autenticação
+Endpoints para registro e login de usuários.
 
 
 
+POST
+/api/v1/auth/register
+Realiza o registro de um novo usuário
 
 
+Parameters
+Cancel
+Reset
+No parameters
+
+Request body
+
+application/json
+Edit Value
+Schema
+{
+  "name": "Tony Stark",
+  "email": "tonystark@gmail.com",
+  "password": "Damasco12"
+}
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'POST' \
+  'http://localhost:3030/api/v1/auth/register' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "name": "Tony Stark",
+  "email": "tonystark@gmail.com",
+  "password": "Damasco12"
+}'
+Request URL
+http://localhost:3030/api/v1/auth/register
+Server response
+Code	Details
+201	
+Response body
+Download
+{
+  "id": "6887443b3fd1200644e9f338",
+  "name": "Tony Stark",
+  "email": "tonystark@gmail.com"
+}
+Response headers
+ access-control-allow-origin: * 
+ connection: keep-alive 
+ content-length: 83 
+ content-type: application/json; charset=utf-8 
+ date: Mon,28 Jul 2025 09:34:53 GMT 
+ etag: W/"53-WBiEDVOEeeCEHwL5/cHvx6Nk3o8" 
+ keep-alive: timeout=5 
+ x-powered-by: Express 
+Responses
+Code	Description	Links
+201	
+Usuário registrado com sucesso.
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+{
+  "id": "string",
+  "name": "string",
+  "email": "user@example.com"
+}
+No links
+409	
+O e-mail fornecido já está em uso.
+
+No links
+
+POST
+/api/v1/auth/login
+Realiza o login de um usuário
 
 
+Parameters
+Cancel
+Reset
+No parameters
 
+Request body
 
+application/json
+Edit Value
+Schema
+{
+  "email": "tonystark@gmail.com",
+  "password": "Damasco12"
+}
+Execute
+Clear
+Responses
+Curl
 
+curl -X 'POST' \
+  'http://localhost:3030/api/v1/auth/login' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "email": "tonystark@gmail.com",
+  "password": "Damasco12"
+}'
+Request URL
+http://localhost:3030/api/v1/auth/login
+Server response
+Code	Details
+400
+Undocumented
+Error: Bad Request
+
+Response headers
+ access-control-allow-origin: * 
+ connection: keep-alive 
+ content-length: 0 
+ date: Mon,28 Jul 2025 09:35:53 GMT 
+ keep-alive: timeout=5 
+ x-powered-by: Express 
+Responses
+Code	Description	Links
+200	
+Login bem-sucedido.
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+{
+  "token": "string",
+  "user": {
+    "id": "string",
+    "name": "string",
+    "email": "user@example.com"
+  }
+}
+No links
+401	
+Credenciais inválidas.
+
+No links
+404	
+Usuário não encontrado.

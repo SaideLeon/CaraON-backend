@@ -1,12 +1,13 @@
-require('dotenv').config();
-const { Client, RemoteAuth } = require('whatsapp-web.js');
-const { MongoStore } = require('wwebjs-mongo');
-const mongoose = require('mongoose');
-const qrcode = require('qrcode');
-const webSocketService = require('./websocket.service');
-const { executeHierarchicalAgentFlow } = require('./agent.execution.service');
-const agentHierarchyService = require('./agent.hierarchy.service'); // Importar o serviço
-const { PrismaClient } = require('@prisma/client');
+import 'dotenv/config';
+import pkg from 'whatsapp-web.js';
+const { Client, RemoteAuth } = pkg;
+import { MongoStore } from 'wwebjs-mongo';
+import mongoose from 'mongoose';
+import qrcode from 'qrcode';
+import * as webSocketService from './websocket.service.js';
+import { executeHierarchicalAgentFlow } from './agent.execution.service.js';
+import * as agentHierarchyService from './agent.hierarchy.service.js'; // Importar o serviço
+import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 const activeClients = {};
 
@@ -197,7 +198,7 @@ async function disconnectInstance(clientId) {
   return false;
 }
 
-module.exports = {
+export {
   startInstance,
   activeClients,
   disconnectInstance,

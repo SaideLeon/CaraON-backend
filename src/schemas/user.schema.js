@@ -1,6 +1,6 @@
-const { z } = require('zod');
-const { registry } = require('../docs/openapi.registry');
-const { extendZodWithOpenApi } = require('@asteasolutions/zod-to-openapi');
+import { z } from 'zod';
+import { registry } from '../docs/openapi.registry.js';
+import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 
 // Extende o Zod para suportar .openapi()
 extendZodWithOpenApi(z);
@@ -9,6 +9,14 @@ const UserRegistrationBody = z.object({
   name: z.string().min(3, 'O nome precisa ter no mínimo 3 caracteres.').openapi({ description: 'Nome do usuário' }),
   email: z.string().email('Email inválido.').openapi({ description: 'Email do usuário' }),
   password: z.string().min(6, 'A senha precisa ter no mínimo 6 caracteres.').openapi({ description: 'Senha do usuário' }),
+}).openapi({
+  examples: [
+    {
+      name: "Tony Stark",
+      email: "tonystark@example.com",
+      password: "IronMan@123"
+    }
+  ]
 });
 
 const userRegistrationSchema = z.object({
@@ -18,6 +26,13 @@ const userRegistrationSchema = z.object({
 const UserLoginBody = z.object({
   email: z.string().email('Email inválido.'),
   password: z.string(),
+}).openapi({
+  examples: [
+    {
+      email: "tonystark@example.com",
+      password: "IronMan@123"
+    }
+  ]
 });
 
 const userLoginSchema = z.object({
@@ -40,7 +55,7 @@ registry.register('UserLogin', UserLoginBody);
 registry.register('UserResponse', UserResponseSchema);
 registry.register('TokenResponse', TokenResponseSchema);
 
-module.exports = {
+export {
   userRegistrationSchema,
   userLoginSchema,
   UserRegistrationBody,

@@ -1,4 +1,4 @@
-const { PrismaClient } = require('@prisma/client');
+import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 const createBrand = async (req, res) => {
@@ -69,7 +69,7 @@ const deleteBrand = async (req, res) => {
   }
 };
 
-module.exports = {
+export default {
   createBrand,
   getBrands,
   getBrandById,

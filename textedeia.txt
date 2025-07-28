@@ -1,78 +1,15 @@
-// To run this code you need to install the following dependencies:
-// npm install @google/genai mime
-// npm install -D @types/node
-
-import {
-  GoogleGenAI,
-} from '@google/genai';
-
-async function main() {
-  const ai = new GoogleGenAI({
-    apiKey: process.env.GEMINI_API_KEY,
-  });
-  const config = {
-    thinkingConfig: {
-      thinkingBudget: 0,
-    },
-  };
-  const model = 'gemini-2.5-flash-lite';
-  const contents = [
-    {
-      role: 'user',
-      parts: [
-        {
-          text: `o que que significa saga`,
-        },
-      ],
-    },
-    {
-      role: 'model',
-      parts: [
-        {
-          text: `A palavra "saga" tem um significado bastante rico e pode se referir a diferentes coisas, dependendo do contexto. Vamos explorar os principais:
-
-**1. Na Literatura e Cultura Nórdica/Germânica:**
-
-* **Definição Original:** Originalmente, uma saga era uma **longa narrativa em prosa**, geralmente escrita na Islândia medieval. Elas frequentemente contavam histórias de **famílias, heróis, reis, colonizadores, batalhas, conflitos e viagens**. As sagas nórdicas são conhecidas por seu realismo, detalhamento histórico e complexidade de personagens.
-* **Características:** Eram escritas em língua islandesa antiga e muitas vezes eram baseadas em tradições orais. Exemplos famosos incluem a *Saga dos Volsungos*, a *Saga de Egil Skallagrimsson* e a *Saga de Njáll*.
-
-**2. No Sentido Mais Amplo (Uso Moderno):**
-
-* **Uma Longa Série de Eventos:** Hoje em dia, "saga" é usada de forma mais ampla para descrever uma **longa e muitas vezes complexa série de eventos interligados**, geralmente com um fio condutor que pode ser um tema, um personagem ou uma busca.
-* **Abrangendo Diferentes Mídias:** Essa acepção se estende a diversas formas de mídia:
-    * **Literatura:** Uma série de livros que contam uma história contínua ou sobre o mesmo universo e personagens. Por exemplo, a "Saga de Harry Potter".
-    * **Cinema/Televisão:** Uma franquia de filmes ou séries que seguem uma narrativa longa e evolutiva. Exemplos incluem a "Saga Star Wars" ou a "Saga Crepúsculo".
-    * **Videogames:** Uma série de jogos que compartilham a mesma história ou universo.
-    * **Histórias Pessoais:** Pode se referir a uma longa e épica jornada ou período na vida de uma pessoa, repleto de desafios, triunfos e reviravoltas.
-
-**Em resumo, "saga" pode significar:**
-
-* **Um gênero literário histórico da Escandinávia, caracterizado por narrativas longas e épicas sobre famílias e heróis.**
-* **Uma longa e envolvente sequência de eventos, seja em livros, filmes, séries, videogames ou na vida real.**
-
-A essência da saga é a **duração, a complexidade e a narrativa envolvente** que mantém o público acompanhando por um longo período.`,
-        },
-      ],
-    },
-    {
-      role: 'user',
-      parts: [
-        {
-          text: `INSERT_INPUT_HERE`,
-        },
-      ],
-    },
-  ];
-
-  const response = await ai.models.generateContentStream({
-    model,
-    config,
-    contents,
-  });
-  let fileIndex = 0;
-  for await (const chunk of response) {
-    console.log(chunk.text);
-  }
-}
-
-main();
+Node.js v22.15.0
+[0] [nodemon] app crashed - waiting for file changes before starting...
+[0] [nodemon] restarting due to changes...
+[0] [nodemon] starting `node src/server.js`
+[0] file:///C:/Users/Rogerio/Desktop/Projectos/cli/CaraON/CaraON-backend/src/controllers/contact.controller.js:46
+[0]   const getContactSummary = async (req, res) => {
+[0]         ^^^^^^^^^^^^^^^^^
+[0]
+[0] SyntaxError: Unexpected identifier 'getContactSummary'
+[0]     at compileSourceTextModule (node:internal/modules/esm/utils:344:16)
+[0]     at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:105:18)[0]     at #translate (node:internal/modules/esm/loader:534:12)
+[0]     at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:581:27)   
+[0] 
+[0] Node.js v22.15.0
+[0] [nodemon] app crashed - waiting for file changes before starting...

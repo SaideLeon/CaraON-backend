@@ -1,11 +1,11 @@
-const { PrismaClient } = require('@prisma/client');
+import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
-const { z } = require('zod');
+import { z } from 'zod';
  
-const {  productSchema, ProductListResponseSchema } = require('../schemas/product.schema');
+import {  productSchema, ProductListResponseSchema } from '../schemas/product.schema.js';
  
 
-exports.createProduct = async (req, res) => {
+const createProduct = async (req, res) => {
   const { ...productData } = req.body;
 
   try {
@@ -42,7 +42,7 @@ exports.createProduct = async (req, res) => {
   }
 };
 
-exports.getProducts = async (req, res) => {
+const getProducts = async (req, res) => {
   try {
     const {
       page,
@@ -113,7 +113,7 @@ exports.getProducts = async (req, res) => {
   }
 };
 
-exports.getProductById = async (req, res) => {
+const getProductById = async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -144,7 +144,7 @@ exports.getProductById = async (req, res) => {
   }
 };
 
-exports.updateProduct = async (req, res) => {
+const updateProduct = async (req, res) => {
   const { id } = req.params;
   const { ...productData } = req.body;
 
@@ -188,7 +188,7 @@ exports.updateProduct = async (req, res) => {
   }
 };
 
-exports.deleteProduct = async (req, res) => {
+const deleteProduct = async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -204,4 +204,12 @@ exports.deleteProduct = async (req, res) => {
     }
     res.status(500).json({ error: 'Falha ao deletar o produto.' });
   }
+};
+
+export default {
+  createProduct,
+  getProducts,
+  getProductById,
+  updateProduct,
+  deleteProduct,
 };

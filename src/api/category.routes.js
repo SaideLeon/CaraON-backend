@@ -1,9 +1,9 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const categoryController = require('../controllers/category.controller');
-const { validate } = require('../middlewares/validate.middleware');
-const { createCategorySchema, updateCategorySchema, listCategoriesSchema } = require('../schemas/category.schema');
-const auth = require('../middlewares/auth.middleware');
+import categoryController from '../controllers/category.controller.js';
+import validate from '../middlewares/validate.middleware.js';
+import { createCategorySchema, updateCategorySchema, listCategoriesSchema } from '../schemas/category.schema.js';
+import auth from '../middlewares/auth.middleware.js';
 
 /**
  * @swagger
@@ -162,4 +162,4 @@ router.get('/categories/:id', categoryController.getCategoryById);
 router.put('/categories/:id', auth, validate(updateCategorySchema), categoryController.updateCategory);
 router.delete('/categories/:id', auth, categoryController.deleteCategory);
 
-module.exports = router;
+export default router;

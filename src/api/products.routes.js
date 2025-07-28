@@ -1,9 +1,9 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const productController = require('../controllers/products.controller');
-const { validate } = require('../middlewares/validate.middleware');
-const { createProductSchema, updateProductSchema, listProductsSchema } = require('../schemas/product.schema');
-const auth = require('../middlewares/auth.middleware');
+import productController from '../controllers/products.controller.js';
+import validate from '../middlewares/validate.middleware.js';
+import { createProductSchema, updateProductSchema, listProductsSchema } from '../schemas/product.schema.js';
+import auth from '../middlewares/auth.middleware.js';
 
 /**
  * @swagger
@@ -407,4 +407,4 @@ router.get('/products/:id', productController.getProductById);
 router.put('/products/:id', auth, validate(updateProductSchema), productController.updateProduct);
 router.delete('/products/:id', auth, productController.deleteProduct);
 
-module.exports = router;
+export default router;

@@ -1,9 +1,9 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const instanceController = require('../controllers/instances.controller');
-const { validate } = require('../middlewares/validate.middleware');
-const { instanceActionSchema } = require('../schemas/instance.schema');
-const auth = require('../middlewares/auth.middleware');
+import instanceController from '../controllers/instances.controller.js';
+import validate from '../middlewares/validate.middleware.js';
+import { instanceActionSchema } from '../schemas/instance.schema.js';
+import auth from '../middlewares/auth.middleware.js';
 
 /**
  * @swagger
@@ -227,4 +227,4 @@ router.get('/instances/:instanceId/status', auth, validate(instanceActionSchema)
 router.delete('/instances/:instanceId', auth, validate(instanceActionSchema), instanceController.deleteInstance);
 
 
-module.exports = router;
+export default router;

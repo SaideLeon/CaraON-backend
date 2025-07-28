@@ -1,9 +1,9 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const cartController = require('../controllers/cart.controller');
-const { validate } = require('../middlewares/validate.middleware');
-const { addToCartSchema, updateCartSchema, removeFromCartSchema } = require('../schemas/cart.schema');
-const auth = require('../middlewares/auth.middleware');
+import cartController from '../controllers/cart.controller.js';
+import validate from '../middlewares/validate.middleware.js';
+import { addToCartSchema, updateCartSchema, removeFromCartSchema } from '../schemas/cart.schema.js';
+import auth from '../middlewares/auth.middleware.js';
 
 /**
  * @swagger
@@ -125,4 +125,4 @@ router.put('/cart/update', auth, validate(updateCartSchema), cartController.upda
  */
 router.delete('/cart/remove', auth, validate(removeFromCartSchema), cartController.removeFromCart);
 
-module.exports = router;
+export default router;
