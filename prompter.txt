@@ -1,26 +1,23 @@
+root@cognick:~# sudo systemctl status redis
+● redis-server.service - Advanced key-value store
+     Loaded: loaded (/lib/systemd/system/redis-server.service; enabled; vendor preset: enabled)
+     Active: active (running) since Mon 2025-07-28 20:52:49 UTC; 1min 45s ago
+       Docs: http://redis.io/documentation,
+             man:redis-server(1)
+   Main PID: 1506291 (redis-server)
+     Status: "Ready to accept connections"
+      Tasks: 7 (limit: 28632)
+     Memory: 3.9M
+     CGroup: /system.slice/redis-server.service
+             └─1506291 /usr/bin/redis-server 127.0.0.1:6379
 
-18|caraon-api  | 🔌 Cliente WebSocket desconectado
-18|caraon-api  | 🔗 Novo cliente WebSocket conectado
-18|caraon-api  | 🔌 Cliente WebSocket desconectado
-18|caraon-api  | 🔗 Novo cliente WebSocket conectado
-18|caraon-api  | ▶️ Teste de playground recebido para a instância: 687e78cd6a5d7dda26dfe1b6
-18|caraon-api  | -- Início da Execução Hierárquica com Stream: Instância 687e78cd6a5d7dda26dfe1b6 --
-18|caraon-api  | >> getParentAgent: Buscando agente ROUTER para instância 687e78cd6a5d7dda26dfe1b6 e organização N/A
-18|caraon-api  | >> getParentAgent: Agente ROUTER encontrado: 6887b43b3ae215efd8206221
-18|caraon-api  | >> getOrganizationParentAgents: Buscando agentes PARENT para a instância 687e78cd6a5d7dda26dfe1b6
-18|caraon-api  | >> getOrganizationParentAgents: 0 agentes PARENT encontrados.
-18|caraon-api  | Nenhum departamento encontrado. O roteador principal responderá com stream.
-18|caraon-api  | >> executeAgentDirectStream: Executando agente Roteador - Meu WhatsApp Pessoal (ID: 6887b43b3ae215efd8206221) diretamente com stream.
-18|caraon-api  | >> executeAgentDirectStream: Prompt: Você é o agente roteador principal. Sua função é analisar a mensagem do usuário e direcioná-la para o departamento ou especialista correto (Vendas, Suporte, etc.). Se não tiver certeza, peça ao usuário para esclarecer.
-18|caraon-api  | Mensagem do usuário: "Quanto custa Samsung Galaxy S24 Ultra"
-18|caraon-api  | >> generateStreamedResponse: Iniciando a geração de resposta com stream...
-18|caraon-api  | >> generateStreamedResponse: Stream concluído.
-18|caraon-api  | >> executeAgentDirectStream: Resposta final: "Direcionando para o departamento de **Vendas**.
-18|caraon-api  | "
-18|caraon-api  | >> logAgentExecution: Registrando execução... {
-18|caraon-api  |   routerAgentId: '6887b43b3ae215efd8206221',
-18|caraon-api  |   success: true,
-18|caraon-api  |   errorMessage: null
-18|caraon-api  | }
-18|caraon-api  | >> logAgentExecution: Execução registrada com sucesso. ID: 6887c98d8f6e489f4f06ecc1
+Jul 28 20:52:49 cognick systemd[1]: Starting Advanced key-value store...
+Jul 28 20:52:49 cognick systemd[1]: Started Advanced key-value store.
+root@cognick:~#
+
+
+
+
+
+
 
