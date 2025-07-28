@@ -18,7 +18,7 @@ const updateOrderStatusSchema = z.object({
     status: z.enum(['PENDING', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELED', 'RETURNED', 'REFUNDED']),
   }),
   params: z.object({
-    id: z.string(),
+    id: z.string().regex(/^[0-9a-fA-F]{24}$/, 'ID de pedido inválido.'),
   }),
 });
 

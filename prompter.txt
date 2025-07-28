@@ -1,49 +1,41 @@
-esponses
-Curl
+Para resolver as inconsistências e evitar futuros erros de "Bad
+  Request", vou realizar uma análise profunda e sistemática do seu código. A
+  minha abordagem será a seguinte:
 
-curl -X 'POST' \
-  'https://app.caraon.qzz.io/api/v1/agents' \
-  -H 'accept: */*' \
-  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODdkNmI5ZTE0YWI2YzFjMjYyM2FlNGEiLCJpYXQiOjE3NTM2OTY2NjN9.9iOYsQ6m1aiz_AsK7fHWmZ8VbloK_nSju9d0SoBO86U' \
-  -H 'Content-Type: application/json' \
-  -d '{
-  "name": "Roteador Principal da Instância",
-  "persona": "Eu sou o roteador principal. Direciono os clientes para o departamento correto.",
-  "type": "ROUTER",
-  "instanceId": "6886205236771eb0a30adf06"
-}'
-Request URL
-https://app.caraon.qzz.io/api/v1/agents
-Server response
-Code	Details
-400	
-Error: response status is 400
+   1. Análise do Schema Prisma: Vou começar por analisar detalhadamente o seu
+      schema.prisma para ter um entendimento claro dos modelos de dados e das
+      suas relações. Este será o meu ponto de partida e a fonte da verdade sobre      
+      a estrutura da sua base de dados.
+   2. Revisão dos Controladores e Serviços: Em seguida, vou percorrer cada
+      controlador e os seus respetivos serviços, comparando a lógica de negócio       
+      com o schema do Prisma. O meu foco será em:
+       * Lógica de Criação e Atualização: Garantir que os dados passados para as      
+         funções prisma.create e prisma.update correspondem exatamente ao que os      
+         modelos do Prisma esperam.
+       * Lógica de Validação: Verificar se os schemas Zod (nos ficheiros
+         *.schema.js) estão alinhados com os modelos do Prisma e com a lógica dos     
+         controladores.
+       * Transformação de Dados: Identificar quaisquer transformações de dados        
+         que possam estar a introduzir inconsistências antes de os dados serem        
+         enviados para a base de dados.
+   3. Correção de Inconsistências: À medida que for encontrando problemas, irei       
+      corrigi-los. Isto poderá incluir a atualização dos schemas Zod, o ajuste da     
+      lógica nos controladores ou a modificação dos serviços para estarem em
+      conformidade com o Prisma.
 
-Response headers
- access-control-allow-origin: * 
- alt-svc: h3=":443"; ma=86400 
- cf-cache-status: DYNAMIC 
- cf-ray: 9663870c2b79128a-LHR 
- content-length: 0 
- date: Mon,28 Jul 2025 10:00:06 GMT 
- nel: {"success_fraction":0,"report_to":"cf-nel","max_age":604800} 
- report-to: {"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v4?s=NxgreC7QhPXSQ4g%2B2IU4ARNkCPTSUlbgr1h2WTAbqkallQ%2FauWY4XCrzbFL8NKj1cCatos57vb2GvGWB2EUxKSdqOSQ9THjV%2B6ky1fLnMQ7H%2FiHk4fDm3H9Ue7httNzXsBM0Rw%3D%3D"}],"group":"cf-nel","max_age":604800} 
- server: cloudflare 
- server-timing: cfL4;desc="?proto=QUIC&rtt=320189&min_rtt=318326&rtt_var=69895&sent=12&recv=11&lost=0&retrans=0&sent_bytes=4910&recv_bytes=4957&delivery_rate=4212919&ss_exit_cwnd=0&ss_exit_reason=0&cwnd=16830&unsent_bytes=0&cid=52e877b5270954da&ts=780&inflight_dur=649&x=103" 
- x-powered-by: Express 
-Responses
-Code	Description	Links
-201	
-Agente criado com sucesso.
-
-No links
-400	
-Requisição inválida.
-
-No links
-401	
-Não autorizado.
-
-No links
-500	
-Falha ao criar o agente
+  Começarei por restaurar a validação que foi removida da rota de registo, pois a 
+   sua ausência pode mascarar outros problemas.
+ ╭───────────────────────────────────────────────────────────────────────────────╮
+ │ ✔  Edit src\api\auth.routes.js: import authController from '..... => import … │
+ │                                                                               │
+ │    1   import express from 'express';                                         │
+ │    2   const router = express.Router();                                       │
+ │    3   import authController from                                             │
+ │        '../controllers/auth.controller.js';                                   │
+ │    4 + import validate from                                                   │
+ │      '../middlewares/validate.middleware.js';                                 │
+ │    5 + import { userRegistrationSchema, userLoginSchema } from                │    
+ │      '../schemas/user.schema.js';                                             │    
+ │    6                                                                          │    
+ │    7   /**                                                                    │    
+ │    8    * @swagger          

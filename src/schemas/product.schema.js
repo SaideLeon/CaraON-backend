@@ -41,7 +41,7 @@ const createProductSchema = z.object({
 const updateProductSchema = z.object({
   body: productSchema.partial(), // Torna todos os campos opcionais
   params: z.object({
-    id: z.string()
+    id: z.string().regex(/^[0-9a-fA-F]{24}$/, 'ID de produto inválido.')
   }),
 });
 

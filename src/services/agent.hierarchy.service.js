@@ -66,7 +66,6 @@ async function createCustomChildAgent(data) {
       instanceId,
       organizationId,
       parentAgentId,
-      routerAgentId: parentAgentId, // Um filho é roteado por seu pai
       isActive: true,
       priority: 2,
       config: {

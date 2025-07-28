@@ -13,7 +13,7 @@ const createCategorySchema = z.object({
 const updateCategorySchema = z.object({
   body: categorySchema.partial(),
   params: z.object({
-    id: z.string().uuid('ID de categoria inválido.'),
+    id: z.string().regex(/^[0-9a-fA-F]{24}$/, 'ID de categoria inválido.'),
   }),
 });
 

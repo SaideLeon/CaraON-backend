@@ -11,13 +11,13 @@ const CreateOrganizationBody = z.object({
 const createOrganizationSchema = z.object({
   body: CreateOrganizationBody.openapi({ refId: 'CreateOrganization' }),
   params: z.object({
-    instanceId: z.string(),
+    instanceId: z.string().regex(/^[0-9a-fA-F]{24}$/, 'ID de instância inválido.'),
   }),
 });
 
 const listOrganizationsSchema = z.object({
   params: z.object({
-    instanceId: z.string(),
+    instanceId: z.string().regex(/^[0-9a-fA-F]{24}$/, 'ID de instância inválido.'),
   }),
 });
 

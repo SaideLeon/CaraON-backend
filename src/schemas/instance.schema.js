@@ -6,7 +6,7 @@ extendZodWithOpenApi(z);
 
 const instanceActionSchema = z.object({
   params: z.object({
-    instanceId: z.string(),
+    instanceId: z.string().regex(/^[0-9a-fA-F]{24}$/, 'ID de instância inválido.'),
   }),
 });
 

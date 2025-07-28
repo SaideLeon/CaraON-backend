@@ -64,7 +64,7 @@ const createToolSchema = z.object({
 
 const toolIdParamSchema = z.object({
   params: z.object({
-    toolId: z.string(),
+    toolId: z.string().regex(/^[0-9a-fA-F]{24}$/, 'ID de ferramenta inválido.'),
   }),
 });
 

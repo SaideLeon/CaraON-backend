@@ -1,6 +1,8 @@
 import express from 'express';
 const router = express.Router();
-import authController from '../controllers/auth.controller.js';  
+import authController from '../controllers/auth.controller.js';
+import validate from '../middlewares/validate.middleware.js';
+import { userRegistrationSchema, userLoginSchema } from '../schemas/user.schema.js';  
 
 /**
  * @swagger
@@ -31,7 +33,7 @@ import authController from '../controllers/auth.controller.js';
  *       409:
  *         description: O e-mail fornecido já está em uso.
  */
-router.post('/register', authController.register);
+router.post('/register', validate(userRegistrationSchema), authController.register);
 
 /**
  * @swagger
@@ -57,6 +59,6 @@ router.post('/register', authController.register);
  *       404:
  *         description: Usuário não encontrado.
  */
-router.post('/login', authController.login);
+router.post('/login', validate(userLoginSchema), authController.login);
 
 export default router;
