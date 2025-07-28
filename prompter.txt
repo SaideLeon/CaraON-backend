@@ -1,74 +1,26 @@
 
-18|caraon-api  | >> generateResponse: Resposta gerada com sucesso: 6887675d5f7fbe260a8dc1c3
-18|caraon-api  | >> getChildAgents: Buscando agentes filhos para o pai 6887675d5f7fbe260a8dc1c3
-18|caraon-api  | >> getChildAgents: 1 filhos encontrados.
-18|caraon-api  | >> generateResponse: Iniciando a geração de resposta...
-18|caraon-api  | >> generateResponse: Prompt:
-18|caraon-api  | Você é um agente orquestrador. Sua tarefa é analisar a mensagem do usuário e selecionar o agente especialista mais adequado para lidar com a solicitação.
-18|caraon-api  | Mensagem do usuário: "v"
-18|caraon-api  | Opções disponíveis:
-18|caraon-api  | - ID: 688767de5f7fbe260a8dc1c5
-18|caraon-api  | - Nome: especialista em vendas
-18|caraon-api  | - Descrição/Especialidade: seja bom em ensinar vendas
-18|caraon-api  | Responda APENAS com o ID do agente especialista selecionado. Se nenhum for adequado, responda com "NONE".
-18|caraon-api  | >> generateResponse: Config: {
-18|caraon-api  |   maxTokens: 100,
-18|caraon-api  |   temperature: 0.1,
-18|caraon-api  |   model: 'googleai/gemini-2.0-flash'
-18|caraon-api  | }
-18|caraon-api  | >> generateResponse: Resposta gerada com sucesso: NONE
-18|caraon-api  | LLM respondeu com 'NONE'. Nenhum agente especialista será selecionado.
-18|caraon-api  | Nenhum especialista selecionado. O departamento responderá com stream.
-18|caraon-api  | >> executeAgentDirectStream: Executando agente Suporte tecnico (ID: 6887675d5f7fbe260a8dc1c3) diretamente com stream.
-18|caraon-api  | >> executeAgentDirectStream: Prompt: orequestre tudos agentes subordinado
-18|caraon-api  | Mensagem do usuário: "v"
-18|caraon-api  | !! ERRO na execução hierárquica com stream: generateStreamedResponse is not defined {
-18|caraon-api  |   stack: 'ReferenceError: generateStreamedResponse is not defined\n' +
-18|caraon-api  |     '    at executeAgentDirectStream (file:///root/CaraON-backend/src/services/agent.execution.service.js:279:25)\n' +
-18|caraon-api  |     '    at executeHierarchicalAgentFlowStream (file:///root/CaraON-backend/src/services/agent.execution.service.js:332:37)\n' +
-18|caraon-api  |     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
-18|caraon-api  |     '    at async WebSocket.<anonymous> (file:///root/CaraON-backend/src/services/websocket.service.js:61:50)'
-18|caraon-api  | }
+18|caraon-api  | 🔌 Cliente WebSocket desconectado
+18|caraon-api  | 🔗 Novo cliente WebSocket conectado
+18|caraon-api  | 🔌 Cliente WebSocket desconectado
+18|caraon-api  | 🔗 Novo cliente WebSocket conectado
+18|caraon-api  | ▶️ Teste de playground recebido para a instância: 687e78cd6a5d7dda26dfe1b6
+18|caraon-api  | -- Início da Execução Hierárquica com Stream: Instância 687e78cd6a5d7dda26dfe1b6 --
+18|caraon-api  | >> getParentAgent: Buscando agente ROUTER para instância 687e78cd6a5d7dda26dfe1b6 e organização N/A
+18|caraon-api  | >> getParentAgent: Agente ROUTER encontrado: 6887b43b3ae215efd8206221
+18|caraon-api  | >> getOrganizationParentAgents: Buscando agentes PARENT para a instância 687e78cd6a5d7dda26dfe1b6
+18|caraon-api  | >> getOrganizationParentAgents: 0 agentes PARENT encontrados.
+18|caraon-api  | Nenhum departamento encontrado. O roteador principal responderá com stream.
+18|caraon-api  | >> executeAgentDirectStream: Executando agente Roteador - Meu WhatsApp Pessoal (ID: 6887b43b3ae215efd8206221) diretamente com stream.
+18|caraon-api  | >> executeAgentDirectStream: Prompt: Você é o agente roteador principal. Sua função é analisar a mensagem do usuário e direcioná-la para o departamento ou especialista correto (Vendas, Suporte, etc.). Se não tiver certeza, peça ao usuário para esclarecer.
+18|caraon-api  | Mensagem do usuário: "Quanto custa Samsung Galaxy S24 Ultra"
+18|caraon-api  | >> generateStreamedResponse: Iniciando a geração de resposta com stream...
+18|caraon-api  | >> generateStreamedResponse: Stream concluído.
+18|caraon-api  | >> executeAgentDirectStream: Resposta final: "Direcionando para o departamento de **Vendas**.
+18|caraon-api  | "
 18|caraon-api  | >> logAgentExecution: Registrando execução... {
 18|caraon-api  |   routerAgentId: '6887b43b3ae215efd8206221',
-18|caraon-api  |   success: false,
-18|caraon-api  |   errorMessage: 'generateStreamedResponse is not defined'
+18|caraon-api  |   success: true,
+18|caraon-api  |   errorMessage: null
 18|caraon-api  | }
-18|caraon-api  | >> logAgentExecution: Execução registrada com sucesso. ID: 6887b44c3ae215efd8206225
-18|caraon-api  | Erro ao processar mensagem do WebSocket: ReferenceError: generateStreamedResponse is not defined
-18|caraon-api  |     at executeAgentDirectStream (file:///root/CaraON-backend/src/services/agent.execution.service.js:279:25)
-18|caraon-api  |     at executeHierarchicalAgentFlowStream (file:///root/CaraON-backend/src/services/agent.execution.service.js:332:37)
-18|caraon-api  |     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
-18|caraon-api  |     at async WebSocket.<anonymous> (file:///root/CaraON-backend/src/services/websocket.service.js:61:50)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+18|caraon-api  | >> logAgentExecution: Execução registrada com sucesso. ID: 6887c98d8f6e489f4f06ecc1
 
