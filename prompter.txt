@@ -1,33 +1,31 @@
+caraon- | 🔗 Novo cliente WebSocket conectado
 
-/root/.pm2/logs/caraon-api-out.log last 15 lines:
-18|caraon- | 📚 Documentação da API disponível em: http://localhost:3030/api-docs
-18|caraon- | 🔗 Novo cliente WebSocket conectado
-18|caraon- | 🔌 Cliente WebSocket desconectado
-18|caraon- | 🔗 Novo cliente WebSocket conectado
-18|caraon- | 🔌 Cliente WebSocket desconectado
-18|caraon- | 🔗 Novo cliente WebSocket conectado
-18|caraon- | 🔌 Cliente WebSocket desconectado
-18|caraon- | 🔗 Novo cliente WebSocket conectado
-18|caraon- | Shutting down all Genkit servers...
-18|caraon- | ✅ Conectado ao servidor Redis para histórico de conversas.
-18|caraon- | ✅ Servidor WebSocket iniciado
-18|caraon- | ✅ Conectado ao MongoDB para sessões WhatsApp
-18|caraon- | 🚀 API e WebSocket rodando na porta 3030
-18|caraon- | 📚 Documentação da API disponível em: http://localhost:3030/api-docs
-18|caraon- | 🔗 Novo cliente WebSocket conectado
+18|caraon-api  | Erro ao deletar instância: PrismaClientKnownRequestError:
+18|caraon-api  | Invalid `prisma.instance.delete()` invocation:
+18|caraon-api  | The change you are trying to make would violate the required relation 'AgentToInstance' between the `Agent` and `Instance` models.
+18|caraon-api  |     at ri.handleRequestError (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:121:7459)
+18|caraon-api  |     at ri.handleAndLogRequestError (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:121:6784)
+18|caraon-api  |     at ri.request (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:121:6491)
+18|caraon-api  |     at async l (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:130:9812)
+18|caraon-api  |     at async deleteInstance (file:///root/CaraON-backend/src/controllers/instances.controller.js:113:5) {
+18|caraon-api  |   code: 'P2014',
+18|caraon-api  |   meta: {
+18|caraon-api  |     modelName: 'Instance',
+18|caraon-api  |     relation_name: 'AgentToInstance',
+18|caraon-api  |     model_a_name: 'Agent',
+18|caraon-api  |     model_b_name: 'Instance'
+18|caraon-api  |   },
+18|caraon-api  |   clientVersion: '6.12.0'
+18|caraon-api  | }
+18|caraon-api  | Status da instância 687d6b9e14ab6c1c2623ae4a-1753739602291 atualizado para: DISCONNECTED
 
-18|caraon-api  | Falha ao atualizar o status da instância 687d6b9e14ab6c1c2623ae4a-1753739602291: ReferenceError: WebSocket is not defined
-18|caraon-api  |     at file:///root/CaraON-backend/src/services/websocket.service.js:93:31
-18|caraon-api  |     at Set.forEach (<anonymous>)
-18|caraon-api  |     at Module.broadcast (file:///root/CaraON-backend/src/services/websocket.service.js:92:15)
-18|caraon-api  |     at updateInstanceStatus (file:///root/CaraON-backend/src/services/whatsapp.service.js:20:22)
-18|caraon-api  | 🔑 QR Code gerado para 687d6b9e14ab6c1c2623ae4a-1753739602291. Enviando via WebSocket.
-18|caraon-api  | ReferenceError: WebSocket is not defined
-18|caraon-api  |     at file:///root/CaraON-backend/src/services/websocket.service.js:93:31
-18|caraon-api  |     at Set.forEach (<anonymous>)
-18|caraon-api  |     at Module.broadcast (file:///root/CaraON-backend/src/services/websocket.service.js:92:15)
-18|caraon-api  |     at Client.<anonymous> (file:///root/CaraON-backend/src/services/whatsapp.service.js:154:22)
-18|caraon-api  |     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+
+
+
+
+
+
+
 
 
 
