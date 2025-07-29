@@ -269,109 +269,7 @@ Revise e, se necessário, refine a resposta do especialista para garantir clarez
   return refinedResponse;
 }
 
-/**
- * Executa um agente diretamente, sem seleção de filhos ou ferramentas, com streaming.
- */
-async function executeAgentDirectStream(agent, messageContent, conversationId, streamCallback) {
-  console.log(`>> executeAgentDirectStream: Executando agente ${agent.name} (ID: ${agent.id}) diretamente com stream.`);
-  
-  // 1. Recuperar histórico da conversa
-  const history = getFormattedHistory(conversationId);
 
-  // 2. Construir o prompt com o histórico
-  const prompt = `${agent.persona}${history}\n\nMensagem do usuário: "${messageContent}"`;
-  console.log(`>> executeAgentDirectStream: Prompt com histórico:`, prompt);
-
-  // 3. Gerar resposta com streaming
-  const finalResponse = await generateStreamedResponse(prompt, { ...agent.config }, streamCallback);
-  console.log(`>> executeAgentDirectStream: Resposta final: "${finalResponse}"`);
-
-  // 4. Salvar a interação no histórico
-  addMessageToHistory(conversationId, 'user', messageContent);
-  addMessageToHistory(conversationId, 'agent', finalResponse);
-
-  return finalResponse;
-}
-
-/**
- * Executa o fluxo de roteamento e execução de agentes em múltiplos níveis com streaming.
- * @param {string} instanceId - O ID da instância.
- * @param {string} messageContent - A mensagem do usuário.
- * @param {string} userPhone - O telefone do usuário.
- * @param {(chunk: string) => void} streamCallback - Callback para enviar pedaços da resposta.
- */
-async function executeHierarchicalAgentFlowStream(instanceId, messageContent, userPhone, streamCallback) {
-  console.log(`\n-- Início da Execução Hierárquica com Stream: Instância ${instanceId} --`);
-  const startTime = Date.now();
-  let executionLog = [];
-  let routerAgentIdForLog = null;
-  const conversationId = userPhone; // Usar o telefone do usuário como ID da conversa
-
-  try {
-    const routerAgent = await agentHierarchyService.getParentAgent(instanceId, null);
-    if (!routerAgent) throw new Error(`Nenhum Agente Roteador principal encontrado para a instância ${instanceId}`);
-    executionLog.push({ agentId: routerAgent.id, name: routerAgent.name, type: 'Router' });
-    routerAgentIdForLog = routerAgent.id;
-
-    const organizationAgents = await agentHierarchyService.getOrganizationParentAgents(instanceId);
-    if (organizationAgents.length === 0) {
-      console.log('Nenhum departamento encontrado. O roteador principal responderá com stream.');
-      const finalResponse = await executeAgentDirectStream(routerAgent, messageContent, conversationId, streamCallback);
-      await logAgentExecution(routerAgentIdForLog, instanceId, messageContent, finalResponse, Date.now() - startTime, true, executionLog);
-      return { finalResponse };
-    }
-
-    // A seleção de agente não é um processo de streaming, então permanece igual.
-    const departmentAgent = await selectAgent(routerAgent, organizationAgents, messageContent, 'organization');
-    if (!departmentAgent) {
-      console.log('Nenhum departamento selecionado. O roteador responderá com stream.');
-      const finalResponse = await executeAgentDirectStream(routerAgent, messageContent, conversationId, streamCallback);
-      await logAgentExecution(routerAgentIdForLog, instanceId, messageContent, finalResponse, Date.now() - startTime, true, executionLog);
-      return { finalResponse };
-    }
-    executionLog.push({ agentId: departmentAgent.id, name: departmentAgent.name, type: 'Department' });
-
-    const specialistAgents = await agentHierarchyService.getChildAgents(departmentAgent.id);
-    if (specialistAgents.length === 0) {
-        console.log('Nenhum especialista encontrado. O departamento responderá com stream.');
-        const finalResponse = await executeAgentDirectStream(departmentAgent, messageContent, conversationId, streamCallback);
-        await logAgentExecution(routerAgentIdForLog, instanceId, messageContent, finalResponse, Date.now() - startTime, true, executionLog);
-        return { finalResponse };
-    }
-
-    const specialistAgent = await selectAgent(departmentAgent, specialistAgents, messageContent, 'specialist');
-    if (!specialistAgent) {
-        console.log('Nenhum especialista selecionado. O departamento responderá com stream.');
-        const finalResponse = await executeAgentDirectStream(departmentAgent, messageContent, conversationId, streamCallback);
-        await logAgentExecution(routerAgentIdForLog, instanceId, messageContent, finalResponse, Date.now() - startTime, true, executionLog);
-        return { finalResponse };
-    }
-    executionLog.push({ agentId: specialistAgent.id, name: specialistAgent.name, type: 'Specialist' });
-
-    // A execução do especialista e o refinamento ainda não suportam streaming neste exemplo.
-    // Para um streaming completo, executeSpecialistAgent e refineResponseWithParent também precisariam ser adaptados.
-    console.log('Executando o Agente Especialista (sem stream para esta etapa)...');
-    const specialistResponse = await executeSpecialistAgent(specialistAgent, messageContent, conversationId);
-    
-    console.log('Refinando a resposta com o Roteador (sem stream para esta etapa)...');
-    const finalResponse = await refineResponseWithParent(routerAgent, messageContent, specialistResponse, conversationId);
-
-    // Para a resposta final refinada, podemos fazer o stream dela se desejado, mas por simplicidade aqui enviamos de uma vez.
-    streamCallback(finalResponse); 
-
-    // Salvar no histórico após o refinamento final
-    addMessageToHistory(conversationId, 'user', messageContent);
-    addMessageToHistory(conversationId, 'agent', finalResponse);
-
-    await logAgentExecution(routerAgentIdForLog, instanceId, messageContent, finalResponse, Date.now() - startTime, true, executionLog);
-    return { finalResponse };
-
-  } catch (error) {
-    console.error(`!! ERRO na execução hierárquica com stream: ${error.message}`, { stack: error.stack });
-    await logAgentExecution(routerAgentIdForLog, instanceId, messageContent, null, Date.now() - startTime, false, executionLog, error.message);
-    throw error; // Lança o erro para ser tratado pelo WebSocket
-  }
-}
 
 /**
  * Registra a execução completa do fluxo de agentes e retorna o registro.
@@ -402,5 +300,4 @@ async function logAgentExecution(routerAgentId, instanceId, userMessage, finalRe
 
 export {
   executeHierarchicalAgentFlow,
-  executeHierarchicalAgentFlowStream, // Export the new function
 };

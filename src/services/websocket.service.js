@@ -49,23 +49,14 @@ function init(server) {
             console.log(`✅ Agente Roteador Principal criado automaticamente para a instância ${instance.name} via playground.`);
           }
 
-          // Define o callback para o streaming
-          const streamCallback = (chunk) => {
-            ws.send(JSON.stringify({
-              type: 'playground_response_chunk',
-              chunk: chunk,
-            }));
-          };
-
-          // Chama a nova função de fluxo com streaming
-          const { finalResponse, executionId } = await executeHierarchicalAgentFlowStream(
+          // Chama a função de fluxo NÃO-streaming para obter a resposta completa
+          const { finalResponse, executionId } = await executeHierarchicalAgentFlow(
             instanceId,
             messageContent,
-            userPhone || `playground_user_${instanceId}`,
-            streamCallback
+            userPhone || `playground_user_${instanceId}`
           );
 
-          // Envia uma mensagem final para indicar que a resposta está completa
+          // Envia a resposta completa de uma só vez
           ws.send(JSON.stringify({
             type: 'playground_response_complete',
             response: { finalResponse, executionId },
