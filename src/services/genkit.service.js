@@ -193,5 +193,4 @@ export {
   searchProductsTool,
   toolRegistry,
   generateResponse,
-  generateStreamedResponse,
 };
