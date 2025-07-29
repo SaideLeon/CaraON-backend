@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { generateResponse, generateStreamedResponse } from './genkit.service.js';
+import { generateResponse } from './genkit.service.js';
 import { executeToolFunction } from './tools.service.js';
 import * as agentHierarchyService from './agent.hierarchy.service.js';
 import { selectAgent } from './agent.selection.service.js';
