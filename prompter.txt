@@ -1,38 +1,37 @@
-root@cognick:~/CaraON-backend# pm2 logs 18
-[TAILING] Tailing last 15 lines for [18] process (change the value with --lines option)
-/root/.pm2/logs/caraon-api-out.log last 15 lines:
-18|caraon- | 🔌 Cliente WebSocket desconectado
-18|caraon- | 🔗 Novo cliente WebSocket conectado
-18|caraon- | 🔌 Cliente WebSocket desconectado
-18|caraon- | 🔗 Novo cliente WebSocket conectado
-18|caraon- | 🔌 Cliente WebSocket desconectado
-18|caraon- | 🔗 Novo cliente WebSocket conectado
-18|caraon- | 🔌 Cliente WebSocket desconectado
-18|caraon- | 🔗 Novo cliente WebSocket conectado
-18|caraon- | Shutting down all Genkit servers...
-18|caraon- | ✅ Conectado ao servidor Redis para histórico de conversas.
-18|caraon- | ✅ Servidor WebSocket iniciado
+✅ Servidor WebSocket iniciado
 18|caraon- | ✅ Conectado ao MongoDB para sessões WhatsApp
 18|caraon- | 🚀 API e WebSocket rodando na porta 3030
 18|caraon- | 📚 Documentação da API disponível em: http://localhost:3030/api-docs
 18|caraon- | Shutting down all Genkit servers...
 
 /root/.pm2/logs/caraon-api-error.log last 15 lines:
-18|caraon- | SyntaxError: Export 'generateStreamedResponse' is not defined in module
-18|caraon- |     at compileSourceTextModule (node:internal/modules/esm/utils:346:16)
-18|caraon- |     at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:146:18)
-18|caraon- |     at #translate (node:internal/modules/esm/loader:431:12)
 18|caraon- |     at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:478:27)
-18|caraon- | SyntaxError: Export 'generateStreamedResponse' is not defined in module
-18|caraon- |     at compileSourceTextModule (node:internal/modules/esm/utils:346:16)
-18|caraon- |     at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:146:18)
-18|caraon- |     at #translate (node:internal/modules/esm/loader:431:12)
-18|caraon- |     at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:478:27)
-18|caraon- | SyntaxError: Export 'generateStreamedResponse' is not defined in module
-18|caraon- |     at compileSourceTextModule (node:internal/modules/esm/utils:346:16)
-18|caraon- |     at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:146:18)
-18|caraon- |     at #translate (node:internal/modules/esm/loader:431:12)
-18|caraon- |     at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:478:27)
+18|caraon- | file:///root/CaraON-backend/src/services/websocket.service.js:2
+18|caraon- | import { executeHierarchicalAgentFlow, executeHierarchicalAgentFlowStream } from './agent.execution.service.js';
+18|caraon- |                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+18|caraon- | SyntaxError: The requested module './agent.execution.service.js' does not provide an export named 'executeHierarchicalAgentFlowStream'
+18|caraon- |     at ModuleJob._instantiate (node:internal/modules/esm/module_job:175:21)
+18|caraon- |     at async ModuleJob.run (node:internal/modules/esm/module_job:258:5)
+18|caraon- |     at async ModuleLoader.import (node:internal/modules/esm/loader:540:24)
+18|caraon- | file:///root/CaraON-backend/src/services/websocket.service.js:2
+18|caraon- | import { executeHierarchicalAgentFlow, executeHierarchicalAgentFlowStream } from './agent.execution.service.js';
+18|caraon- |                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+18|caraon- | SyntaxError: The requested module './agent.execution.service.js' does not provide an export named 'executeHierarchicalAgentFlowStream'
+18|caraon- |     at ModuleJob._instantiate (node:internal/modules/esm/module_job:175:21)
+18|caraon- |     at async ModuleJob.run (node:internal/modules/esm/module_job:258:5)
+18|caraon- |     at async ModuleLoader.import (node:internal/modules/esm/loader:540:24)
+
+^X
+
+
+
+
+
+
+
+
+
+
 
 
 
