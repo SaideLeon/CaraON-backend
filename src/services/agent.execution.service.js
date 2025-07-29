@@ -103,53 +103,31 @@ async function executeHierarchicalAgentFlow(instanceId, messageContent, userPhon
 }
 
 /**
- * Executa um agente especialista, incluindo o uso de ferramentas.
+ * Executa um agente especialista usando o ciclo de ferramentas automático do Genkit.
  * @param {object} agent - O objeto do agente especialista.
  * @param {string} messageContent - A mensagem do usuário.
  * @returns {Promise<string>} A resposta do agente.
  */
 async function executeSpecialistAgent(agent, messageContent) {
-  console.log(`>> executeSpecialistAgent: Executando especialista ${agent.name} (ID: ${agent.id})`);
-  const availableTools = agent.tools ? agent.tools.filter(t => t.isActive) : [];
-  const toolsContext = availableTools.map(t => ({
-    name: t.tool.name,
-    description: t.tool.description,
-  }));
+  console.log(`>> executeSpecialistAgent: Executando especialista ${agent.name} com o método Genkit`);
 
-  const agentPrompt = `
-${agent.persona}
+  // Mapeia as ferramentas do Prisma para o formato que o Genkit espera
+  const availableTools = agent.tools
+    .filter(t => t.isActive && t.tool) // Garante que a ferramenta associada exista
+    .map(t => t.tool); 
 
-${toolsContext.length > 0 ? 'Ferramentas disponíveis:\n' + toolsContext.map(t => `- ${t.name}: ${t.description}`).join('\n') : ''}
+  const agentPrompt = `${agent.persona}\n\nMensagem do usuário: "${messageContent}"`;
 
-Mensagem do usuário: "${messageContent}"
-
-Sua tarefa é responder à mensagem. Se precisar de uma ferramenta, indique com "USAR_FERRAMENTA: [nome_da_ferramenta]".
-`;
-  console.log(`>> executeSpecialistAgent: Prompt inicial para o especialista:`, agentPrompt);
-
-  let agentResponse = await generateResponse(agentPrompt, { ...agent.config });
-  console.log(`>> executeSpecialistAgent: Resposta inicial do especialista: "${agentResponse}"`);
-
-  const toolExecutionResult = await checkAndExecuteTools(agent, agentResponse, messageContent);
-
-  if (toolExecutionResult) {
-    console.log(`>> executeSpecialistAgent: Resultado da execução da ferramenta:`, toolExecutionResult);
-    const enhancedPrompt = `
-${agent.persona}
-
-Mensagem do usuário: "${messageContent}"
-
-Contexto obtido da ferramenta:
-${toolExecutionResult}
-
-Com base neste contexto, forneça a resposta final e completa.
-`;
-    console.log(`>> executeSpecialistAgent: Prompt aprimorado para o especialista:`, enhancedPrompt);
-    agentResponse = await generateResponse(enhancedPrompt, { ...agent.config });
-    console.log(`>> executeSpecialistAgent: Resposta final do especialista (pós-ferramenta): "${agentResponse}"`);
-  }
-
-  return agentResponse;
+  // Faz uma única chamada para o ai.generate com as ferramentas.
+  // O Genkit gerenciará o ciclo de chamada de ferramentas automaticamente.
+  const finalResponse = await generateResponse(
+    agentPrompt, 
+    { ...agent.config },
+    availableTools
+  );
+  
+  console.log(`>> executeSpecialistAgent: Resposta final do especialista: "${finalResponse}"`);
+  return finalResponse;
 }
 
 /**
@@ -164,91 +142,7 @@ async function executeAgentDirect(agent, messageContent) {
   return response;
 }
 
-/**
- * Verifica se uma ferramenta é necessária, extrai parâmetros e a executa.
- */
-async function checkAndExecuteTools(agent, agentResponse, originalMessage) {
-  console.log('>> checkAndExecuteTools: Verificando necessidade de ferramentas...');
-  const availableTools = agent.tools ? agent.tools.filter(t => t.isActive) : [];
-  if (availableTools.length === 0) {
-    console.log('>> checkAndExecuteTools: Nenhuma ferramenta disponível para este agente.');
-    return null;
-  }
 
-  const extraction = await extractToolAndParameters(agentResponse, availableTools, originalMessage);
-  if (!extraction) {
-    console.log('>> checkAndExecuteTools: Nenhuma ferramenta ou parâmetros extraídos da resposta.');
-    return null;
-  }
-
-  const { tool, parameters, agentConfig } = extraction;
-  console.log(`>> checkAndExecuteTools: Ferramenta extraída: ${tool.name}, Parâmetros:`, parameters);
-  try {
-    const toolResult = await executeToolFunction(tool, parameters, agentConfig);
-    console.log(`>> checkAndExecuteTools: Resultado da ferramenta ${tool.name}:`, toolResult);
-    return `Resultado da ferramenta ${tool.name}: ${JSON.stringify(toolResult)}`;
-  } catch (error) {
-    console.error(`>> checkAndExecuteTools: Erro ao executar a ferramenta ${tool.name}:`, error);
-    return `Erro ao executar a ferramenta ${tool.name}: ${error.message}`;
-  }
-}
-
-/**
- * Usa um LLM para extrair a ferramenta e seus parâmetros.
- */
-async function extractToolAndParameters(agentResponse, availableTools, originalMessage) {
-  console.log('>> extractToolAndParameters: Tentando extrair ferramenta e parâmetros...');
-  const toolIndicators = ['USAR_FERRAMENTA:', 'EXECUTAR_TOOL:', 'FERRAMENTA_NECESSÁRIA:'];
-  if (!toolIndicators.some(ind => agentResponse.toUpperCase().includes(ind))) {
-    console.log('>> extractToolAndParameters: Nenhum indicador de uso de ferramenta encontrado na resposta.');
-    return null;
-  }
-
-  const toolSchema = availableTools.map(t => ({
-    name: t.tool.name,
-    description: t.tool.description,
-    parameters: t.tool.config.requiredFields || t.tool.config.searchFields || ['query'],
-  }));
-
-  const prompt = `
-Você analisa uma conversa e extrai o nome de uma ferramenta e seus parâmetros em JSON.
-
-Conversa:
-- Usuário: "${originalMessage}"
-- Agente: "${agentResponse}"
-
-Ferramentas:
-${JSON.stringify(toolSchema, null, 2)}
-
-Responda APENAS com um objeto JSON com "toolName" e "parameters".
-`;
-  console.log('>> extractToolAndParameters: Prompt para extração:', prompt);
-
-  try {
-    const jsonResponse = await generateResponse(prompt, { temperature: 0 });
-    console.log('>> extractToolAndParameters: Resposta do LLM para extração:', jsonResponse);
-    const cleanedJson = jsonResponse.replace(/```json/g, '').replace(/```/g, '').trim();
-    const parsed = JSON.parse(cleanedJson);
-    console.log('>> extractToolAndParameters: JSON parseado:', parsed);
-
-    if (!parsed.toolName || !parsed.parameters) {
-      console.log('>> extractToolAndParameters: JSON parseado não contém toolName ou parameters.');
-      return null;
-    }
-
-    const selectedTool = availableTools.find(t => t.tool.name === parsed.toolName);
-    if (!selectedTool) {
-      console.log(`>> extractToolAndParameters: Ferramenta selecionada '${parsed.toolName}' não está disponível.`);
-      return null;
-    }
-
-    console.log('>> extractToolAndParameters: Extração bem-sucedida.');
-    return { tool: selectedTool.tool, parameters: parsed.parameters, agentConfig: selectedTool.config };
-  } catch (error) {
-    console.error('>> extractToolAndParameters: Erro ao extrair parâmetros com LLM:', error);
-    return null;
-  }
-}
 
 /**
  * Permite que um agente de nível superior refine a resposta de um agente de nível inferior.

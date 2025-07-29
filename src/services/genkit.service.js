@@ -18,19 +18,22 @@ const { searchProductsTool, toolRegistry } = defineTools(ai);
  * Gera uma resposta usando o modelo Genkit (Gemini Pro).
  * @param {string} prompt - O prompt para o modelo.
  * @param {object} [config] - Configurações opcionais para a geração (maxTokens, temperature, etc.).
+ * @param {Array<object>} [tools=[]] - Ferramentas disponíveis para a geração.
  * @returns {Promise<string>} A resposta de texto gerada pelo modelo.
  */
-async function generateResponse(prompt, config = {}) {
+async function generateResponse(prompt, config = {}, tools = []) {
   console.log(">> generateResponse: Iniciando a geração de resposta...");
   console.log(">> generateResponse: Prompt:", prompt);
   console.log(">> generateResponse: Config:", config);
+  console.log(`>> generateResponse: Ferramentas disponíveis: ${tools.map(t => t.name).join(', ')}`);
+
   try {
     const llmResponse = await ai.generate({
       prompt,
+      tools: tools, // Passa as ferramentas para o Genkit
       config: {
         maxOutputTokens: config.maxTokens,
         temperature: config.temperature,
-        // Adicione outros parâmetros de configuração do Genkit aqui, se necessário
       },
     });
     const responseText = llmResponse.text;

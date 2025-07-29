@@ -1,6 +1,14 @@
 import { generateResponse } from './genkit.service.js';
 import { PrismaClient } from '@prisma/client';
+import { z } from 'zod';
+import { ai } from './genkit.service.js'; // Importa a instância do Genkit
+
 const prisma = new PrismaClient();
+
+// Schema para a saída estruturada do LLM
+const AgentSelectionSchema = z.object({
+  agentId: z.string().describe('O ID do agente selecionado. Deve ser um dos IDs fornecidos.'),
+});
 
 // Função para validar se um ID tem o formato ObjectId do MongoDB
 function isValidObjectId(id) {
@@ -39,24 +47,26 @@ ${agentsContext.map(agent => `
 - Nome: ${agent.name}
 - Descrição/Especialidade: ${agent.description}`).join('\n')}
 
-Responda APENAS com o ID do ${contextType} selecionado. Se nenhum for adequado, responda com "NONE".
+Qual é o ID do ${contextType} mais adequado? Se nenhum for adequado, retorne um ID vazio.
 `;
 
   try {
-    const llmResponse = await generateResponse(selectionPrompt, {
-      maxTokens: 100,
-      temperature: 0.1,
+    const { output } = await ai.generate({
+      prompt: selectionPrompt,
       model: orchestratorAgent.config?.model || 'googleai/gemini-2.0-flash',
+      output: { schema: AgentSelectionSchema }, // Força a saída estruturada
+      config: {
+        temperature: 0.1,
+      },
     });
 
-    const selectedId = llmResponse.trim().replace(/"/g, '');
-
-    if (selectedId === 'NONE' || !selectedId) {
-      console.log(`LLM respondeu com 'NONE'. Nenhum ${contextType} será selecionado.`);
+    if (!output || !output.agentId) {
+      console.log(`LLM não selecionou um agente. Nenhum ${contextType} será usado.`);
       return null;
     }
 
-    // Validação robusta do ID retornado pelo LLM
+    const selectedId = output.agentId.trim();
+
     if (!isValidObjectId(selectedId)) {
       console.warn(`LLM retornou um ID inválido: '${selectedId}'. Ignorando a seleção.`);
       return null;
@@ -73,8 +83,6 @@ Responda APENAS com o ID do ${contextType} selecionado. Se nenhum for adequado, 
 
   } catch (error) {
     console.error(`Erro na seleção de ${contextType} via LLM:`, error);
-    // Fallback: em caso de erro, retorna o primeiro por prioridade (se aplicável)
-    // Isso pode ser ajustado para uma lógica de fallback mais sofisticada se necessário.
     return availableAgents.sort((a, b) => (a.priority || 0) - (b.priority || 0))[0] || null;
   }
 }
