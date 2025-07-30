@@ -31,11 +31,42 @@ app.use(cors({ origin: '*' }));
 app.use(express.json());
 
 import { createSystemTools } from './services/tools.service.js';
+import { PrismaClient } from '@prisma/client';
+import { startInstance } from './services/whatsapp.service.js';
+
+const prisma = new PrismaClient();
+
+// Função para reconectar instâncias ativas na inicialização
+async function reconnectConnectedInstances() {
+  console.log('🔄 Verificando instâncias para reconexão automática...');
+  try {
+    const connectedInstances = await prisma.instance.findMany({
+      where: { status: 'CONNECTED' },
+    });
+
+    if (connectedInstances.length === 0) {
+      console.log('✅ Nenhuma instância para reconectar.');
+      return;
+    }
+
+    console.log(`Found ${connectedInstances.length} instances to reconnect.`);
+    for (const instance of connectedInstances) {
+      console.log(`▶️ Iniciando reconexão para a instância: ${instance.name} (${instance.clientId})`);
+      // A função startInstance já lida com a lógica de reconexão
+      startInstance(instance.clientId);
+    }
+  } catch (error) {
+    console.error('❌ Erro ao tentar reconectar instâncias:', error);
+  }
+}
+
 
 mongoose.connect(process.env.MONGODB_SESSION_URI).then(() => {
   console.log('✅ Conectado ao MongoDB para sessões WhatsApp');
   // Cria as ferramentas padrão do sistema após a conexão com o banco de dados
   createSystemTools();
+  // Inicia a reconexão das instâncias que já estavam ativas
+  reconnectConnectedInstances();
 });
 
 // Rotas da API
