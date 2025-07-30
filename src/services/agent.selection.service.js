@@ -23,11 +23,8 @@ function isValidObjectId(id) {
  * @param {string} selectionType - O tipo de seleção ('organization' ou 'specialist').
  * @returns {Promise<object|null>} O agente selecionado ou null.
  */
-async function selectAgent(orchestratorAgent, availableAgents, messageContent, selectionType, flowId) {
-  console.log(`${flowId} >> [Seleção: ${selectionType}] Iniciando seleção pelo orquestrador ${orchestratorAgent.name}...`);
-
+async function selectAgent(orchestratorAgent, availableAgents, messageContent, selectionType) {
   if (!availableAgents || availableAgents.length === 0) {
-    console.log(`${flowId} >> [Seleção: ${selectionType}] Nenhum agente disponível para seleção.`);
     return null;
   }
 
@@ -53,8 +50,6 @@ ${agentsContext.map(agent => `
 Qual é o ID do ${contextType} mais adequado? Se nenhum for adequado, retorne um ID vazio.
 `;
 
-  console.log(`${flowId} >> [Seleção: ${selectionType}] Prompt enviado para o LLM:\n---`, selectionPrompt, '\n---');
-
   try {
     const { output } = await ai.generate({
       prompt: selectionPrompt,
@@ -66,35 +61,29 @@ Qual é o ID do ${contextType} mais adequado? Se nenhum for adequado, retorne um
     });
 
     if (!output || !output.agentId) {
-      console.log(`${flowId} >> [Seleção: ${selectionType}] LLM não selecionou um agente. Nenhum ${contextType} será usado.`);
+      console.log(`LLM não selecionou um agente. Nenhum ${contextType} será usado.`);
       return null;
     }
 
     const selectedId = output.agentId.trim();
-    console.log(`${flowId} >> [Seleção: ${selectionType}] LLM retornou o ID: '${selectedId}'`);
 
     if (!isValidObjectId(selectedId)) {
-      console.warn(`${flowId} >> [Seleção: ${selectionType}] LLM retornou um ID inválido. Ignorando a seleção.`);
+      console.warn(`LLM retornou um ID inválido: '${selectedId}'. Ignorando a seleção.`);
       return null;
     }
 
     const selectedAgent = availableAgents.find(agent => agent.id === selectedId);
 
     if (!selectedAgent) {
-      console.warn(`${flowId} >> [Seleção: ${selectionType}] LLM retornou o ID '${selectedId}', mas este agente não está na lista de opções disponíveis.`);
+      console.warn(`LLM retornou o ID '${selectedId}', mas este agente não está na lista de opções disponíveis.`);
       return null;
     }
 
-    console.log(`${flowId} >> [Seleção: ${selectionType}] Agente selecionado com sucesso: ${selectedAgent.name} (ID: ${selectedAgent.id})`);
     return selectedAgent;
 
   } catch (error) {
-    console.error(`${flowId} >> [Seleção: ${selectionType}] Erro na seleção de ${contextType} via LLM:`, error);
-    const fallbackAgent = availableAgents.sort((a, b) => (a.priority || 0) - (b.priority || 0))[0] || null;
-    if (fallbackAgent) {
-      console.log(`${flowId} >> [Seleção: ${selectionType}] Usando fallback para o agente de maior prioridade: ${fallbackAgent.name}`);
-    }
-    return fallbackAgent;
+    console.error(`Erro na seleção de ${contextType} via LLM:`, error);
+    return availableAgents.sort((a, b) => (a.priority || 0) - (b.priority || 0))[0] || null;
   }
 }
 

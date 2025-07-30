@@ -29,59 +29,51 @@ async function updateInstanceStatus(clientId, status, message = null) {
   }
 }
 
-"""async function _handleIncomingWhatsAppMessage(client, message) {
+async function _handleIncomingWhatsAppMessage(client, message) {
+  console.log(`✉️  Mensagem recebida para ${client.options.authStrategy.clientId}: ${message.body}`);
+
+  if (message.isStatus || message.from.includes('@g.us')) return;
+
   const clientId = client.options.authStrategy.clientId;
-  console.log(`[${clientId}]  ricevuto...`);
-
-  if (message.isStatus || message.from.includes('@g.us')) {
-    console.log(`[${clientId}] Ignorando mensagem de status ou de grupo.`);
-    return;
-  }
-
-  console.log(`[${clientId}] Processando mensagem de ${message.from}: "${message.body}"`);
 
   try {
-    console.log(`[${clientId}] Buscando instância no banco de dados...`);
     const instance = await prisma.instance.findUnique({ where: { clientId } });
-    if (!instance) {
-      console.error(`[${clientId}] Instância não encontrada no banco de dados.`);
-      return;
-    }
-    console.log(`[${clientId}] Instância encontrada: ${instance.name}`);
+    if (!instance) return;
 
-    console.log(`[${clientId}] Verificando/criando agente roteador...`);
+    // Etapa de Auto-Correção: Garante que um Agente Roteador Principal exista
     let routerAgent = await prisma.agent.findFirst({
       where: {
         instanceId: instance.id,
         type: 'ROUTER',
-        organizationId: null,
+        organizationId: null, // Chave para identificar o roteador principal
       },
     });
 
     if (!routerAgent) {
-      console.warn(`[${clientId}] Roteador não encontrado. Criando um novo...`);
+      console.warn(`⚠️ Nenhum Agente Roteador Principal encontrado para a instância ${instance.name}. Criando um automaticamente.`);
       const user = await prisma.user.findUnique({ where: { id: instance.userId } });
       if (user) {
         routerAgent = await agentHierarchyService.createParentAgent({
           name: `Roteador - ${instance.name}`,
-          persona: 'Você é o agente roteador principal...',
+          persona: 'Você é o agente roteador principal. Sua função é analisar a mensagem do usuário e direcioná-la para o departamento ou especialista correto (Vendas, Suporte, etc.). Se não tiver certeza, peça ao usuário para esclarecer.',
           instanceId: instance.id,
           organizationId: null,
           userId: user.id,
         });
-        console.log(`[${clientId}] Roteador criado com sucesso: ${routerAgent.id}`);
+        console.log(`✅ Agente Roteador Principal criado automaticamente para a instância ${instance.name}.`);
       } else {
-        throw new Error(`Usuário da instância ${instance.id} não foi encontrado.`);
+        throw new Error(`Não foi possível criar o roteador principal pois o usuário da instância ${instance.id} não foi encontrado.`);
       }
-    } else {
-      console.log(`[${clientId}] Agente roteador encontrado: ${routerAgent.id}`);
     }
 
-    console.log(`[${clientId}] Garantindo que o contato exista (upsert)...`);
+    // 1. Garante que o contato exista no banco de dados
     const wppContact = await message.getContact();
     const contact = await prisma.contact.upsert({
       where: { instanceId_phoneNumber: { instanceId: instance.id, phoneNumber: message.from } },
-      update: { name: wppContact.name, pushName: wppContact.pushname },
+      update: {
+        name: wppContact.name,
+        pushName: wppContact.pushname,
+      },
       create: {
         instanceId: instance.id,
         phoneNumber: message.from,
@@ -89,17 +81,15 @@ async function updateInstanceStatus(clientId, status, message = null) {
         pushName: wppContact.pushname,
       },
     });
-    console.log(`[${clientId}] Contato garantido: ${contact.id}`);
 
-    console.log(`[${clientId}] Executando fluxo de agente hierárquico...`);
+    // 2. Executa o fluxo de agentes para obter uma resposta e o ID da execução
     const { finalResponse, executionId } = await executeHierarchicalAgentFlow(
       instance.id,
       message.body,
       message.from
     );
-    console.log(`[${clientId}] Fluxo concluído. Resposta final: "${finalResponse}", ID da execução: ${executionId}`);
 
-    console.log(`[${clientId}] Salvando mensagem recebida (INCOMING)...`);
+    // 3. Salva a mensagem recebida (INCOMING) com o ID da execução
     await prisma.message.create({
       data: {
         instanceId: instance.id,
@@ -109,16 +99,12 @@ async function updateInstanceStatus(clientId, status, message = null) {
         content: message.body,
         status: 'read',
         isRead: true,
-        agentExecutionId: executionId,
+        agentExecutionId: executionId, // Vincula à execução
       },
     });
-    console.log(`[${clientId}] Mensagem INCOMING salva.`);
 
-    console.log(`[${clientId}] Enviando resposta para ${message.from}...`);
+    // 4. Envia a resposta e a salva no banco de dados (OUTGOING)
     const sentMessage = await client.sendMessage(message.from, finalResponse);
-    console.log(`[${clientId}] Resposta enviada com sucesso.`);
-
-    console.log(`[${clientId}] Salvando mensagem enviada (OUTGOING)...`);
     await prisma.message.create({
       data: {
         instanceId: instance.id,
@@ -127,16 +113,19 @@ async function updateInstanceStatus(clientId, status, message = null) {
         direction: 'OUTGOING',
         content: finalResponse,
         status: 'sent',
-        agentExecutionId: executionId,
+        agentExecutionId: executionId, // Vincula à mesma execução
       },
     });
-    console.log(`[${clientId}] Mensagem OUTGOING salva.`);
 
   } catch (error) {
-    console.error(`[${clientId}] Erro fatal no processamento da mensagem:`, error);
-    client.sendMessage(message.from, 'Desculpe, ocorreu um erro ao processar sua solicitação. Tente novamente mais tarde.');
+    console.error('Erro ao processar mensagem do WhatsApp:', error);
+    // Se o erro tiver um executionId, podemos usá-lo para registrar a falha
+    const executionId = error.executionId || null;
+    // Tenta salvar a mensagem de erro no banco de dados para rastreabilidade
+    // (Opcional, mas bom para depuração)
+    client.sendMessage(message.from, 'Ocorreu um erro ao processar sua mensagem. Tente novamente mais tarde.');
   }
-}""
+}
 
 async function startInstance(clientId) {
   if (activeClients[clientId]) {
