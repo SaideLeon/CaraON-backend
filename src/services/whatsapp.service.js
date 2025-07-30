@@ -127,11 +127,13 @@ async function _handleIncomingWhatsAppMessage(client, message) {
   }
 }
 
-async function startInstance(clientId) {
+async function startInstance(clientId, isReconnection = false) {
   if (activeClients[clientId]) {
-    console.log(`ℹ️ Instância ${clientId} já em execução`);
+    console.log(`ℹ️ Instância ${clientId} já está em processo de conexão.`);
     return activeClients[clientId];
   }
+
+  console.log(`🚀 Iniciando instância ${clientId}. É uma reconexão? ${isReconnection}`);
 
   const client = new Client({
     authStrategy: new RemoteAuth({
@@ -146,16 +148,30 @@ async function startInstance(clientId) {
     },
   });
 
-  updateInstanceStatus(clientId, 'PENDING_QR', `Aguardando leitura do QR Code para a instância ${clientId}.`);
+  // Define o cliente ativo imediatamente para evitar corridas de condição
+  activeClients[clientId] = client;
+
+  // Define o status inicial com base no tipo de inicialização
+  const initialStatus = isReconnection ? 'RECONNECTING' : 'PENDING_QR';
+  const initialMessage = isReconnection ? `Reconectando instância ${clientId}...` : `Aguardando leitura do QR Code para a instância ${clientId}.`;
+  updateInstanceStatus(clientId, initialStatus, initialMessage);
 
   client.on('qr', async (qr) => {
-    const qrImage = await qrcode.toDataURL(qr);
-    console.log(`🔑 QR Code gerado para ${clientId}. Enviando via WebSocket.`);
-    webSocketService.broadcast({
-      type: 'qr_code',
-      clientId,
-      data: qrImage,
-    });
+    // Se estamos em modo de reconexão, não devemos receber um QR code.
+    // Se recebermos, significa que a sessão é inválida.
+    if (isReconnection) {
+      console.warn(`⚠️ Sessão para ${clientId} é inválida. Requer novo QR Code. Desconectando...`);
+      await client.destroy(); // Usa destroy para limpar tudo
+      // O evento 'disconnected' cuidará da atualização do status para DISCONNECTED
+    } else {
+      const qrImage = await qrcode.toDataURL(qr);
+      console.log(`🔑 QR Code gerado para ${clientId}. Enviando via WebSocket.`);
+      webSocketService.broadcast({
+        type: 'qr_code',
+        clientId,
+        data: qrImage,
+      });
+    }
   });
 
   client.on('ready', () => {
@@ -175,8 +191,12 @@ async function startInstance(clientId) {
     console.log(`💾 Sessão do ${clientId} salva no MongoDB`);
   });
 
-  client.initialize();
-  activeClients[clientId] = client;
+  client.initialize().catch(error => {
+      console.error(`❌ Falha ao inicializar a instância ${clientId}:`, error);
+      // Garante que o cliente seja removido e o status atualizado em caso de falha na inicialização
+      delete activeClients[clientId];
+      updateInstanceStatus(clientId, 'DISCONNECTED', `Falha ao inicializar a instância ${clientId}.`);
+  });
 
   return client;
 }

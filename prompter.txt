@@ -35,4 +35,4 @@
 
 
 
-
+sempre que o servidor for iniciado, ele buscar todas as instâncias que estavam com o status CONNECTED e tentar restabelecer a conexão com o WhatsApp automaticamente, sem a necessidade de um novo QR Code.  se a conexao ocorrer com sucesso. manter status CONNECTED, caso nao alterar para status DISCONNECTED.

@@ -53,7 +53,7 @@ async function reconnectConnectedInstances() {
     for (const instance of connectedInstances) {
       console.log(`▶️ Iniciando reconexão para a instância: ${instance.name} (${instance.clientId})`);
       // A função startInstance já lida com a lógica de reconexão
-      startInstance(instance.clientId);
+      startInstance(instance.clientId, true);
     }
   } catch (error) {
     console.error('❌ Erro ao tentar reconectar instâncias:', error);
