@@ -1,43 +1,116 @@
-18|caraon- | 🔌 Cliente WebSocket desconectado
 
-18|caraon-api  | Erro ao deletar instância: PrismaClientKnownRequestError:
-18|caraon-api  | Invalid `prisma.agent.deleteMany()` invocation:
-18|caraon-api  | The change you are trying to make would violate the required relation 'AgentRouter' between the `Agent` and `Agent` models.
-18|caraon-api  |     at ri.handleRequestError (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:121:7459)
+18|caraon-api  | Status da instância 687d6b9e14ab6c1c2623ae4a-1753943386607 atualizado para: PENDING_QR
+18|caraon-api  | 🔑 QR Code gerado para 687d6b9e14ab6c1c2623ae4a-1753943386607. Enviando via WebSocket.
+18|caraon-api  | 🔑 QR Code gerado para 687d6b9e14ab6c1c2623ae4a-1753943386607. Enviando via WebSocket.
+18|caraon-api  | 🔑 QR Code gerado para 687d6b9e14ab6c1c2623ae4a-1753943386607. Enviando via WebSocket.
+18|caraon-api  | Status da instância 687d6b9e14ab6c1c2623ae4a-1753943486771 atualizado para: PENDING_QR
+18|caraon-api  | 🔑 QR Code gerado para 687d6b9e14ab6c1c2623ae4a-1753943486771. Enviando via WebSocket.
+18|caraon-api  | 🔑 QR Code gerado para 687d6b9e14ab6c1c2623ae4a-1753943486771. Enviando via WebSocket.
+18|caraon-api  | 🔗 Novo cliente WebSocket conectado
+18|caraon-api  | Status da instância 687d6b9e14ab6c1c2623ae4a-1753943700807 atualizado para: PENDING_QR
+18|caraon-api  | 🔑 QR Code gerado para 687d6b9e14ab6c1c2623ae4a-1753943700807. Enviando via WebSocket.
+18|caraon-api  | ✅ Instância WhatsApp 687d6b9e14ab6c1c2623ae4a-1753943700807 conectada!
+18|caraon-api  | Status da instância 687d6b9e14ab6c1c2623ae4a-1753943700807 atualizado para: CONNECTED
+18|caraon-api  | 💾 Sessão do 687d6b9e14ab6c1c2623ae4a-1753943700807 salva no MongoDB
+18|caraon-api  | 🔌 Cliente WebSocket desconectado
+18|caraon-api  | 🔗 Novo cliente WebSocket conectado
+18|caraon-api  | ✉️  Mensagem recebida para 687d6b9e14ab6c1c2623ae4a-1753943700807:
+18|caraon-api  | Erro ao processar mensagem do WhatsApp: PrismaClientValidationError:
+18|caraon-api  | Invalid `prisma.agent.findFirst()` invocation:
+18|caraon-api  | {
+18|caraon-api  |   where: {
+18|caraon-api  |     instanceId: "688b0e94c1971adf1e788e4e",
+18|caraon-api  |     type: "PAI",
+18|caraon-api  |           ~~~~~
+18|caraon-api  |     organizationId: null
+18|caraon-api  |   }
+18|caraon-api  | }
+18|caraon-api  | Invalid value for argument `type`. Expected AgentType.
+18|caraon-api  |     at Dn (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:29:1363)
+18|caraon-api  |     at ri.handleRequestError (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:121:7102)
 18|caraon-api  |     at ri.handleAndLogRequestError (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:121:6784)
 18|caraon-api  |     at ri.request (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:121:6491)
 18|caraon-api  |     at async l (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:130:9812)
-18|caraon-api  |     at async file:///root/CaraON-backend/src/controllers/instances.controller.js:115:7
-18|caraon-api  |     at async Proxy._transactionWithCallback (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:130:8173)
-18|caraon-api  |     at async deleteInstance (file:///root/CaraON-backend/src/controllers/instances.controller.js:113:5) {
-18|caraon-api  |   code: 'P2014',
-18|caraon-api  |   meta: {
-18|caraon-api  |     modelName: 'Agent',
-18|caraon-api  |     relation_name: 'AgentRouter',
-18|caraon-api  |     model_a_name: 'Agent',
-18|caraon-api  |     model_b_name: 'Agent'
-18|caraon-api  |   },
+18|caraon-api  |     at async _handleIncomingWhatsAppMessage (file:///root/CaraON-backend/src/services/whatsapp.service.js:44:23) {
 18|caraon-api  |   clientVersion: '6.12.0'
 18|caraon-api  | }
-18|caraon-api  | Erro ao deletar instância: PrismaClientKnownRequestError:
-18|caraon-api  | Invalid `prisma.agent.deleteMany()` invocation:
-18|caraon-api  | The change you are trying to make would violate the required relation 'AgentHierarchy' between the `Agent` and `Agent` models.
-18|caraon-api  |     at ri.handleRequestError (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:121:7459)
+18|caraon-api  | ✉️  Mensagem recebida para 687d6b9e14ab6c1c2623ae4a-1753943700807: Ola
+18|caraon-api  | Erro ao processar mensagem do WhatsApp: PrismaClientValidationError:
+18|caraon-api  | Invalid `prisma.agent.findFirst()` invocation:
+18|caraon-api  | {
+18|caraon-api  |   where: {
+18|caraon-api  |     instanceId: "688b0e94c1971adf1e788e4e",
+18|caraon-api  |     type: "PAI",
+18|caraon-api  |           ~~~~~
+18|caraon-api  |     organizationId: null
+18|caraon-api  |   }
+18|caraon-api  | }
+18|caraon-api  | Invalid value for argument `type`. Expected AgentType.
+18|caraon-api  |     at Dn (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:29:1363)
+18|caraon-api  |     at ri.handleRequestError (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:121:7102)
 18|caraon-api  |     at ri.handleAndLogRequestError (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:121:6784)
 18|caraon-api  |     at ri.request (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:121:6491)
 18|caraon-api  |     at async l (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:130:9812)
-18|caraon-api  |     at async file:///root/CaraON-backend/src/controllers/instances.controller.js:115:7
-18|caraon-api  |     at async Proxy._transactionWithCallback (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:130:8173)
-18|caraon-api  |     at async deleteInstance (file:///root/CaraON-backend/src/controllers/instances.controller.js:113:5) {
-18|caraon-api  |   code: 'P2014',
-18|caraon-api  |   meta: {
-18|caraon-api  |     modelName: 'Agent',
-18|caraon-api  |     relation_name: 'AgentHierarchy',
-18|caraon-api  |     model_a_name: 'Agent',
-18|caraon-api  |     model_b_name: 'Agent'
-18|caraon-api  |   },
+18|caraon-api  |     at async _handleIncomingWhatsAppMessage (file:///root/CaraON-backend/src/services/whatsapp.service.js:44:23) {
 18|caraon-api  |   clientVersion: '6.12.0'
 18|caraon-api  | }
+18|caraon-api  | 🔌 Cliente WebSocket desconectado
+18|caraon-api  | 🔗 Novo cliente WebSocket conectado
+18|caraon-api  | 🔌 Cliente WebSocket desconectado
+18|caraon-api  | 🔗 Novo cliente WebSocket conectado
+18|caraon-api  | 🔌 Cliente WebSocket desconectado
+18|caraon-api  | 🔗 Novo cliente WebSocket conectado
+18|caraon-api  | >> getParentAgent: Buscando agente ROUTER para instância 688b0e94c1971adf1e788e4e e organização N/A
+18|caraon-api  | >> getParentAgent: Agente ROUTER encontrado: 688b0e94c1971adf1e788e4f
+18|caraon-api  | 🔌 Cliente WebSocket desconectado
+18|caraon-api  | 🔗 Novo cliente WebSocket conectado
+18|caraon-api  | ✉️  Mensagem recebida para 687d6b9e14ab6c1c2623ae4a-1753943700807: Olá
+18|caraon-api  | Erro ao processar mensagem do WhatsApp: PrismaClientValidationError:
+18|caraon-api  | Invalid `prisma.agent.findFirst()` invocation:
+18|caraon-api  | {
+18|caraon-api  |   where: {
+18|caraon-api  |     instanceId: "688b0e94c1971adf1e788e4e",
+18|caraon-api  |     type: "PAI",
+18|caraon-api  |           ~~~~~
+18|caraon-api  |     organizationId: null
+18|caraon-api  |   }
+18|caraon-api  | }
+18|caraon-api  | Invalid value for argument `type`. Expected AgentType.
+18|caraon-api  |     at Dn (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:29:1363)
+18|caraon-api  |     at ri.handleRequestError (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:121:7102)
+18|caraon-api  |     at ri.handleAndLogRequestError (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:121:6784)
+18|caraon-api  |     at ri.request (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:121:6491)
+18|caraon-api  |     at async l (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:130:9812)
+18|caraon-api  |     at async _handleIncomingWhatsAppMessage (file:///root/CaraON-backend/src/services/whatsapp.service.js:44:23) {
+18|caraon-api  |   clientVersion: '6.12.0'
+18|caraon-api  | }
+18|caraon-api  | 🔌 Cliente WebSocket desconectado
+18|caraon-api  | 🔗 Novo cliente WebSocket conectado
+18|caraon-api  | ✉️  Mensagem recebida para 687d6b9e14ab6c1c2623ae4a-1753943700807: Tudo bem?
+18|caraon-api  | Erro ao processar mensagem do WhatsApp: PrismaClientValidationError:
+18|caraon-api  | Invalid `prisma.agent.findFirst()` invocation:
+18|caraon-api  | {
+18|caraon-api  |   where: {
+18|caraon-api  |     instanceId: "688b0e94c1971adf1e788e4e",
+18|caraon-api  |     type: "PAI",
+18|caraon-api  |           ~~~~~
+18|caraon-api  |     organizationId: null
+18|caraon-api  |   }
+18|caraon-api  | }
+18|caraon-api  | Invalid value for argument `type`. Expected AgentType.
+18|caraon-api  |     at Dn (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:29:1363)
+18|caraon-api  |     at ri.handleRequestError (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:121:7102)
+18|caraon-api  |     at ri.handleAndLogRequestError (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:121:6784)
+18|caraon-api  |     at ri.request (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:121:6491)
+18|caraon-api  |     at async l (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:130:9812)
+18|caraon-api  |     at async _handleIncomingWhatsAppMessage (file:///root/CaraON-backend/src/services/whatsapp.service.js:44:23) {
+18|caraon-api  |   clientVersion: '6.12.0'
+18|caraon-api  | }
+
+
+
+
+
 
 
 

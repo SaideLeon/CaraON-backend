@@ -44,7 +44,7 @@ async function _handleIncomingWhatsAppMessage(client, message) {
     let routerAgent = await prisma.agent.findFirst({
       where: {
         instanceId: instance.id,
-        type: 'PAI',
+        type: 'ROUTER',
         organizationId: null, // Chave para identificar o roteador principal
       },
     });
