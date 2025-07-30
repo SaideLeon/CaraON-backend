@@ -86,6 +86,27 @@ const updateAgent = async (req, res) => {
   }
 };
 
+const updateAgentConfig = async (req, res) => {
+  const { agentId } = req.params;
+  const configData = req.body;
+
+  try {
+    const updatedConfig = await prisma.agentConfig.update({
+      where: {
+        agentId: agentId, // A chave única para encontrar a configuração
+      },
+      data: configData, // O Prisma só atualiza os campos fornecidos
+    });
+    res.status(200).json(updatedConfig);
+  } catch (error) {
+    if (error.code === 'P2025') { // Erro do Prisma para "não encontrado"
+      return res.status(404).json({ error: 'Configuração para o agente especificado não encontrada.' });
+    }
+    console.error('Erro ao atualizar a configuração do agente:', error);
+    res.status(500).json({ error: 'Falha ao atualizar a configuração do agente.' });
+  }
+};
+
 const listChildAgents = async (req, res) => {
   const { parentAgentId } = req.params;
 
@@ -236,6 +257,7 @@ export default {
   createAgent,
   updateAgentPersona,
   updateAgent,
+  updateAgentConfig,
   listChildAgents,
   getAgentById,
   exportAgentAnalytics,

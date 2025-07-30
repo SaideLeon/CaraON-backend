@@ -98,10 +98,26 @@ const deleteAgentSchema = z.object({
   }),
 });
 
+const UpdateAgentConfigBody = z.object({
+  maxTokens: z.number().int().optional(),
+  temperature: z.number().min(0).max(1).optional(),
+  model: z.string().optional(),
+  systemPrompt: z.string().optional(),
+  fallbackMessage: z.string().optional(),
+}).openapi({refId: 'UpdateAgentConfigBody'});
+
+const updateAgentConfigSchema = z.object({
+  body: UpdateAgentConfigBody,
+  params: z.object({
+    agentId: z.string().regex(/^[0-9a-fA-F]{24}$/, 'ID de agente inválido'),
+  }),
+});
+
 
 registry.register('CreateAgentBody', CreateAgentBody);
 registry.register('UpdateAgentPersonaBody', UpdateAgentPersonaBody);
 registry.register('UpdateAgentBody', UpdateAgentBody);
+registry.register('UpdateAgentConfigBody', UpdateAgentConfigBody);
 
 
 export {
@@ -113,4 +129,5 @@ export {
   getAgentByIdSchema,
   listParentAgentsSchema,
   deleteAgentSchema,
+  updateAgentConfigSchema,
 };

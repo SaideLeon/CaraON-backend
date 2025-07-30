@@ -10,7 +10,8 @@ import {
     getAgentByIdSchema, 
     listParentAgentsSchema, 
     deleteAgentSchema, 
-    updateAgentSchema 
+    updateAgentSchema, 
+    updateAgentConfigSchema
 } from '../schemas/agent.schema.js';
 import auth from '../middlewares/auth.middleware.js';
 
@@ -271,6 +272,35 @@ router.delete('/:agentId', auth, validate(deleteAgentSchema), agentController.de
  *         description: Falha ao atualizar a persona do agente.
  */
 router.patch('/:agentId/persona', auth, validate(updateAgentPersonaSchema), agentController.updateAgentPersona);
+
+/**
+ * @swagger
+ * /api/v1/agents/{agentId}/config:
+ *   patch:
+ *     summary: Atualiza a configuração de um agente específico
+ *     tags: [Agentes]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: agentId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: O ID do agente cuja configuração será atualizada.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UpdateAgentConfigBody'
+ *     responses:
+ *       200:
+ *         description: Configuração do agente atualizada com sucesso.
+ *       404:
+ *         description: Agente ou configuração não encontrado.
+ */
+router.patch('/:agentId/config', auth, validate(updateAgentConfigSchema), agentController.updateAgentConfig);
 
 
 // ========== Rotas de Análise de Agentes ==========
