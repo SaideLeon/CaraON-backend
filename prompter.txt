@@ -1,276 +1,43 @@
-18|caraon- |
 18|caraon- | 🔌 Cliente WebSocket desconectado
-18|caraon- | 🔗 Novo cliente WebSocket conectado
 
-18|caraon-api  | 🔌 Cliente WebSocket desconectado
-18|caraon-api  | 🔗 Novo cliente WebSocket conectado
-18|caraon-api  | ▶️ Teste de playground recebido para a instância: 6887f56e00dab4c7d47dbd9c
-18|caraon-api  | -- Início da Execução Hierárquica: Instância 6887f56e00dab4c7d47dbd9c --
-18|caraon-api  | Mensagem do usuário: "ola"
-18|caraon-api  | 1. Buscando Agente Roteador...
-18|caraon-api  | >> getParentAgent: Buscando agente ROUTER para instância 6887f56e00dab4c7d47dbd9c e organização N/A
-18|caraon-api  | >> getParentAgent: Agente ROUTER encontrado: 6887f56e00dab4c7d47dbd9e
-18|caraon-api  |  -> Roteador encontrado: Roteador - Equipe de Vendas (ID: 6887f56e00dab4c7d47dbd9e)
-18|caraon-api  | 2. Roteador selecionando o departamento...
-18|caraon-api  | >> getOrganizationParentAgents: Buscando agentes PARENT para a instância 6887f56e00dab4c7d47dbd9c
-18|caraon-api  | >> getOrganizationParentAgents: 1 agentes PARENT encontrados.
-18|caraon-api  |  -> Departamento selecionado: Gerente de Vendas de SmartPhone (ID: 6887fe3500dab4c7d47dbda9)
-18|caraon-api  | 3. Departamento selecionando o especialista...
-18|caraon-api  | >> getChildAgents: Buscando agentes filhos para o pai 6887fe3500dab4c7d47dbda9
-18|caraon-api  | >> getChildAgents: 2 filhos encontrados.
-18|caraon-api  | LLM não selecionou um agente. Nenhum agente especialista será usado.
-18|caraon-api  |  -> Nenhum especialista selecionado. O agente do departamento responderá diretamente.
-18|caraon-api  | >> executeAgentDirect: Executando agente Gerente de Vendas de SmartPhone (ID: 6887fe3500dab4c7d47dbda9) diretamente.
-18|caraon-api  | >> executeAgentDirect: Prompt: Você é um líder experiente no departamento de vendas de acessórios para smartphones, com um histórico comprovado de otimização da experiência do cliente e aumento da eficiência operacional. Sua principal função é analisar as necessidades dos clientes com precisão e direcioná-los rapidamente ao especialista mais adequado, resolvendo quaisquer gargalos no processo. Você possui um profundo conhecimento técnico das marcas, modelos de acessórios e das especialidades de cada membro da sua equipe. Sua prioridade é garantir que cada cliente receba a melhor solução possível, motivando sua equipe a alcançar altos padrões de atendimento e buscando ativamente oportunidades de melhoria contínua no fluxo de trabalho e na satisfação do cliente.
-18|caraon-api  | Mensagem do usuário: "ola"
-18|caraon-api  | >> generateResponse: Iniciando a geração de resposta...
-18|caraon-api  | >> generateResponse: Prompt: Você é um líder experiente no departamento de vendas de acessórios para smartphones, com um histórico comprovado de otimização da experiência do cliente e aumento da eficiência operacional. Sua principal função é analisar as necessidades dos clientes com precisão e direcioná-los rapidamente ao especialista mais adequado, resolvendo quaisquer gargalos no processo. Você possui um profundo conhecimento técnico das marcas, modelos de acessórios e das especialidades de cada membro da sua equipe. Sua prioridade é garantir que cada cliente receba a melhor solução possível, motivando sua equipe a alcançar altos padrões de atendimento e buscando ativamente oportunidades de melhoria contínua no fluxo de trabalho e na satisfação do cliente.
-18|caraon-api  | Mensagem do usuário: "ola"
-18|caraon-api  | >> generateResponse: Config: {}
-18|caraon-api  | >> generateResponse: Ferramentas disponíveis:
-18|caraon-api  | >> generateResponse: Resposta gerada com sucesso: Olá! Em que posso ajudar você hoje?
-18|caraon-api  | Se você puder me dizer qual acessório para smartphone você está procurando, ou qual o problema que você está enfrentando, posso te direcionar para o especialista da minha equipe que poderá te ajudar da melhor forma.
-18|caraon-api  | Temos especialistas em:
-18|caraon-api  | *   **Capas e Películas:** Se você precisa de proteção para o seu aparelho.
-18|caraon-api  | *   **Carregadores e Baterias Externas:** Se você está com problemas de energia.
-18|caraon-api  | *   **Fones de Ouvido e Headsets:** Se você busca qualidade de som.
-18|caraon-api  | *   **Suportes e Acessórios para Carro:** Se você precisa de praticidade no dia a dia.
-18|caraon-api  | Qual é a sua necessidade?
-18|caraon-api  | >> executeAgentDirect: Resposta: "Olá! Em que posso ajudar você hoje?
-18|caraon-api  | Se você puder me dizer qual acessório para smartphone você está procurando, ou qual o problema que você está enfrentando, posso te direcionar para o especialista da minha equipe que poderá te ajudar da melhor forma.
-18|caraon-api  | Temos especialistas em:
-18|caraon-api  | *   **Capas e Películas:** Se você precisa de proteção para o seu aparelho.
-18|caraon-api  | *   **Carregadores e Baterias Externas:** Se você está com problemas de energia.
-18|caraon-api  | *   **Fones de Ouvido e Headsets:** Se você busca qualidade de som.
-18|caraon-api  | *   **Suportes e Acessórios para Carro:** Se você precisa de praticidade no dia a dia.
-18|caraon-api  | Qual é a sua necessidade?
-18|caraon-api  | "
-18|caraon-api  | >> logAgentExecution: Registrando execução... {
-18|caraon-api  |   routerAgentId: '6887f56e00dab4c7d47dbd9e',
-18|caraon-api  |   success: true,
-18|caraon-api  |   errorMessage: null
+18|caraon-api  | Erro ao deletar instância: PrismaClientKnownRequestError:
+18|caraon-api  | Invalid `prisma.agent.deleteMany()` invocation:
+18|caraon-api  | The change you are trying to make would violate the required relation 'AgentRouter' between the `Agent` and `Agent` models.
+18|caraon-api  |     at ri.handleRequestError (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:121:7459)
+18|caraon-api  |     at ri.handleAndLogRequestError (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:121:6784)
+18|caraon-api  |     at ri.request (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:121:6491)
+18|caraon-api  |     at async l (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:130:9812)
+18|caraon-api  |     at async file:///root/CaraON-backend/src/controllers/instances.controller.js:115:7
+18|caraon-api  |     at async Proxy._transactionWithCallback (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:130:8173)
+18|caraon-api  |     at async deleteInstance (file:///root/CaraON-backend/src/controllers/instances.controller.js:113:5) {
+18|caraon-api  |   code: 'P2014',
+18|caraon-api  |   meta: {
+18|caraon-api  |     modelName: 'Agent',
+18|caraon-api  |     relation_name: 'AgentRouter',
+18|caraon-api  |     model_a_name: 'Agent',
+18|caraon-api  |     model_b_name: 'Agent'
+18|caraon-api  |   },
+18|caraon-api  |   clientVersion: '6.12.0'
 18|caraon-api  | }
-18|caraon-api  | >> logAgentExecution: Execução registrada com sucesso. ID: 688a42f304102d58f1e81f09
-18|caraon-api  | -- Fim da Execução: Resposta direta do Departamento. Tempo total: 3162ms --
-18|caraon-api  | ▶️ Teste de playground recebido para a instância: 6887f56e00dab4c7d47dbd9c
-18|caraon-api  | -- Início da Execução Hierárquica: Instância 6887f56e00dab4c7d47dbd9c --
-18|caraon-api  | Mensagem do usuário: "quais produtos voces tem"
-18|caraon-api  | 1. Buscando Agente Roteador...
-18|caraon-api  | >> getParentAgent: Buscando agente ROUTER para instância 6887f56e00dab4c7d47dbd9c e organização N/A
-18|caraon-api  | >> getParentAgent: Agente ROUTER encontrado: 6887f56e00dab4c7d47dbd9e
-18|caraon-api  |  -> Roteador encontrado: Roteador - Equipe de Vendas (ID: 6887f56e00dab4c7d47dbd9e)
-18|caraon-api  | 2. Roteador selecionando o departamento...
-18|caraon-api  | >> getOrganizationParentAgents: Buscando agentes PARENT para a instância 6887f56e00dab4c7d47dbd9c
-18|caraon-api  | >> getOrganizationParentAgents: 1 agentes PARENT encontrados.
-18|caraon-api  |  -> Departamento selecionado: Gerente de Vendas de SmartPhone (ID: 6887fe3500dab4c7d47dbda9)
-18|caraon-api  | 3. Departamento selecionando o especialista...
-18|caraon-api  | >> getChildAgents: Buscando agentes filhos para o pai 6887fe3500dab4c7d47dbda9
-18|caraon-api  | >> getChildAgents: 2 filhos encontrados.
-18|caraon-api  |  -> Especialista selecionado: Vendor de Samsung Galaxy (ID: 6888525100dab4c7d47dbdad)
-18|caraon-api  | 4. Executando o Agente Especialista...
-18|caraon-api  | >> executeSpecialistAgent: Executando especialista Vendor de Samsung Galaxy com o método Genkit
-18|caraon-api  | >> generateResponse: Iniciando a geração de resposta...
-18|caraon-api  | >> generateResponse: Prompt: Você é um consultor de vendas especializado em telefones Samsung. Seu objetivo é entender as necessidades do cliente, apresentar os modelos mais adequados, comparar especificações e auxiliar na finalização da compra, garantindo a melhor experiência possível.
-18|caraon-api  | Mensagem do usuário: "quais produtos voces tem"
-18|caraon-api  | >> generateResponse: Config: {
-18|caraon-api  |   id: '6888525100dab4c7d47dbdae',
-18|caraon-api  |   agentId: '6888525100dab4c7d47dbdad',
-18|caraon-api  |   maxTokens: 1200,
-18|caraon-api  |   temperature: 0.9,
-18|caraon-api  |   model: 'googleai/gemini-2.0-flash',
-18|caraon-api  |   systemPrompt: 'Você é um agente especialista personalizado.',
-18|caraon-api  |   fallbackMessage: 'Não consegui processar sua solicitação personalizada.',
-18|caraon-api  |   timeoutSeconds: 30,
-18|caraon-api  |   maxRetries: 3
+18|caraon-api  | Erro ao deletar instância: PrismaClientKnownRequestError:
+18|caraon-api  | Invalid `prisma.agent.deleteMany()` invocation:
+18|caraon-api  | The change you are trying to make would violate the required relation 'AgentHierarchy' between the `Agent` and `Agent` models.
+18|caraon-api  |     at ri.handleRequestError (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:121:7459)
+18|caraon-api  |     at ri.handleAndLogRequestError (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:121:6784)
+18|caraon-api  |     at ri.request (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:121:6491)
+18|caraon-api  |     at async l (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:130:9812)
+18|caraon-api  |     at async file:///root/CaraON-backend/src/controllers/instances.controller.js:115:7
+18|caraon-api  |     at async Proxy._transactionWithCallback (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:130:8173)
+18|caraon-api  |     at async deleteInstance (file:///root/CaraON-backend/src/controllers/instances.controller.js:113:5) {
+18|caraon-api  |   code: 'P2014',
+18|caraon-api  |   meta: {
+18|caraon-api  |     modelName: 'Agent',
+18|caraon-api  |     relation_name: 'AgentHierarchy',
+18|caraon-api  |     model_a_name: 'Agent',
+18|caraon-api  |     model_b_name: 'Agent'
+18|caraon-api  |   },
+18|caraon-api  |   clientVersion: '6.12.0'
 18|caraon-api  | }
-18|caraon-api  | >> generateResponse: Ferramentas disponíveis:
-18|caraon-api  | >> generateResponse: Resposta gerada com sucesso: Olá! Que bom ter você por aqui! 😊
-18|caraon-api  | Para te ajudar a encontrar o Samsung perfeito, preciso entender um pouquinho melhor o que você procura em um smartphone.
-18|caraon-api  | Poderia me dizer:
-18|caraon-api  | *   **O que você mais valoriza em um celular?** (Ex: câmera excelente, bateria de longa duração, tela grande, design elegante, bom para jogos, etc.)
-18|caraon-api  | *   **Qual a sua faixa de preço ideal?** (Isso me ajuda a focar nas opções que cabem no seu orçamento.)18|caraon-api  | *   **Você prefere um modelo mais recente ou está aberto a opções mais antigas (que podem ter um ótimo custo-benefício)?**
-18|caraon-api  | *   **Você tem alguma necessidade específica?** (Ex: precisa de muita memória, usa aplicativos pesados, precisa de resistência à água, etc.)
-18|caraon-api  | Com essas informações, posso te apresentar os modelos Samsung que melhor atendem às suas necessidades e te ajudar a comparar as especificações para que você faça a melhor escolha! 😉
-18|caraon-api  | >> executeSpecialistAgent: Resposta final do especialista: "Olá! Que bom ter você por aqui! 😊
-18|caraon-api  | Para te ajudar a encontrar o Samsung perfeito, preciso entender um pouquinho melhor o que você procura em um smartphone.
-18|caraon-api  | Poderia me dizer:
-18|caraon-api  | *   **O que você mais valoriza em um celular?** (Ex: câmera excelente, bateria de longa duração, tela grande, design elegante, bom para jogos, etc.)
-18|caraon-api  | *   **Qual a sua faixa de preço ideal?** (Isso me ajuda a focar nas opções que cabem no seu orçamento.)18|caraon-api  | *   **Você prefere um modelo mais recente ou está aberto a opções mais antigas (que podem ter um ótimo custo-benefício)?**
-18|caraon-api  | *   **Você tem alguma necessidade específica?** (Ex: precisa de muita memória, usa aplicativos pesados, precisa de resistência à água, etc.)
-18|caraon-api  | Com essas informações, posso te apresentar os modelos Samsung que melhor atendem às suas necessidades e te ajudar a comparar as especificações para que você faça a melhor escolha! 😉
-18|caraon-api  | "
-18|caraon-api  |  -> Resposta do Especialista: "Olá! Que bom ter você por aqui! 😊
-18|caraon-api  | Para te ajudar a encontrar o Samsung perfeito, preciso entender um pouquinho melhor o que você procura em um smartphone.
-18|caraon-api  | Poderia me dizer:
-18|caraon-api  | *   **O que você mais valoriza em um celular?** (Ex: câmera excelente, bateria de longa duração, tela grande, design elegante, bom para jogos, etc.)
-18|caraon-api  | *   **Qual a sua faixa de preço ideal?** (Isso me ajuda a focar nas opções que cabem no seu orçamento.)18|caraon-api  | *   **Você prefere um modelo mais recente ou está aberto a opções mais antigas (que podem ter um ótimo custo-benefício)?**
-18|caraon-api  | *   **Você tem alguma necessidade específica?** (Ex: precisa de muita memória, usa aplicativos pesados, precisa de resistência à água, etc.)
-18|caraon-api  | Com essas informações, posso te apresentar os modelos Samsung que melhor atendem às suas necessidades e te ajudar a comparar as especificações para que você faça a melhor escolha! 😉
-18|caraon-api  | "
-18|caraon-api  | 5. Refinando a resposta com o Roteador...
-18|caraon-api  | >> refineResponseWithParent: Refinando resposta com o agente Roteador - Equipe de Vendas
-18|caraon-api  | >> refineResponseWithParent: Prompt para refinamento:
-18|caraon-api  | Você é o agente roteador principal. Sua função é analisar a mensagem do usuário e direcioná-la para o departamento ou especialista correto (Vendas, Suporte, etc.). Se não tiver certeza, peça ao usuário para esclarecer.
-18|caraon-api  | Mensagem original: "quais produtos voces tem"
-18|caraon-api  | Resposta do especialista: "Olá! Que bom ter você por aqui! 😊
-18|caraon-api  | Para te ajudar a encontrar o Samsung perfeito, preciso entender um pouquinho melhor o que você procura em um smartphone.
-18|caraon-api  | Poderia me dizer:
-18|caraon-api  | *   **O que você mais valoriza em um celular?** (Ex: câmera excelente, bateria de longa duração, tela grande, design elegante, bom para jogos, etc.)
-18|caraon-api  | *   **Qual a sua faixa de preço ideal?** (Isso me ajuda a focar nas opções que cabem no seu orçamento.)18|caraon-api  | *   **Você prefere um modelo mais recente ou está aberto a opções mais antigas (que podem ter um ótimo custo-benefício)?**
-18|caraon-api  | *   **Você tem alguma necessidade específica?** (Ex: precisa de muita memória, usa aplicativos pesados, precisa de resistência à água, etc.)
-18|caraon-api  | Com essas informações, posso te apresentar os modelos Samsung que melhor atendem às suas necessidades e te ajudar a comparar as especificações para que você faça a melhor escolha! 😉
-18|caraon-api  | "
-18|caraon-api  | Revise e, se necessário, refine a resposta do especialista para garantir clareza, tom e completude. Se estiver boa, retorne-a como está.
-18|caraon-api  | >> generateResponse: Iniciando a geração de resposta...
-18|caraon-api  | >> generateResponse: Prompt:
-18|caraon-api  | Você é o agente roteador principal. Sua função é analisar a mensagem do usuário e direcioná-la para o departamento ou especialista correto (Vendas, Suporte, etc.). Se não tiver certeza, peça ao usuário para esclarecer.
-18|caraon-api  | Mensagem original: "quais produtos voces tem"
-18|caraon-api  | Resposta do especialista: "Olá! Que bom ter você por aqui! 😊
-18|caraon-api  | Para te ajudar a encontrar o Samsung perfeito, preciso entender um pouquinho melhor o que você procura em um smartphone.
-18|caraon-api  | Poderia me dizer:
-18|caraon-api  | *   **O que você mais valoriza em um celular?** (Ex: câmera excelente, bateria de longa duração, tela grande, design elegante, bom para jogos, etc.)
-18|caraon-api  | *   **Qual a sua faixa de preço ideal?** (Isso me ajuda a focar nas opções que cabem no seu orçamento.)18|caraon-api  | *   **Você prefere um modelo mais recente ou está aberto a opções mais antigas (que podem ter um ótimo custo-benefício)?**
-18|caraon-api  | *   **Você tem alguma necessidade específica?** (Ex: precisa de muita memória, usa aplicativos pesados, precisa de resistência à água, etc.)
-18|caraon-api  | Com essas informações, posso te apresentar os modelos Samsung que melhor atendem às suas necessidades e te ajudar a comparar as especificações para que você faça a melhor escolha! 😉
-18|caraon-api  | "
-18|caraon-api  | Revise e, se necessário, refine a resposta do especialista para garantir clareza, tom e completude. Se estiver boa, retorne-a como está.
-18|caraon-api  | >> generateResponse: Config: {
-18|caraon-api  |   id: '6887f56e00dab4c7d47dbd9f',
-18|caraon-api  |   agentId: '6887f56e00dab4c7d47dbd9e',
-18|caraon-api  |   maxTokens: 2000,
-18|caraon-api  |   temperature: 0.7,
-18|caraon-api  |   model: 'googleai/gemini-2.0-flash',
-18|caraon-api  |   systemPrompt: 'Você é um agente orquestrador que delega tarefas para agentes especializados.',
-18|caraon-api  |   fallbackMessage: 'Desculpe, não consegui processar sua solicitação no momento.',
-18|caraon-api  |   timeoutSeconds: 30,
-18|caraon-api  |   maxRetries: 3
-18|caraon-api  | }
-18|caraon-api  | >> generateResponse: Ferramentas disponíveis:
-18|caraon-api  | >> generateResponse: Resposta gerada com sucesso: A resposta do especialista está ótima. Ela é amigável, solicita informações importantes para direcionar a recomendação e explica o motivo das perguntas. Não precisa de refinamento.
-18|caraon-api  | Resposta:
-18|caraon-api  | "Olá! Que bom ter você por aqui! 😊
-18|caraon-api  | Para te ajudar a encontrar o Samsung perfeito, preciso entender um pouquinho melhor o que você procura em um smartphone.
-18|caraon-api  | Poderia me dizer:
-18|caraon-api  | *   **O que você mais valoriza em um celular?** (Ex: câmera excelente, bateria de longa duração, tela grande, design elegante, bom para jogos, etc.)
-18|caraon-api  | *   **Qual a sua faixa de preço ideal?** (Isso me ajuda a focar nas opções que cabem no seu orçamento.)18|caraon-api  | *   **Você prefere um modelo mais recente ou está aberto a opções mais antigas (que podem ter um ótimo custo-benefício)?**
-18|caraon-api  | *   **Você tem alguma necessidade específica?** (Ex: precisa de muita memória, usa aplicativos pesados, precisa de resistência à água, etc.)
-18|caraon-api  | Com essas informações, posso te apresentar os modelos Samsung que melhor atendem às suas necessidades e te ajudar a comparar as especificações para que você faça a melhor escolha! 😉
-18|caraon-api  | "
-18|caraon-api  | >> refineResponseWithParent: Resposta refinada: "A resposta do especialista está ótima. Ela é amigável, solicita informações importantes para direcionar a recomendação e explica o motivo das perguntas. Não precisa de refinamento.
-18|caraon-api  | Resposta:
-18|caraon-api  | "Olá! Que bom ter você por aqui! 😊
-18|caraon-api  | Para te ajudar a encontrar o Samsung perfeito, preciso entender um pouquinho melhor o que você procura em um smartphone.
-18|caraon-api  | Poderia me dizer:
-18|caraon-api  | *   **O que você mais valoriza em um celular?** (Ex: câmera excelente, bateria de longa duração, tela grande, design elegante, bom para jogos, etc.)
-18|caraon-api  | *   **Qual a sua faixa de preço ideal?** (Isso me ajuda a focar nas opções que cabem no seu orçamento.)18|caraon-api  | *   **Você prefere um modelo mais recente ou está aberto a opções mais antigas (que podem ter um ótimo custo-benefício)?**
-18|caraon-api  | *   **Você tem alguma necessidade específica?** (Ex: precisa de muita memória, usa aplicativos pesados, precisa de resistência à água, etc.)
-18|caraon-api  | Com essas informações, posso te apresentar os modelos Samsung que melhor atendem às suas necessidades e te ajudar a comparar as especificações para que você faça a melhor escolha! 😉
-18|caraon-api  | "
-18|caraon-api  | "
-18|caraon-api  |  -> Resposta Final (após refinamento): "A resposta do especialista está ótima. Ela é amigável, solicita informações importantes para direcionar a recomendação e explica o motivo das perguntas. Não precisa de refinamento.
-18|caraon-api  | Resposta:
-18|caraon-api  | "Olá! Que bom ter você por aqui! 😊
-18|caraon-api  | Para te ajudar a encontrar o Samsung perfeito, preciso entender um pouquinho melhor o que você procura em um smartphone.
-18|caraon-api  | Poderia me dizer:
-18|caraon-api  | *   **O que você mais valoriza em um celular?** (Ex: câmera excelente, bateria de longa duração, tela grande, design elegante, bom para jogos, etc.)
-18|caraon-api  | *   **Qual a sua faixa de preço ideal?** (Isso me ajuda a focar nas opções que cabem no seu orçamento.)18|caraon-api  | *   **Você prefere um modelo mais recente ou está aberto a opções mais antigas (que podem ter um ótimo custo-benefício)?**
-18|caraon-api  | *   **Você tem alguma necessidade específica?** (Ex: precisa de muita memória, usa aplicativos pesados, precisa de resistência à água, etc.)
-18|caraon-api  | Com essas informações, posso te apresentar os modelos Samsung que melhor atendem às suas necessidades e te ajudar a comparar as especificações para que você faça a melhor escolha! 😉
-18|caraon-api  | "
-18|caraon-api  | "
-18|caraon-api  | 6. Registrando a execução completa...
-18|caraon-api  | >> logAgentExecution: Registrando execução... {
-18|caraon-api  |   routerAgentId: '6887f56e00dab4c7d47dbd9e',
-18|caraon-api  |   success: true,
-18|caraon-api  |   errorMessage: null
-18|caraon-api  | }
-18|caraon-api  | >> logAgentExecution: Execução registrada com sucesso. ID: 688a433a04102d58f1e81f0a
-18|caraon-api  | -- Fim da Execução: Sucesso. Tempo total: 6162ms --
-18|caraon-api  | ▶️ Teste de playground recebido para a instância: 6887f56e00dab4c7d47dbd9c
-18|caraon-api  | -- Início da Execução Hierárquica: Instância 6887f56e00dab4c7d47dbd9c --
-18|caraon-api  | Mensagem do usuário: "quanto sobrou no stock"
-18|caraon-api  | 1. Buscando Agente Roteador...
-18|caraon-api  | >> getParentAgent: Buscando agente ROUTER para instância 6887f56e00dab4c7d47dbd9c e organização N/A
-18|caraon-api  | >> getParentAgent: Agente ROUTER encontrado: 6887f56e00dab4c7d47dbd9e
-18|caraon-api  |  -> Roteador encontrado: Roteador - Equipe de Vendas (ID: 6887f56e00dab4c7d47dbd9e)
-18|caraon-api  | 2. Roteador selecionando o departamento...
-18|caraon-api  | >> getOrganizationParentAgents: Buscando agentes PARENT para a instância 6887f56e00dab4c7d47dbd9c
-18|caraon-api  | >> getOrganizationParentAgents: 1 agentes PARENT encontrados.
-18|caraon-api  |  -> Departamento selecionado: Gerente de Vendas de SmartPhone (ID: 6887fe3500dab4c7d47dbda9)
-18|caraon-api  | 3. Departamento selecionando o especialista...
-18|caraon-api  | >> getChildAgents: Buscando agentes filhos para o pai 6887fe3500dab4c7d47dbda9
-18|caraon-api  | >> getChildAgents: 2 filhos encontrados.
-18|caraon-api  | LLM não selecionou um agente. Nenhum agente especialista será usado.
-18|caraon-api  |  -> Nenhum especialista selecionado. O agente do departamento responderá diretamente.
-18|caraon-api  | >> executeAgentDirect: Executando agente Gerente de Vendas de SmartPhone (ID: 6887fe3500dab4c7d47dbda9) diretamente.
-18|caraon-api  | >> executeAgentDirect: Prompt: Você é um líder experiente no departamento de vendas de acessórios para smartphones, com um histórico comprovado de otimização da experiência do cliente e aumento da eficiência operacional. Sua principal função é analisar as necessidades dos clientes com precisão e direcioná-los rapidamente ao especialista mais adequado, resolvendo quaisquer gargalos no processo. Você possui um profundo conhecimento técnico das marcas, modelos de acessórios e das especialidades de cada membro da sua equipe. Sua prioridade é garantir que cada cliente receba a melhor solução possível, motivando sua equipe a alcançar altos padrões de atendimento e buscando ativamente oportunidades de melhoria contínua no fluxo de trabalho e na satisfação do cliente.
-18|caraon-api  | Mensagem do usuário: "quanto sobrou no stock"
-18|caraon-api  | >> generateResponse: Iniciando a geração de resposta...
-18|caraon-api  | >> generateResponse: Prompt: Você é um líder experiente no departamento de vendas de acessórios para smartphones, com um histórico comprovado de otimização da experiência do cliente e aumento da eficiência operacional. Sua principal função é analisar as necessidades dos clientes com precisão e direcioná-los rapidamente ao especialista mais adequado, resolvendo quaisquer gargalos no processo. Você possui um profundo conhecimento técnico das marcas, modelos de acessórios e das especialidades de cada membro da sua equipe. Sua prioridade é garantir que cada cliente receba a melhor solução possível, motivando sua equipe a alcançar altos padrões de atendimento e buscando ativamente oportunidades de melhoria contínua no fluxo de trabalho e na satisfação do cliente.
-18|caraon-api  | Mensagem do usuário: "quanto sobrou no stock"
-18|caraon-api  | >> generateResponse: Config: {}
-18|caraon-api  | >> generateResponse: Ferramentas disponíveis:
-18|caraon-api  | >> generateResponse: Resposta gerada com sucesso: "Para te dar essa informação com precisão, preciso saber sobre qual acessório específico você está perguntando. Temos um grande estoque de diversos produtos, como capas, películas, carregadores, fones de ouvido, etc.
-18|caraon-api  | Você poderia me informar qual acessório você precisa verificar o estoque?"
-18|caraon-api  | **Possíveis respostas adicionais, dependendo da resposta do usuário:**
-18|caraon-api  | * **Se o usuário responder com um acessório específico (ex: "capa para iPhone 14 Pro"):** "Ok, deixe-me verificar nosso sistema. Só um momento..." (Verificar o sistema e fornecer a quantidade em estoque).
-18|caraon-api  | * **Se o usuário responder com uma categoria geral (ex: "capas"):** "Entendi. Temos diversos modelos de capas. Você procura capas para qual marca e modelo de smartphone?"
-18|caraon-api  | * **Se o usuário não souber especificar:** "Sem problemas! Para te ajudar melhor, qual smartphone você usa? Assim, posso te mostrar as opções de acessórios compatíveis e verificar o estoque para você."
-18|caraon-api  | **O objetivo aqui é:**
-18|caraon-api  | * **Obter informações precisas:** Garantir que a consulta seja específica para fornecer a informação correta.
-18|caraon-api  | * **Demonstrar conhecimento:** Mostrar que está familiarizado com a variedade de produtos.
-18|caraon-api  | * **Oferecer ajuda proativa:** Se o usuário não souber o que precisa, direcioná-lo de forma gentil e eficiente.
-18|caraon-api  | * **Garantir a melhor experiência:** Focar em resolver a necessidade do cliente da maneira mais rápida e precisa possível.
-18|caraon-api  | >> executeAgentDirect: Resposta: ""Para te dar essa informação com precisão, preciso saber sobre qual acessório específico você está perguntando. Temos um grande estoque de diversos produtos, como capas, películas, carregadores, fones de ouvido, etc.
-18|caraon-api  | Você poderia me informar qual acessório você precisa verificar o estoque?"
-18|caraon-api  | **Possíveis respostas adicionais, dependendo da resposta do usuário:**
-18|caraon-api  | * **Se o usuário responder com um acessório específico (ex: "capa para iPhone 14 Pro"):** "Ok, deixe-me verificar nosso sistema. Só um momento..." (Verificar o sistema e fornecer a quantidade em estoque).
-18|caraon-api  | * **Se o usuário responder com uma categoria geral (ex: "capas"):** "Entendi. Temos diversos modelos de capas. Você procura capas para qual marca e modelo de smartphone?"
-18|caraon-api  | * **Se o usuário não souber especificar:** "Sem problemas! Para te ajudar melhor, qual smartphone você usa? Assim, posso te mostrar as opções de acessórios compatíveis e verificar o estoque para você."
-18|caraon-api  | **O objetivo aqui é:**
-18|caraon-api  | * **Obter informações precisas:** Garantir que a consulta seja específica para fornecer a informação correta.
-18|caraon-api  | * **Demonstrar conhecimento:** Mostrar que está familiarizado com a variedade de produtos.
-18|caraon-api  | * **Oferecer ajuda proativa:** Se o usuário não souber o que precisa, direcioná-lo de forma gentil e eficiente.
-18|caraon-api  | * **Garantir a melhor experiência:** Focar em resolver a necessidade do cliente da maneira mais rápida e precisa possível.
-18|caraon-api  | "
-18|caraon-api  | >> logAgentExecution: Registrando execução... {
-18|caraon-api  |   routerAgentId: '6887f56e00dab4c7d47dbd9e',
-18|caraon-api  |   success: true,
-18|caraon-api  |   errorMessage: null
-18|caraon-api  | }
-18|caraon-api  | >> logAgentExecution: Execução registrada com sucesso. ID: 688a435e04102d58f1e81f0b
-18|caraon-api  | -- Fim da Execução: Resposta direta do Departamento. Tempo total: 4238ms --
-^X^C
-root@cognick:~/CaraON-backend#
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

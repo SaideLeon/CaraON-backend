@@ -111,12 +111,21 @@ const deleteInstance = async (req, res) => {
 
     // Envolve a lógica de deleção em uma transação
     await prisma.$transaction(async (tx) => {
-      // 1. Deleta todos os agentes associados à instância
+      // 1. Desvincula as relações de hierarquia e roteamento dos agentes
+      await tx.agent.updateMany({
+        where: { instanceId: instanceId },
+        data: {
+          parentAgentId: null,
+          routerAgentId: null,
+        },
+      });
+
+      // 2. Deleta todos os agentes associados à instância
       await tx.agent.deleteMany({
         where: { instanceId: instanceId },
       });
 
-      // 2. Deleta a instância
+      // 3. Deleta a instância
       await tx.instance.delete({
         where: { id: instanceId },
       });
