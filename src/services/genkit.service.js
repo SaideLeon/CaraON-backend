@@ -21,11 +21,11 @@ const { searchProductsTool, toolRegistry } = defineTools(ai);
  * @param {Array<object>} [tools=[]] - Ferramentas disponíveis para a geração.
  * @returns {Promise<string>} A resposta de texto gerada pelo modelo.
  */
-async function generateResponse(prompt, config = {}, tools = []) {
-  console.log(">> generateResponse: Iniciando a geração de resposta...");
-  console.log(">> generateResponse: Prompt:", prompt);
-  console.log(">> generateResponse: Config:", config);
-  console.log(`>> generateResponse: Ferramentas disponíveis: ${tools.map(t => t.name).join(', ')}`);
+async function generateResponse(prompt, config = {}, tools = [], flowId = '[Genkit]') {
+  console.log(`${flowId} >> [Genkit] Iniciando a geração de resposta...`);
+  console.log(`${flowId} >> [Genkit] Prompt:`, prompt);
+  console.log(`${flowId} >> [Genkit] Config:`, config);
+  console.log(`${flowId} >> [Genkit] Ferramentas disponíveis: ${tools.map(t => t.name).join(', ') || 'Nenhuma'}`);
 
   try {
     const llmResponse = await ai.generate({
@@ -36,11 +36,12 @@ async function generateResponse(prompt, config = {}, tools = []) {
         temperature: config.temperature,
       },
     });
-    const responseText = llmResponse.text;
-    console.log(">> generateResponse: Resposta gerada com sucesso:", responseText);
+
+    const responseText = llmResponse.text();
+    console.log(`${flowId} >> [Genkit] Resposta gerada com sucesso:`, responseText);
     return responseText;
   } catch (error) {
-    console.error('>> generateResponse: Erro detalhado ao gerar resposta com Genkit:', error);
+    console.error(`${flowId} >> [Genkit] Erro detalhado ao gerar resposta com Genkit:`, error);
     throw new Error('Falha ao se comunicar com o modelo de linguagem.');
   }
 }
