@@ -1,9 +1,10 @@
 import { PrismaClient } from '@prisma/client';
-import { generateResponse } from './genkit.service.js';
+import { generateResponse, ai, searchProductsTool } from './genkit.service.js'; // Importar 'ai' e 'searchProductsTool'
 import { executeToolFunction } from './tools.service.js';
 import * as agentHierarchyService from './agent.hierarchy.service.js';
 import { selectAgent } from './agent.selection.service.js';
-import { addMessageToHistory, getFormattedHistory } from './conversation.history.service.js'; // Importar o serviço de histórico
+import { addMessageToHistory, getFormattedHistory } from './conversation.history.service.js';
+import { z } from 'zod';
 
 const prisma = new PrismaClient();
 
@@ -103,7 +104,7 @@ async function executeHierarchicalAgentFlow(instanceId, messageContent, userPhon
 }
 
 /**
- * Executa um agente especialista usando o ciclo de ferramentas automático do Genkit.
+ * Executa um agente especialista, transformando ferramentas do DB em ferramentas dinâmicas do Genkit.
  * @param {object} agent - O objeto do agente especialista.
  * @param {string} messageContent - A mensagem do usuário.
  * @returns {Promise<string>} A resposta do agente.
@@ -111,21 +112,45 @@ async function executeHierarchicalAgentFlow(instanceId, messageContent, userPhon
 async function executeSpecialistAgent(agent, messageContent) {
   console.log(`>> executeSpecialistAgent: Executando especialista ${agent.name} com o método Genkit`);
 
-  // Mapeia as ferramentas do Prisma para o formato que o Genkit espera
-  const availableTools = agent.tools
-    .filter(t => t.isActive && t.tool) // Garante que a ferramenta associada exista
-    .map(t => t.tool); 
+  // 1. Transforma as ferramentas do Prisma (dinâmicas)
+  const dynamicTools = agent.tools
+    .filter(t => t.isActive && t.tool)
+    .map(({ tool }) => {
+      console.log(`>> Criando ferramenta dinâmica para: ${tool.name}`);
+      return ai.dynamicTool(
+        {
+          name: tool.name,
+          description: tool.description,
+          // Para simplificar, estamos usando um schema genérico.
+          // Uma implementação mais robusta poderia gerar schemas Zod a partir da config da ferramenta.
+          inputSchema: z.any(),
+          outputSchema: z.any(),
+        },
+        async (input) => {
+          console.log(`>> Executando a ferramenta dinâmica '${tool.name}' com o input:`, input);
+          // Chama a função centralizada que sabe como executar cada tipo de ferramenta
+          return await executeToolFunction(tool, input, agent.config);
+        }
+      );
+    });
 
-  const agentPrompt = `${agent.persona}\n\nMensagem do usuário: "${messageContent}"`;
+  // 2. Combina as ferramentas dinâmicas com as ferramentas de sistema estáticas
+  const availableTools = [searchProductsTool, ...dynamicTools];
+  console.log(`>> Ferramentas disponíveis para o agente: ${availableTools.map(t => t.name).join(', ')}`);
 
-  // Faz uma única chamada para o ai.generate com as ferramentas.
-  // O Genkit gerenciará o ciclo de chamada de ferramentas automaticamente.
+  const agentPrompt = `${agent.persona}\n\nHistórico da Conversa:\n${await getFormattedHistory(agent.instanceId)}\n\nMensagem do usuário: "${messageContent}"`;
+
+  // Faz uma única chamada para o ai.generate com as ferramentas combinadas.
   const finalResponse = await generateResponse(
-    agentPrompt, 
+    agentPrompt,
     { ...agent.config },
     availableTools
   );
-  
+
+  // Adiciona a interação ao histórico
+  await addMessageToHistory(agent.instanceId, 'user', messageContent);
+  await addMessageToHistory(agent.instanceId, 'agent', finalResponse);
+
   console.log(`>> executeSpecialistAgent: Resposta final do especialista: "${finalResponse}"`);
   return finalResponse;
 }
