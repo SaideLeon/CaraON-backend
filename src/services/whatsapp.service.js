@@ -185,8 +185,11 @@ async function startInstance(clientId, isReconnection = false) {
 
   client.on('disconnected', (reason) => {
     console.log(`🔌 Instância WhatsApp ${clientId} desconectada. Razão: ${reason}`);
+    const wasBeingDeleted = activeClients[clientId]?.isBeingDeleted;
     delete activeClients[clientId];
-    updateInstanceStatus(clientId, 'DISCONNECTED', `Instância ${clientId} foi desconectada.`);
+    if (!wasBeingDeleted) {
+      updateInstanceStatus(clientId, 'DISCONNECTED', `Instância ${clientId} foi desconectada.`);
+    }
   });
 
   client.on('remote_session_saved', () => {
@@ -203,9 +206,12 @@ async function startInstance(clientId, isReconnection = false) {
   return client;
 }
 
-async function disconnectInstance(clientId) {
+async function disconnectInstance(clientId, isBeingDeleted = false) {
   const client = activeClients[clientId];
   if (client) {
+    if (isBeingDeleted) {
+      client.isBeingDeleted = true;
+    }
     await client.logout();
     // O evento 'disconnected' tratará a limpeza e atualização de status
     return true;
@@ -213,7 +219,7 @@ async function disconnectInstance(clientId) {
 
   // Se o cliente não estiver ativo, garante que o status seja atualizado
   const instance = await prisma.instance.findUnique({ where: { clientId } });
-  if (instance && instance.status !== 'DISCONNECTED') {
+  if (instance && instance.status !== 'DISCONNECTED' && !isBeingDeleted) {
     updateInstanceStatus(clientId, 'DISCONNECTED', `Instância ${clientId} foi desconectada.`);
   }
 

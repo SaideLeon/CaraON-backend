@@ -1,38 +1,60 @@
-18|caraon- | 🔌 Instância WhatsApp 687d6b9e14ab6c1c2623ae4a-1753943700807 desconectada. Razão: LOGOUT
-18|caraon- | Status da instância 687d6b9e14ab6c1c2623ae4a-1753943700807 atualizado para: DISCONNECTED
-18|caraon- | 🔑 QR Code gerado para 687d6b9e14ab6c1c2623ae4a-1753943700807. Enviando via WebSocket.
-18|caraon- | ✅ Instância WhatsApp 687d6b9e14ab6c1c2623ae4a-1753943700807 conectada!
-18|caraon- | Status da instância 687d6b9e14ab6c1c2623ae4a-1753943700807 atualizado para: CONNECTED
-18|caraon- | 💾 Sessão do 687d6b9e14ab6c1c2623ae4a-1753943700807 salva no MongoDB
-18|caraon- | 🔌 Cliente WebSocket desconectado
-18|caraon- | 🔗 Novo cliente WebSocket conectado
-18|caraon- | 🔌 Cliente WebSocket desconectado
-18|caraon- | 🔗 Novo cliente WebSocket conectado
-18|caraon- | 🔌 Cliente WebSocket desconectado
-18|caraon- | 🔗 Novo cliente WebSocket conectado
-18|caraon- | 🔌 Cliente WebSocket desconectado
-18|caraon- | 🔗 Novo cliente WebSocket conectado
-18|caraon- | Shutting down all Genkit servers...
 
-/root/.pm2/logs/caraon-api-error.log last 15 lines:
-18|caraon- |
-18|caraon- | Invalid value for argument `type`. Expected AgentType.
-18|caraon- |     at Dn (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:29:1363)
-18|caraon- |     at ri.handleRequestError (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:121:7102)
-18|caraon- |     at ri.handleAndLogRequestError (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:121:6784)
-18|caraon- |     at ri.request (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:121:6491)
-18|caraon- |     at async l (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:130:9812)
-18|caraon- |     at async _handleIncomingWhatsAppMessage (file:///root/CaraON-backend/src/services/whatsapp.service.js:44:23) {
-18|caraon- |   clientVersion: '6.12.0'
-18|caraon- | }
-18|caraon- | SyntaxError: Invalid or unexpected token
-18|caraon- |     at compileSourceTextModule (node:internal/modules/esm/utils:346:16)
-18|caraon- |     at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:146:18)
-18|caraon- |     at #translate (node:internal/modules/esm/loader:431:12)
-18|caraon- |     at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:478:27)
+18|caraon-api  | 🔗 Novo cliente WebSocket conectado
+18|caraon-api  | Status da instância 687d6b9e14ab6c1c2623ae4a-1753946378277 atualizado para: DISCONNECTED
+18|caraon-api  | Erro ao deletar instância: PrismaClientKnownRequestError:
+18|caraon-api  | Invalid `prisma.instance.delete()` invocation:
+18|caraon-api  | Transaction failed due to a write conflict or a deadlock. Please retry your transaction
+18|caraon-api  |     at ri.handleRequestError (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:121:7459)
+18|caraon-api  |     at ri.handleAndLogRequestError (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:121:6784)
+18|caraon-api  |     at ri.request (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:121:6491)
+18|caraon-api  |     at async l (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:130:9812)
+18|caraon-api  |     at async file:///root/CaraON-backend/src/controllers/instances.controller.js:129:7
+18|caraon-api  |     at async Proxy._transactionWithCallback (/root/CaraON-backend/node_modules/@prisma/client/runtime/library.js:130:8173)
+18|caraon-api  |     at async deleteInstance (file:///root/CaraON-backend/src/controllers/instances.controller.js:113:5) {
+18|caraon-api  |   code: 'P2034',
+18|caraon-api  |   meta: { modelName: 'Instance' },
+18|caraon-api  |   clientVersion: '6.12.0'
+18|caraon-api  | }
 
 
 
 
 
-sempre que o servidor for iniciado, ele buscar todas as instâncias que estavam com o status CONNECTED e tentar restabelecer a conexão com o WhatsApp automaticamente, sem a necessidade de um novo QR Code.  se a conexao ocorrer com sucesso. manter status CONNECTED, caso nao alterar para status DISCONNECTED.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

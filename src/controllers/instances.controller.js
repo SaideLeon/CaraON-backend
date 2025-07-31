@@ -107,7 +107,7 @@ const deleteInstance = async (req, res) => {
     }
 
     // Primeiro, desconecta o cliente para evitar que ele tente atualizar o status depois da deleção
-    await whatsappService.disconnectInstance(instance.clientId);
+    await whatsappService.disconnectInstance(instance.clientId, true); // Passa true para indicar que a instância está sendo deletada
 
     // Envolve a lógica de deleção em uma transação
     await prisma.$transaction(async (tx) => {
