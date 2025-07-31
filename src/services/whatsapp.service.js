@@ -69,16 +69,18 @@ async function _handleIncomingWhatsAppMessage(client, message) {
     // 1. Garante que o contato exista no banco de dados
     const wppContact = await message.getContact();
     const contact = await prisma.contact.upsert({
-      where: { instanceId_phoneNumber: { instanceId: instance.id, phoneNumber: message.from } },
+      where: { instanceId_phoneNumber: { instanceId: instance.id, phoneNumber: `+${message.from.split('@')[0]}`} },
       update: {
         name: wppContact.name,
         pushName: wppContact.pushname,
       },
       create: {
         instanceId: instance.id,
-        phoneNumber: message.from,
+        // guardar o número de telefone no formato internacional message.from
+
+        phoneNumber: `+${message.from.split('@')[0]}`, // Remove o sufixo do WhatsApp
         name: wppContact.name,
-        pushName: wppContact.pushname,
+        pushName: wppContact.pushname ,
       },
     });
 
