@@ -1,233 +1,129 @@
+// src/services/agent.hierarchy.service.js
 import { PrismaClient } from '@prisma/client';
+
 const prisma = new PrismaClient();
 
 /**
- * Cria um agente PAI (departamento) ou um agente ROUTER (roteador principal).
+ * Cria um agente de nível superior (ROUTER ou PARENT).
+ * @param {object} data - Dados do agente.
+ * @returns {Promise<object>} O agente criado.
  */
-async function createParentAgent(data) {
-  const { name, persona, type, instanceId, organizationId, userId } = data;
-
-  // O tipo de agente agora é passado diretamente, não mais derivado.
-  const agentType = type;
-  let routerAgentId = null;
-
-  // Se for um PARENT, ele precisa ser vinculado ao ROUTER da instância.
-  if (agentType === 'PARENT') {
-    const instanceRouter = await getParentAgent(instanceId, null); // Busca o ROUTER
-    if (instanceRouter) {
-      routerAgentId = instanceRouter.id;
-    } else {
-        // Esta é uma salvaguarda. O fluxo normal deve criar o Roteador primeiro.
-        console.warn(`Tentativa de criar agente PARENT para a organização ${organizationId} sem um agente ROUTER na instância ${instanceId}.`);
-    }
+async function createParentAgent({ name, persona, type, instanceId, organizationId, userId }) {
+  if (type !== 'ROUTER' && type !== 'PARENT') {
+    throw new Error('Tipo de agente inválido. Deve ser ROUTER ou PARENT.');
   }
-  
-  const parentAgent = await prisma.agent.create({
+  if (type === 'PARENT' && !organizationId) {
+    throw new Error('OrganizationId é obrigatório para agentes PARENT.');
+  }
+
+  const agent = await prisma.agent.create({
     data: {
       name,
-      type: agentType,
       persona,
-      instanceId,
-      organizationId,
-      routerAgentId, // Vincula o PARENT ao ROUTER
+      type,
+      instance: { connect: { id: instanceId } },
+      organization: organizationId ? { connect: { id: organizationId } } : undefined,
       isActive: true,
-      priority: 0,
+      // Cria uma configuração padrão para o agente
       config: {
         create: {
-          maxTokens: 2000,
           temperature: 0.7,
-          model: 'googleai/gemini-2.0-flash',
-          systemPrompt: 'Você é um agente orquestrador que delega tarefas para agentes especializados.',
-          fallbackMessage: 'Desculpe, não consegui processar sua solicitação no momento.'
-        }
-      }
+          model: 'gemini-1.5-pro',
+        },
+      },
     },
-    include: {
-      config: true,
-      childAgents: true
-    }
+    include: { config: true },
   });
 
-  return parentAgent;
+  return { ...agent, type }; // Garante que o tipo seja retornado
 }
 
-
 /**
- * Cria um agente filho personalizado
+ * Cria um agente filho (especialista).
+ * @param {object} data - Dados do agente.
+ * @returns {Promise<object>} O agente criado.
  */
-async function createCustomChildAgent(data) {
-  const { name, persona, instanceId, organizationId, parentAgentId, toolIds = [] } = data;
-  
-  const childAgent = await prisma.agent.create({
-    data: {
-      name,
-      type: 'CHILD',
-      persona,
-      instanceId,
-      organizationId,
-      parentAgentId,
-      isActive: true,
-      priority: 2,
-      config: {
-        create: {
-          maxTokens: 1200,
-          temperature: 0.9,
-          model: 'googleai/gemini-2.0-flash',
-          systemPrompt: 'Você é um agente especialista personalizado.',
-          fallbackMessage: 'Não consegui processar sua solicitação personalizada.'
-        }
-      }
-    },
-    include: {
-      config: true
-    }
-  });
-
-  // Adicionar ferramentas específicas
-  if (toolIds && toolIds.length > 0) {
-      for (const toolId of toolIds) {
-        await prisma.agentTool.create({
-          data: {
-            agentId: childAgent.id,
-            toolId,
-            isActive: true
-          }
-        });
-      }
+async function createCustomChildAgent({ name, persona, toolIds, parentAgentId }) {
+  const parentAgent = await prisma.agent.findUnique({ where: { id: parentAgentId } });
+  if (!parentAgent) {
+    throw new Error('Agente pai não encontrado.');
   }
 
-  return childAgent;
+  const agent = await prisma.agent.create({
+    data: {
+      name,
+      persona,
+      type: 'CHILD',
+      instance: { connect: { id: parentAgent.instanceId } },
+      organization: parentAgent.organizationId ? { connect: { id: parentAgent.organizationId } } : undefined,
+      parentAgent: { connect: { id: parentAgentId } },
+      isActive: true,
+      tools: {
+        create: toolIds?.map(toolId => ({
+          tool: { connect: { id: toolId } },
+        })),
+      },
+      // Filhos herdam a configuração do pai, então não criamos uma específica por padrão
+    },
+    include: { tools: true },
+  });
+
+  return agent;
 }
 
 /**
- * Busca agentes filhos de um agente pai
+ * Obtém os agentes filhos de um agente pai.
+ * @param {string} parentAgentId - O ID do agente pai.
+ * @returns {Promise<Array<object>>} A lista de agentes filhos.
  */
 async function getChildAgents(parentAgentId) {
-  console.log(`>> getChildAgents: Buscando agentes filhos para o pai ${parentAgentId}`);
-  try {
-    const children = await prisma.agent.findMany({
-      where: {
-        parentAgentId,
-        isActive: true
-      },
-      include: {
-        tools: {
-          include: {
-            tool: true
-          }
-        },
-        config: true
-      },
-      orderBy: {
-        priority: 'asc'
-      }
-    });
-    console.log(`>> getChildAgents: ${children.length} filhos encontrados.`);
-    return children;
-  } catch (error) {
-    console.error(`>> getChildAgents: Erro ao buscar filhos para ${parentAgentId}:`, error);
-    throw error;
-  }
-}
-
-/**
- * Busca o agente Roteador (se organizationId for nulo) ou um agente Pai de uma organização.
- */
-async function getParentAgent(instanceId, organizationId = null) {
-  const agentType = organizationId ? 'PARENT' : 'ROUTER';
-  console.log(`>> getParentAgent: Buscando agente ${agentType} para instância ${instanceId} e organização ${organizationId || 'N/A'}`);
-  try {
-    const parent = await prisma.agent.findFirst({
-      where: {
-        instanceId,
-        organizationId,
-        type: agentType,
-        isActive: true
-      },
-      orderBy: {
-        priority: 'desc'
-      },
-      include: {
-        childAgents: {
-          where: { isActive: true },
-          include: {
-            tools: {
-              include: {
-                tool: true
-              }
-            },
-            config: true
-          }
-        },
-        config: true
-      }
-    });
-    console.log(`>> getParentAgent: Agente ${agentType} encontrado:`, parent ? parent.id : 'Nenhum');
-    return parent;
-  } catch (error) {
-    console.error(`>> getParentAgent: Erro ao buscar agente ${agentType}:`, error);
-    throw error;
-  }
-}
-
-/**
- * Atualiza a prioridade de um agente filho
- */
-async function updateAgentPriority(agentId, priority) {
-  return await prisma.agent.update({
-    where: { id: agentId },
-    data: { priority }
+  return prisma.agent.findMany({
+    where: {
+      parentAgentId,
+      isActive: true,
+    },
+    include: {
+      tools: { include: { tool: true } },
+      config: true,
+    },
+    orderBy: {
+      priority: 'desc',
+    },
   });
 }
 
 /**
- * Desativa um agente
+ * Desativa um agente e seus descendentes.
+ * @param {string} agentId - O ID do agente a ser desativado.
  */
 async function deactivateAgent(agentId) {
-  return await prisma.agent.update({
-    where: { id: agentId },
-    data: { isActive: false }
-  });
-}
-
-/**
- * Busca todos os agentes pais de organizações dentro de uma instância.
- * @param {string} instanceId - O ID da instância.
- * @returns {Promise<Array<object>>} Uma lista de agentes pais de organizações.
- */
-async function getOrganizationParentAgents(instanceId) {
-  console.log(`>> getOrganizationParentAgents: Buscando agentes PARENT para a instância ${instanceId}`);
-  try {
-    const agents = await prisma.agent.findMany({
-      where: {
-        instanceId,
-        type: 'PARENT',
-        isActive: true,
-        organizationId: {
-          not: null, // Garante que apenas agentes de organizações sejam retornados
-        },
-      },
-      include: {
-        organization: true,
-      },
-      orderBy: {
-        priority: 'desc',
-      },
+  // Usar uma transação para garantir a consistência
+  return prisma.$transaction(async (tx) => {
+    const agentToDeactivate = await tx.agent.findUnique({
+      where: { id: agentId },
+      include: { childAgents: true },
     });
-    console.log(`>> getOrganizationParentAgents: ${agents.length} agentes PARENT encontrados.`);
-    return agents;
-  } catch (error) {
-    console.error(`>> getOrganizationParentAgents: Erro ao buscar agentes PARENT:`, error);
-    throw error;
-  }
+
+    if (!agentToDeactivate) {
+      throw new Error('Agente não encontrado.');
+    }
+
+    // Desativar recursivamente os filhos
+    for (const child of agentToDeactivate.childAgents) {
+      await deactivateAgent(child.id); // Chamada recursiva dentro da transação
+    }
+
+    // Desativar o agente principal
+    return tx.agent.update({
+      where: { id: agentId },
+      data: { isActive: false },
+    });
+  });
 }
 
 export {
   createParentAgent,
   createCustomChildAgent,
   getChildAgents,
-  getParentAgent,
-  updateAgentPriority,
   deactivateAgent,
-  getOrganizationParentAgents,
 };

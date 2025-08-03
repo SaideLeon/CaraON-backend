@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
-import { availableFlows } from './genkit.flows.js'; // Importa os flows disponíveis
+
 
 // Mapeamento explícito de nomes de tabela para nomes de modelo Prisma
 const tableToModelMap = {
@@ -113,8 +113,7 @@ async function executeToolFunction(tool, parameters, agentConfig = {}) {
     return await executeApiTool(tool, parameters, agentConfig);
   case 'WEBHOOK':
     return await executeWebhookTool(tool, parameters, agentConfig);
-  case 'GENKIT_FLOW':
-    return await executeGenkitFlow(tool, parameters, agentConfig);
+  
   default:
     throw new Error(`Tipo de ferramenta não suportado: ${tool.type}`);
   }
@@ -271,35 +270,7 @@ async function executeWebhookTool(tool, parameters, agentConfig) {
   }
 }
 
-/**
- * Executa um flow do Genkit dinamicamente.
- */
-async function executeGenkitFlow(tool, parameters, agentConfig) {
-  const flowName = tool.config.flowName;
-  if (!flowName) {
-    throw new Error('O nome do flow (flowName) não está definido na configuração da ferramenta.');
-  }
 
-  const flow = availableFlows[flowName];
-  if (!flow) {
-    throw new Error(`O flow do Genkit '${flowName}' não foi encontrado ou não está registrado em genkit.flows.js.`);
-  }
-
-  try {
-    console.log(`Executando flow do Genkit '${flowName}' com os parâmetros:`, parameters);
-    // Valida os parâmetros de entrada com o Zod schema do flow antes de executar
-    const validatedParams = flow.inputSchema.parse(parameters);
-    const result = await flow.run(validatedParams);
-    console.log(`Resultado do flow '${flowName}':`, result);
-    return result;
-  } catch (error) {
-    console.error(`Erro ao executar o flow do Genkit '${flowName}':`, error);
-    if (error.issues) { // Erro de validação do Zod
-      throw new Error(`Parâmetros inválidos para o flow '${flowName}': ${JSON.stringify(error.issues)}`);
-    }
-    throw new Error(`Erro ao executar o flow do Genkit: ${flowName}.`);
-  }
-}
 
 
 /**

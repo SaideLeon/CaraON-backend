@@ -18,7 +18,7 @@ import messageRoutes from './api/message.routes.js';
 import contactRoutes from './api/contact.routes.js';
 import * as webSocketService from './services/websocket.service.js';
 import generateOpenApi from './docs/openapi.js';
-import '../genkit.config.js';
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 const API_SERVER_URLS = process.env.API_SERVER_URLS || `http://localhost:${PORT}`;

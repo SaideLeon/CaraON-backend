@@ -1,215 +1,150 @@
+// src/services/agent.execution.service.js
 import { PrismaClient } from '@prisma/client';
-import { generateResponse, ai, searchProductsTool } from './genkit.service.js'; // Importar 'ai' e 'searchProductsTool'
-import { executeToolFunction } from './tools.service.js';
-import * as agentHierarchyService from './agent.hierarchy.service.js';
-import { selectAgent } from './agent.selection.service.js';
-import { addMessageToHistory, getFormattedHistory } from './conversation.history.service.js';
-import { z } from 'zod';
+import { AgentManager } from './agent.core.service.js';
 
 const prisma = new PrismaClient();
+const agentManager = new AgentManager(process.env.GEMINI_API_KEY);
 
 /**
- * Executa o fluxo de roteamento e execução de agentes em múltiplos níveis.
- * @param {string} instanceId - O ID da instância.
- * @param {string} messageContent - A mensagem do usuário.
- * @param {string} userPhone - O telefone do usuário.
+ * Roteia a mensagem para o agente de departamento (PAI) apropriado.
+ */
+async function routeToParentAgent(routerAgent, parentAgents, message) {
+  if (!parentAgents || parentAgents.length === 0) {
+    throw new Error('Nenhum agente de departamento (PAI) configurado.');
+  }
+  if (parentAgents.length === 1) {
+    return parentAgents[0];
+  }
+
+  const departments = parentAgents.map(p => `- ${p.name}: ${p.persona}`).join('\n');
+  const routingPrompt = `
+    Você é um agente de roteamento. Sua tarefa é direcionar a mensagem do usuário para o departamento correto.
+    
+    Departamentos disponíveis:
+    ${departments}
+    
+    Mensagem do usuário: "${message}"
+    
+    Com base na mensagem, qual é o nome EXATO do departamento mais apropriado? Responda APENAS com o nome do departamento.
+  `;
+
+  const { ChatGoogleGenerativeAI } = await import('@langchain/google-genai');
+  const llm = new ChatGoogleGenerativeAI({ apiKey: process.env.GEMINI_API_KEY, modelName: 'gemini-1.5-flash' });
+  const result = await llm.invoke(routingPrompt);
+  const chosenDepartmentName = result.content.trim();
+
+  const chosenAgent = parentAgents.find(p => p.name === chosenDepartmentName);
+
+  return chosenAgent || parentAgents[0]; // Fallback para o primeiro
+}
+
+/**
+ * Roteia a mensagem para o agente especialista (FILHO) apropriado.
+ */
+async function routeToChildAgent(parentAgent, childAgents, message) {
+    if (!childAgents || childAgents.length === 0) {
+        return parentAgent; // Se não há filhos, o pai assume
+    }
+    if (childAgents.length === 1) {
+        return childAgents[0]; // Rota direta se houver apenas um
+    }
+
+    const specialists = childAgents.map(c => {
+        const tools = c.tools.map(t => t.tool.name).join(', ') || 'Nenhuma ferramenta específica';
+        return `- Nome: ${c.name}\n  Especialidade: ${c.persona}\n  Ferramentas: [${tools}]`;
+    }).join('\n\n');
+
+    const routingPrompt = `Você é um gerente de departamento. Sua tarefa é atribuir a solicitação do usuário ao especialista mais qualificado.\n\nEspecialistas disponíveis:\n${specialists}\n\nSolicitação do usuário: "${message}"\n\nCom base na solicitação, qual especialista é o mais adequado? Responda APENAS com o nome EXATO do especialista.`;
+
+    const { ChatGoogleGenerativeAI } = await import('@langchain/google-genai');
+    const llm = new ChatGoogleGenerativeAI({ apiKey: process.env.GEMINI_API_KEY, modelName: 'gemini-1.5-flash' });
+    const result = await llm.invoke(routingPrompt);
+    const chosenSpecialistName = result.content.trim();
+
+    const chosenAgent = childAgents.find(c => c.name === chosenSpecialistName);
+
+    // Fallback: se o LLM não decidir ou errar, usa o agente filho de maior prioridade ou o próprio pai.
+    return chosenAgent || childAgents[0] || parentAgent;
+}
+
+
+/**
+ * Executa o fluxo completo do agente, desde o roteamento até a resposta final.
  */
 async function executeHierarchicalAgentFlow(instanceId, messageContent, userPhone) {
-  console.log("\n-- Início da Execução Hierárquica: Instância " + instanceId + " --");
-  console.log("Mensagem do usuário: \"" + messageContent + "\"");
-  const startTime = Date.now();
-  let executionLog = [];
-  let routerAgentIdForLog = null;
-
-  try {
-    // 1. Obter o Agente Roteador
-    console.log('1. Buscando Agente Roteador...');
-    const routerAgent = await agentHierarchyService.getParentAgent(instanceId, null);
-    if (!routerAgent) {
-      throw new Error(`Nenhum Agente Roteador principal encontrado para a instância ${instanceId}`);
-    }
-    console.log(` -> Roteador encontrado: ${routerAgent.name} (ID: ${routerAgent.id})`);
-    executionLog.push({ agentId: routerAgent.id, name: routerAgent.name, type: 'Router' });
-    routerAgentIdForLog = routerAgent.id;
-
-    // 2. Selecionar o departamento (Agente Pai da Organização)
-    console.log('2. Roteador selecionando o departamento...');
-    const organizationAgents = await agentHierarchyService.getOrganizationParentAgents(instanceId);
-    if (organizationAgents.length === 0) {
-        console.log('Nenhum departamento (agente PARENT) encontrado. O roteador principal responderá diretamente.');
-        const directResponse = await executeAgentDirect(routerAgent, messageContent);
-        const execution = await logAgentExecution(routerAgentIdForLog, instanceId, messageContent, directResponse, Date.now() - startTime, true, executionLog);
-        console.log(`-- Fim da Execução: Resposta direta do Roteador. Tempo total: ${Date.now() - startTime}ms --\n`);
-        return { finalResponse: directResponse, executionId: execution.id };
-    }
-    const departmentAgent = await selectAgent(routerAgent, organizationAgents, messageContent, 'organization');
-
-    if (!departmentAgent) {
-      console.log(' -> Nenhum departamento selecionado pelo roteador. O roteador principal responderá diretamente.');
-      const directResponse = await executeAgentDirect(routerAgent, messageContent);
-      const execution = await logAgentExecution(routerAgentIdForLog, instanceId, messageContent, directResponse, Date.now() - startTime, true, executionLog);
-      console.log(`-- Fim da Execução: Resposta direta do Roteador. Tempo total: ${Date.now() - startTime}ms --\n`);
-      return { finalResponse: directResponse, executionId: execution.id };
-    }
-    console.log(` -> Departamento selecionado: ${departmentAgent.name} (ID: ${departmentAgent.id})`);
-    executionLog.push({ agentId: departmentAgent.id, name: departmentAgent.name, type: 'Department' });
-
-    // 3. Selecionar o Agente Filho (Especialista)
-    console.log('3. Departamento selecionando o especialista...');
-    const specialistAgents = await agentHierarchyService.getChildAgents(departmentAgent.id);
-     if (specialistAgents.length === 0) {
-        console.log(`Nenhum especialista (agente CHILD) encontrado para o departamento ${departmentAgent.name}. O departamento responderá diretamente.`);
-        const departmentResponse = await executeAgentDirect(departmentAgent, messageContent);
-        const execution = await logAgentExecution(routerAgentIdForLog, instanceId, messageContent, departmentResponse, Date.now() - startTime, true, executionLog);
-        console.log(`-- Fim da Execução: Resposta direta do Departamento. Tempo total: ${Date.now() - startTime}ms --\n`);
-        return { finalResponse: departmentResponse, executionId: execution.id };
-    }
-    const specialistAgent = await selectAgent(departmentAgent, specialistAgents, messageContent, 'specialist');
-
-    if (!specialistAgent) {
-      console.log(' -> Nenhum especialista selecionado. O agente do departamento responderá diretamente.');
-      const departmentResponse = await executeAgentDirect(departmentAgent, messageContent);
-      const execution = await logAgentExecution(routerAgentIdForLog, instanceId, messageContent, departmentResponse, Date.now() - startTime, true, executionLog);
-      console.log(`-- Fim da Execução: Resposta direta do Departamento. Tempo total: ${Date.now() - startTime}ms --\n`);
-      return { finalResponse: departmentResponse, executionId: execution.id };
-    }
-    console.log(` -> Especialista selecionado: ${specialistAgent.name} (ID: ${specialistAgent.id})`);
-    executionLog.push({ agentId: specialistAgent.id, name: specialistAgent.name, type: 'Specialist' });
-
-    // 4. Executar o Agente Especialista
-    console.log('4. Executando o Agente Especialista...');
-    const specialistResponse = await executeSpecialistAgent(specialistAgent, messageContent);
-    console.log(` -> Resposta do Especialista: "${specialistResponse}"`);
-
-    // 5. Refinar a resposta (opcional)
-    console.log('5. Refinando a resposta com o Roteador...');
-    const finalResponse = await refineResponseWithParent(routerAgent, messageContent, specialistResponse);
-    console.log(` -> Resposta Final (após refinamento): "${finalResponse}"`);
-
-    // 6. Registrar a execução
-    console.log('6. Registrando a execução completa...');
-    const execution = await logAgentExecution(routerAgentIdForLog, instanceId, messageContent, finalResponse, Date.now() - startTime, true, executionLog);
-
-    console.log(`-- Fim da Execução: Sucesso. Tempo total: ${Date.now() - startTime}ms --\n`);
-    return { finalResponse, executionId: execution.id };
-
-  } catch (error) {
-    console.error(`!! ERRO na execução hierárquica: ${error.message}`, { stack: error.stack });
-    const execution = await logAgentExecution(routerAgentIdForLog, instanceId, messageContent, null, Date.now() - startTime, false, executionLog, error.message);
-    console.log(`-- Fim da Execução: FALHA. Tempo total: ${Date.now() - startTime}ms --\n`);
-    const richError = new Error(error.message);
-    richError.executionId = execution ? execution.id : null;
-    throw richError;
-  }
-}
-
-/**
- * Executa um agente especialista, transformando ferramentas do DB em ferramentas dinâmicas do Genkit.
- * @param {object} agent - O objeto do agente especialista.
- * @param {string} messageContent - A mensagem do usuário.
- * @returns {Promise<string>} A resposta do agente.
- */
-async function executeSpecialistAgent(agent, messageContent) {
-  console.log(`>> executeSpecialistAgent: Executando especialista ${agent.name} com o método Genkit`);
-
-  // 1. Transforma as ferramentas do Prisma (dinâmicas)
-  const dynamicTools = agent.tools
-    .filter(t => t.isActive && t.tool)
-    .map(({ tool }) => {
-      console.log(`>> Criando ferramenta dinâmica para: ${tool.name}`);
-      return ai.dynamicTool(
-        {
-          name: tool.name,
-          description: tool.description,
-          // Para simplificar, estamos usando um schema genérico.
-          // Uma implementação mais robusta poderia gerar schemas Zod a partir da config da ferramenta.
-          inputSchema: z.any(),
-          outputSchema: z.any(),
-        },
-        async (input) => {
-          console.log(`>> Executando a ferramenta dinâmica '${tool.name}' com o input:`, input);
-          // Chama a função centralizada que sabe como executar cada tipo de ferramenta
-          return await executeToolFunction(tool, input, agent.config);
-        }
-      );
-    });
-
-  // 2. Combina as ferramentas dinâmicas com as ferramentas de sistema estáticas
-  const availableTools = [searchProductsTool, ...dynamicTools];
-  console.log(`>> Ferramentas disponíveis para o agente: ${availableTools.map(t => t.name).join(', ')}`);
-
-  const agentPrompt = `${agent.persona}\n\nHistórico da Conversa:\n${await getFormattedHistory(agent.instanceId)}\n\nMensagem do usuário: "${messageContent}"`;
-
-  // Faz uma única chamada para o ai.generate com as ferramentas combinadas.
-  const finalResponse = await generateResponse(
-    agentPrompt,
-    { ...agent.config },
-    availableTools
-  );
-
-  // Adiciona a interação ao histórico
-  await addMessageToHistory(agent.instanceId, 'user', messageContent);
-  await addMessageToHistory(agent.instanceId, 'agent', finalResponse);
-
-  console.log(`>> executeSpecialistAgent: Resposta final do especialista: "${finalResponse}"`);
-  return finalResponse;
-}
-
-/**
- * Executa um agente diretamente, sem seleção de filhos ou ferramentas.
- */
-async function executeAgentDirect(agent, messageContent) {
-  console.log(`>> executeAgentDirect: Executando agente ${agent.name} (ID: ${agent.id}) diretamente.`);
-  const prompt = `${agent.persona}\n\nMensagem do usuário: "${messageContent}"`;
-  console.log(`>> executeAgentDirect: Prompt:`, prompt);
-  const response = await generateResponse(prompt, { ...agent.config });
-  console.log(`>> executeAgentDirect: Resposta: "${response}"`);
-  return response;
-}
-
-
-
-/**
- * Permite que um agente de nível superior refine a resposta de um agente de nível inferior.
- */
-async function refineResponseWithParent(parentAgent, originalMessage, childResponse) {
-  console.log(`>> refineResponseWithParent: Refinando resposta com o agente ${parentAgent.name}`);
-  const prompt = `\n${parentAgent.persona}\n\nMensagem original: "${originalMessage}"\nResposta do especialista: "${childResponse}"\n\nRevise e, se necessário, refine a resposta do especialista para garantir clareza, tom e completude. Se estiver boa, retorne-a como está.\n`;
-  console.log('>> refineResponseWithParent: Prompt para refinamento:', prompt);
-  const refinedResponse = await generateResponse(prompt, { ...parentAgent.config });
-  console.log(`>> refineResponseWithParent: Resposta refinada: "${refinedResponse}"`);
-  return refinedResponse;
-}
-
-
-
-/**
- * Registra a execução completa do fluxo de agentes e retorna o registro.
- * @returns {Promise<object>} O registro da execução criada.
- */
-async function logAgentExecution(routerAgentId, instanceId, userMessage, finalResponse, executionTime, success, agentChain = [], errorMessage = null) {
-  console.log(`>> logAgentExecution: Registrando execução...`, { routerAgentId, success, errorMessage });
+  let executionId;
   try {
     const execution = await prisma.agentExecution.create({
-      data: {
-        agentId: routerAgentId, // O ID do agente que iniciou o fluxo
-        instanceId,
-        userMessage,
-        agentResponse: finalResponse,
-        executionTime,
-        success,
-        toolsUsed: agentChain, // Usando este campo para registrar a cadeia de agentes
-        errorMessage,
-      },
+      data: { instanceId, userMessage: messageContent, success: false },
     });
-    console.log(`>> logAgentExecution: Execução registrada com sucesso. ID: ${execution.id}`);
-    return execution;
+    executionId = execution.id;
+
+    const routerAgent = await prisma.agent.findFirst({
+      where: { instanceId, type: 'ROUTER', parentAgentId: null, isActive: true },
+      orderBy: { priority: 'desc' },
+    });
+
+    if (!routerAgent) {
+      throw new Error(`Nenhum agente roteador principal ativo encontrado para a instância ${instanceId}.`);
+    }
+
+    const parentAgents = await prisma.agent.findMany({
+      where: { instanceId, type: 'PARENT', isActive: true },
+    });
+
+    const parentAgent = await routeToParentAgent(routerAgent, parentAgents, messageContent);
+
+    const childAgents = await prisma.agent.findMany({
+        where: { parentAgentId: parentAgent.id, isActive: true },
+        include: { tools: { include: { tool: true } } },
+        orderBy: { priority: 'desc' },
+    });
+
+    let finalAgent;
+    if (childAgents.length > 1) {
+        finalAgent = await routeToChildAgent(parentAgent, childAgents, messageContent);
+    } else if (childAgents.length === 1) {
+        finalAgent = childAgents[0];
+    } else {
+        finalAgent = parentAgent;
+    }
+    
+    await prisma.agentExecution.update({
+        where: { id: executionId },
+        data: { agentId: finalAgent.id }
+    });
+
+    const result = await agentManager.processMessage(
+      finalAgent.id,
+      messageContent,
+      executionId,
+      userPhone
+    );
+
+    if (result.error) {
+        throw new Error(result.error);
+    }
+
+    return { finalResponse: result.response, executionId };
+
   } catch (error) {
-    console.error('>> logAgentExecution: Erro ao registrar execução do agente:', error);
-    return null; // Retorna nulo em caso de falha no log
+    console.error(`Erro no fluxo de execução do agente (Execution ID: ${executionId}):`, error);
+    if (executionId) {
+      await prisma.agentExecution.update({
+        where: { id: executionId },
+        data: {
+          success: false,
+          errorMessage: error.message,
+          agentResponse: "Desculpe, ocorreu um erro interno e não consegui processar sua solicitação.",
+        },
+      });
+    }
+    error.executionId = executionId;
+    throw error;
   }
 }
 
 export {
   executeHierarchicalAgentFlow,
 };
+

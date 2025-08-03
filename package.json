@@ -17,7 +17,7 @@
     "api",
     "caraon",
     "puppeteer",
-    "genkit",
+    
     "zod",
     "prisma"
   ],
@@ -28,11 +28,10 @@
   },
   "dependencies": {
     "@asteasolutions/zod-to-openapi": "7.3.4",
-    "@genkit-ai/ai": "^1.14.0",
-    "@genkit-ai/core": "^1.14.0",
-    "@genkit-ai/flow": "^0.5.17",
-    "@genkit-ai/googleai": "^1.15.5",
-    "@genkit-ai/vertexai": "^1.14.0",
+    
+    "@langchain/core": "^0.3.66",
+    "@langchain/google-genai": "^0.2.16",
+    "@langchain/langgraph": "^0.4.2",
     "@prisma/client": "^6.11.1",
     "bcryptjs": "^3.0.2",
     "chromium": "^3.0.3",
@@ -41,6 +40,7 @@
     "express": "^5.1.0",
     "json2csv": "^6.0.0-alpha.2",
     "jsonwebtoken": "^9.0.2",
+    "langchain": "^0.3.30",
     "mongoose": "^8.16.1",
     "prisma": "^6.11.1",
     "puppeteer": "^24.12.1",

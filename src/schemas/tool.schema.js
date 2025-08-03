@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const toolTypeEnum = z.enum(['DATABASE', 'API', 'WEBHOOK', 'GENKIT_FLOW', 'CUSTOM']);
+const toolTypeEnum = z.enum(['DATABASE', 'API', 'WEBHOOK', 'CUSTOM']);
 
 const databaseConfigSchema = z.object({
   connectionString: z.string().min(1, 'A string de conexão é obrigatória para ferramentas de banco de dados.'),
@@ -21,9 +21,7 @@ const webhookConfigSchema = z.object({
   headers: z.record(z.string()).optional(),
 });
 
-const genkitFlowConfigSchema = z.object({
-  flowName: z.string().min(1, 'O nome do fluxo Genkit é obrigatório.'),
-});
+
 
 const customConfigSchema = z.record(z.any()).optional();
 
@@ -47,12 +45,7 @@ const createToolSchema = z.object({
       type: z.literal(toolTypeEnum.enum.WEBHOOK),
       config: webhookConfigSchema,
     }),
-    z.object({
-      name: z.string().min(3, 'O nome da ferramenta é obrigatório.'),
-      description: z.string().min(10, 'A descrição precisa ter no mínimo 10 caracteres.'),
-      type: z.literal(toolTypeEnum.enum.GENKIT_FLOW),
-      config: genkitFlowConfigSchema,
-    }),
+    
     z.object({
       name: z.string().min(3, 'O nome da ferramenta é obrigatório.'),
       description: z.string().min(10, 'A descrição precisa ter no mínimo 10 caracteres.'),
