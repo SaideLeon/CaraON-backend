@@ -56,6 +56,7 @@ async function _handleIncomingWhatsAppMessage(client, message) {
         routerAgent = await agentHierarchyService.createParentAgent({
           name: `Roteador - ${instance.name}`,
           persona: 'Você é o agente roteador principal. Sua função é analisar a mensagem do usuário e direcioná-la para o departamento ou especialista correto (Vendas, Suporte, etc.). Se não tiver certeza, peça ao usuário para esclarecer.',
+          type: 'ROUTER',
           instanceId: instance.id,
           organizationId: null,
           userId: user.id,
