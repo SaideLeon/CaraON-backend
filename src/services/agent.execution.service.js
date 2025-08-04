@@ -1,9 +1,55 @@
 // src/services/agent.execution.service.js
 import { PrismaClient } from '@prisma/client';
 import { AgentManager } from './agent.core.service.js';
+import * as agentHierarchyService from './agent.hierarchy.service.js';
 
 const prisma = new PrismaClient();
 const agentManager = new AgentManager(process.env.GEMINI_API_KEY);
+
+
+/**
+ * Cria uma estrutura de agente padrão como fallback.
+ */
+async function createDefaultAgentStructure(instance) {
+  console.log(`Criando estrutura de agente padrão para a instância: ${instance.name}`);
+
+  // 1. Cria a Organização 'Padrão'
+  const organization = await prisma.organization.upsert({
+    where: { instanceId_name: { instanceId: instance.id, name: 'Padrão' } },
+    update: {},
+    create: { instanceId: instance.id, name: 'Padrão' },
+  });
+
+  // 2. Cria o Agente Roteador
+  const routerAgent = await agentHierarchyService.createParentAgent({
+    name: `Roteador - ${instance.name}`,
+    persona: 'Você é o agente roteador principal...',
+    type: 'ROUTER',
+    instanceId: instance.id,
+    userId: instance.userId,
+  });
+
+  // 3. Cria o Agente Pai 'Atendimento Geral'
+  const parentAgent = await agentHierarchyService.createParentAgent({
+    name: 'Atendimento Geral',
+    persona: 'Você é do atendimento geral...',
+    type: 'PARENT',
+    instanceId: instance.id,
+    organizationId: organization.id,
+    userId: instance.userId,
+  });
+
+  // 4. Cria o Agente Filho 'Assistente de Produtos'
+  const productTool = await prisma.tool.findUnique({ where: { name: 'searchProducts' } });
+  const childAgent = await agentHierarchyService.createCustomChildAgent({
+    name: 'Assistente de Produtos',
+    persona: 'Eu sou um especialista em produtos...',
+    parentAgentId: parentAgent.id,
+    toolIds: productTool ? [productTool.id] : [],
+  });
+
+  return { routerAgent, parentAgent, childAgent };
+}
 
 /**
  * Roteia a mensagem para o agente de departamento (PAI) apropriado.
