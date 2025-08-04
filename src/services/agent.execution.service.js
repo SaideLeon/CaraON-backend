@@ -131,7 +131,13 @@ async function executeHierarchicalAgentFlow(instanceId, messageContent, userPhon
     });
 
     if (!routerAgent) {
-      throw new Error(`Nenhum agente roteador principal ativo encontrado para a instância ${instanceId}.`);
+      const instance = await prisma.instance.findUnique({ where: { id: instanceId } });
+      if (!instance) {
+        throw new Error(`Instância com ID ${instanceId} não encontrada.`);
+      }
+      console.log(`Nenhum agente roteador encontrado para ${instance.name}. Criando estrutura padrão.`);
+      const defaultStructure = await createDefaultAgentStructure(instance);
+      routerAgent = defaultStructure.routerAgent; // Atribui o roteador recém-criado
     }
 
     const parentAgents = await prisma.agent.findMany({

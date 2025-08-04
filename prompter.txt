@@ -1,20 +1,32 @@
-18|caraon- | Found 1 instances to reconnect.
-18|caraon- | ▶️ Iniciando reconexão para a instância: Whats TI (687d6b9e14ab6c1c2623ae4a-1753994425635)
-18|caraon- | 🚀 Iniciando instância 687d6b9e14ab6c1c2623ae4a-1753994425635. É uma reconexão? true
+/root/.pm2/logs/caraon-api-out.log last 15 lines:
 18|caraon- | Status da instância 687d6b9e14ab6c1c2623ae4a-1753994425635 atualizado para: RECONNECTING
 18|caraon- | ✅ Instância WhatsApp 687d6b9e14ab6c1c2623ae4a-1753994425635 conectada!
 18|caraon- | Status da instância 687d6b9e14ab6c1c2623ae4a-1753994425635 atualizado para: CONNECTED
 18|caraon- | ✅ Instância WhatsApp 687d6b9e14ab6c1c2623ae4a-1753994425635 conectada!
 18|caraon- | Status da instância 687d6b9e14ab6c1c2623ae4a-1753994425635 atualizado para: CONNECTED
+18|caraon- | ✉️  Mensagem recebida para 687d6b9e14ab6c1c2623ae4a-1753994425635: Olá
+18|caraon- | ✅ Servidor WebSocket iniciado
+18|caraon- | ✅ Conectado ao MongoDB para sessões WhatsApp
+18|caraon- | 🔄 Verificando instâncias para reconexão automática...
+18|caraon- | 🚀 API e WebSocket rodando na porta 3030
+18|caraon- | 📚 Documentação da API disponível em: http://localhost:3030/api-docs
+18|caraon- | Found 1 instances to reconnect.
+18|caraon- | ▶️ Iniciando reconexão para a instância: Whats TI (687d6b9e14ab6c1c2623ae4a-1753994425635)
+18|caraon- | 🚀 Iniciando instância 687d6b9e14ab6c1c2623ae4a-1753994425635. É uma reconexão? true
+18|caraon- | Status da instância 687d6b9e14ab6c1c2623ae4a-1753994425635 atualizado para: RECONNECTING
 
-18|caraon-api  | ✉️  Mensagem recebida para 687d6b9e14ab6c1c2623ae4a-1753994425635: Olá
-18|caraon-api  | Erro no fluxo de execução do agente (Execution ID: 6890e89cbf177acb4e5c02ad): Error: Nenhum agente roteador principal ativo encontrado para a instância 688bd4b9516de24d08819190.
-18|caraon-api  |     at executeHierarchicalAgentFlow (file:///root/CaraON-backend/src/services/agent.execution.service.js:88:13)
+18|caraon-api  | ✅ Instância WhatsApp 687d6b9e14ab6c1c2623ae4a-1753994425635 conectada!
+18|caraon-api  | Status da instância 687d6b9e14ab6c1c2623ae4a-1753994425635 atualizado para: CONNECTED
+18|caraon-api  | ✅ Instância WhatsApp 687d6b9e14ab6c1c2623ae4a-1753994425635 conectada!
+18|caraon-api  | Status da instância 687d6b9e14ab6c1c2623ae4a-1753994425635 atualizado para: CONNECTED
+18|caraon-api  | ✉️  Mensagem recebida para 687d6b9e14ab6c1c2623ae4a-1753994425635: Ola
+18|caraon-api  | Erro no fluxo de execução do agente (Execution ID: 6890f250bb8b797680871b38): Error: Nenhum agente roteador principal ativo encontrado para a instância 688bd4b9516de24d08819190.
+18|caraon-api  |     at executeHierarchicalAgentFlow (file:///root/CaraON-backend/src/services/agent.execution.service.js:134:13)
 18|caraon-api  |     at async _handleIncomingWhatsAppMessage (file:///root/CaraON-backend/src/services/whatsapp.service.js:89:44)
 18|caraon-api  | Erro ao processar mensagem do WhatsApp: Error: Nenhum agente roteador principal ativo encontrado para a instância 688bd4b9516de24d08819190.
-18|caraon-api  |     at executeHierarchicalAgentFlow (file:///root/CaraON-backend/src/services/agent.execution.service.js:88:13)
+18|caraon-api  |     at executeHierarchicalAgentFlow (file:///root/CaraON-backend/src/services/agent.execution.service.js:134:13)
 18|caraon-api  |     at async _handleIncomingWhatsAppMessage (file:///root/CaraON-backend/src/services/whatsapp.service.js:89:44) {
-18|caraon-api  |   executionId: '6890e89cbf177acb4e5c02ad'
+18|caraon-api  |   executionId: '6890f250bb8b797680871b38'
 18|caraon-api  | }
 
 
