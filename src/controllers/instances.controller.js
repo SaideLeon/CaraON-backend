@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 import * as whatsappService from '../services/whatsapp.service.js'; 
-import * as agentHierarchyService from '../services/agent.hierarchy.service.js';
+import * as ariacService from '../services/ariac.service.js';
 
 const createInstance = async (req, res) => {
   const { name } = req.body;
@@ -16,15 +16,15 @@ const createInstance = async (req, res) => {
       },
     });
 
-    // Após criar a instância, cria o agente roteador principal para ela
-    await agentHierarchyService.createParentAgent({
-      name: `Roteador - ${name}`,
-      persona: 'Você é o agente roteador principal. Sua função é analisar a mensagem do usuário e direcioná-la para o departamento ou especialista correto (Vendas, Suporte, etc.). Se não tiver certeza, peça ao usuário para esclarecer.',
-      type: 'ROUTER', // Adiciona o tipo que estava faltando
-      instanceId: instance.id,
-      organizationId: null, // Este é um roteador de nível de instância
-      userId: userId,
-    });
+    const hierarchyData = {
+      user_id: userId,
+      instance_id: instance.id,
+      router_instructions: 'Você é o agente roteador principal. Sua função é analisar a mensagem do usuário e direcioná-la para o departamento ou especialista correto (Vendas, Suporte, etc.). Se não tiver certeza, peça ao usuário para esclarecer.',
+      agents: [],
+    };
+
+    await ariacService.updateAgentHierarchy(hierarchyData);
+
 
     // Inicia a instância do WhatsApp em segundo plano
     whatsappService.startInstance(instance.clientId);

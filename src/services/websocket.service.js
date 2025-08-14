@@ -1,6 +1,5 @@
 import { WebSocketServer, WebSocket } from 'ws';
 import { PrismaClient } from '@prisma/client';
-import * as agentHierarchyService from './agent.hierarchy.service.js';
 import * as ariacService from './ariac.service.js';
 
 const prisma = new PrismaClient();
@@ -26,27 +25,6 @@ function init(server) {
           const instance = await prisma.instance.findUnique({ where: { id: instanceId } });
           if (!instance) {
             throw new Error(`Instância com ID ${instanceId} não encontrada para o teste de playground.`);
-          }
-
-          let routerAgent = await prisma.agent.findFirst({
-            where: {
-              instanceId: instance.id,
-              type: 'ROUTER',
-              organizationId: null,
-            },
-          });
-
-          if (!routerAgent) {
-            console.warn(`⚠️ Nenhum Agente Roteador Principal encontrado para a instância ${instance.name} no playground. Criando um automaticamente.`);
-            routerAgent = await agentHierarchyService.createParentAgent({
-              name: `Roteador - ${instance.name}`,
-              persona: 'Você é o agente roteador principal. Sua função é analisar a mensagem do usuário e direcioná-la para o departamento ou especialista correto (Vendas, Suporte, etc.). Se não tiver certeza, peça ao usuário para esclarecer.',
-              instanceId: instance.id,
-              organizationId: null,
-              userId: instance.userId,
-              type: 'ROUTER', // Adicionado o tipo explicitamente aqui
-            });
-            console.log(`✅ Agente Roteador Principal criado automaticamente para a instância ${instance.name} via playground.`);
           }
 
           const chatData = {
