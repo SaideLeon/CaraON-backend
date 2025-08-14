@@ -1,6 +1,5 @@
 agent
 
-
 POST
 /agent/chat
 Chat With Agent
@@ -68,8 +67,8 @@ Response headers
  content-encoding: zstd 
  content-type: application/json 
  date: Wed,13 Aug 2025 16:37:53 GMT 
- nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800} 
- report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=mCRfV6z%2BFyVwoL53S8DAgH0YWIhh%2FsIlrruTLbwG6pS9QY9gJHV48baIGN6ndTrJVMz3mGhwfJ5SiXB%2BgyKCXunSz1zKFMhS250PaVH96E1oUi4%3D"}]} 
+ nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+ report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=mCRfV6z%2BFyVwoL53S8DAgH0YWIhh%2FsIlrruTLbwG6pS9QY9gJHV48baIGN6ndTrJVMz3mGhwfJ5SiXB%2BgyKCXunSz1zKFMhS250PaVH96E1oUi4%3D"}]}
  server: cloudflare 
 Responses
 Code	Description	Links
@@ -195,42 +194,42 @@ Clear
 Responses
 Curl
 
-curl -X 'PUT' 
-  'https://app.caraon.qzz.io/api/v1/agents/hierarchy' 
-  -H 'accept: application/json' 
-  -H 'Authorization: Bearer <YOUR_AUTH_TOKEN>' 
-  -H 'Content-Type: application/json' 
-  -d '{ 
-  "instance_id": "whats43mddggdggds34", 
-  "router_instructions": "string", 
-  "agents": [ 
-    { 
-      "name": "Analista Financeiro", 
-      "role": "Especialista em análise de ações e dados financeiros.", 
-      "model_provider": "GEMINI", 
-      "model_id": "gemini-1.5-flash", 
-      "tools": [ 
-        { 
-          "type": "YFINANCE", 
-          "config": { 
-            "stock_price": true, 
-            "company_news": true 
-          } 
-        } 
-      ] 
-    }, 
-    { 
-      "name": "Pesquisador Web", 
-      "role": "Especialista em buscar informações na web.", 
-      "model_provider": "GEMINI", 
-      "model_id": "gemini-1.5-flash", 
-      "tools": [ 
-        { 
-          "type": "DUCKDUCKGO" 
-        } 
-      ] 
-    } 
-  ] 
+curl -X 'PUT' \
+  'https://app.caraon.qzz.io/api/v1/agents/hierarchy' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer <YOUR_AUTH_TOKEN>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "instance_id": "whats43mddggdggds34",
+  "router_instructions": "string",
+  "agents": [
+    {
+      "name": "Analista Financeiro",
+      "role": "Especialista em análise de ações e dados financeiros.",
+      "model_provider": "GEMINI",
+      "model_id": "gemini-1.5-flash",
+      "tools": [
+        {
+          "type": "YFINANCE",
+          "config": {
+            "stock_price": true,
+            "company_news": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Pesquisador Web",
+      "role": "Especialista em buscar informações na web.",
+      "model_provider": "GEMINI",
+      "model_id": "gemini-1.5-flash",
+      "tools": [
+        {
+          "type": "DUCKDUCKGO"
+        }
+      ]
+    }
+  ]
 }'
 Request URL
 https://app.caraon.qzz.io/api/v1/agents/hierarchy
@@ -251,8 +250,8 @@ Response headers
  content-encoding: zstd 
  content-type: application/json 
  date: Wed,13 Aug 2025 16:36:43 GMT 
- nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800} 
- report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=KvdwwSnAW0eYBAnu25W0JBWqKqiXzDfUmHqMvj5TnRxO0ViWl01ydaW726Uxqm8E3cgP%2BPP1LoiNlpzr3p22AdefDwcJZLRm%2FYwGa4UL4S7VPGc%3D"}]} 
+ nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+ report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=KvdwwSnAW0eYBAnu25W0JBWqKqiXzDfUmHqMvj5TnRxO0ViWl01ydaW726Uxqm8E3cgP%2BPP1LoiNlpzr3p22AdefDwcJZLRm%2FYwGa4UL4S7VPGc%3D"}]}
  server: cloudflare 
 Responses
 Code	Description	Links
@@ -369,8 +368,8 @@ Response headers
  content-encoding: zstd 
  content-type: application/json 
  date: Wed,13 Aug 2025 16:38:33 GMT 
- nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800} 
- report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=%2BqzJaL5lTtqrBTwknrguMcg8IowhD3%2FiGYULDKKvwkMNFLXnfEOntwkrM4m7NMPwZjCKfjU9fxft8Mr4VWmJHO4o9Wb9sXhx%2BUzWkwnTtS0tsAc%3D"}]} 
+ nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+ report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=%2BqzJaL5lTtqrBTwknrguMcg8IowhD3%2FiGYULDKKvwkMNFLXnfEOntwkrM4m7NMPwZjCKfjU9fxft8Mr4VWmJHO4o9Wb9sXhx%2BUzWkwnTtS0tsAc%3D"}]}
  server: cloudflare 
 Responses
 Code	Description	Links
@@ -406,4 +405,3 @@ Schema
   ]
 }
 No links
-

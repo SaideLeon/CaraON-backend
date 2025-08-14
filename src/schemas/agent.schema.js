@@ -18,7 +18,7 @@ const AriacAgentSchema = z.object({
 }).openapi('AriacAgent');
 
 const UpdateHierarchyBody = z.object({
-  instanceId: z.string().openapi({description: "O ID da instância a ser atualizada."}),
+  instance_id: z.string().openapi({description: "O ID da instância a ser atualizada."}),
   router_instructions: z.string(),
   agents: z.array(AriacAgentSchema),
 }).openapi({refId: 'UpdateHierarchyBody'});

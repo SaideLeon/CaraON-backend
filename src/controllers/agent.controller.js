@@ -7,12 +7,8 @@ import * as ariacService from '../services/ariac.service.js';
  */
 const updateHierarchy = async (req, res) => {
   try {
-    const { instance_id, router_instructions, agents } = req.body;
+    const { instance_id, router_instructions, agents } = req.validatedData.body;
     const { userId } = req.user; // Extracted from auth middleware
-
-    if (!instance_id || !agents) {
-      return res.status(400).json({ message: 'instance_id and agents are required.' });
-    }
 
     const hierarchyData = {
       user_id: userId,
