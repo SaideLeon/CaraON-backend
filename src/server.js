@@ -10,7 +10,6 @@ import agentRoutes from './api/agent.routes.js';
 import productRoutes from './api/products.routes.js';
 import orderRoutes from './api/orders.routes.js';
 import cartRoutes from './api/cart.routes.js';
-import toolRoutes from './api/tool.routes.js';
 import categoryRoutes from './api/category.routes.js';
 import brandRoutes from './api/brand.routes.js';
 import healthRoutes from './api/health.routes.js';
@@ -30,7 +29,6 @@ generateOpenApi(app, servers);
 app.use(cors({ origin: '*' }));
 app.use(express.json());
 
-import { createSystemTools } from './services/tools.service.js';
 import { PrismaClient } from '@prisma/client';
 import { startInstance } from './services/whatsapp.service.js';
 
@@ -63,8 +61,6 @@ async function reconnectConnectedInstances() {
 
 mongoose.connect(process.env.MONGODB_SESSION_URI).then(() => {
   console.log('✅ Conectado ao MongoDB para sessões WhatsApp');
-  // Cria as ferramentas padrão do sistema após a conexão com o banco de dados
-  createSystemTools();
   // Inicia a reconexão das instâncias que já estavam ativas
   reconnectConnectedInstances();
 });
@@ -79,7 +75,6 @@ app.use('/api/v1', productRoutes);
 app.use('/api/v1', cartRoutes);
 app.use('/api/v1', orderRoutes);
 
-app.use('/api/v1/tools', toolRoutes);
 app.use('/api/v1', categoryRoutes);
 app.use('/api/v1', brandRoutes);
 app.use('/api/v1', messageRoutes);

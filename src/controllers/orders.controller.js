@@ -66,57 +66,57 @@ const handlePaymentNotification = async (req, res) => {
     // A notificação pode se referir a um MobileTransaction ou a um Payment diretamente.
     // Vamos priorizar a busca por uma transação móvel, que é mais específica.
     let mobileTransaction = await prisma.mobileTransaction.findFirst({
-        where: {
-            OR: [
-                { externalReference: transactionId },
-                { internalReference: transactionId },
-            ]
-        }
+      where: {
+        OR: [
+          { externalReference: transactionId },
+          { internalReference: transactionId },
+        ]
+      }
     });
 
     let payment;
 
     if (mobileTransaction) {
-        // Encontramos uma transação móvel, agora encontramos o pagamento associado
-        if (!mobileTransaction.paymentId) {
-            console.warn(`Transação móvel ${mobileTransaction.id} recebida sem paymentId associado.`);
-            // Ainda assim, vamos registrar o callback
-            await prisma.transactionCallback.create({
-                data: {
-                    transactionId: mobileTransaction.id,
-                    callbackData: req.body,
-                    isProcessed: false, // Marcar como não processado pois não há pagamento
-                }
-            });
-            return res.status(200).json({ message: 'Notificação para transação móvel sem pagamento associado.' });
-        }
-        payment = await prisma.payment.findUnique({ where: { id: mobileTransaction.paymentId } });
-
-        // Atualizar a transação móvel
-        await prisma.mobileTransaction.update({
-            where: { id: mobileTransaction.id },
-            data: {
-                status: status === 'PAID' ? 'COMPLETED' : 'FAILED',
-                operatorResponse: notificationData,
-                completedAt: new Date(),
-            }
-        });
-
-        // Registrar o callback
+      // Encontramos uma transação móvel, agora encontramos o pagamento associado
+      if (!mobileTransaction.paymentId) {
+        console.warn(`Transação móvel ${mobileTransaction.id} recebida sem paymentId associado.`);
+        // Ainda assim, vamos registrar o callback
         await prisma.transactionCallback.create({
-            data: {
-                transactionId: mobileTransaction.id,
-                callbackData: req.body,
-                isProcessed: true,
-                processedAt: new Date(),
-            }
+          data: {
+            transactionId: mobileTransaction.id,
+            callbackData: req.body,
+            isProcessed: false, // Marcar como não processado pois não há pagamento
+          }
         });
+        return res.status(200).json({ message: 'Notificação para transação móvel sem pagamento associado.' });
+      }
+      payment = await prisma.payment.findUnique({ where: { id: mobileTransaction.paymentId } });
+
+      // Atualizar a transação móvel
+      await prisma.mobileTransaction.update({
+        where: { id: mobileTransaction.id },
+        data: {
+          status: status === 'PAID' ? 'COMPLETED' : 'FAILED',
+          operatorResponse: notificationData,
+          completedAt: new Date(),
+        }
+      });
+
+      // Registrar o callback
+      await prisma.transactionCallback.create({
+        data: {
+          transactionId: mobileTransaction.id,
+          callbackData: req.body,
+          isProcessed: true,
+          processedAt: new Date(),
+        }
+      });
 
     } else {
-        // Se não for uma transação móvel, tentamos encontrar um pagamento genérico
-        payment = await prisma.payment.findFirst({
-            where: { transactionId: transactionId }
-        });
+      // Se não for uma transação móvel, tentamos encontrar um pagamento genérico
+      payment = await prisma.payment.findFirst({
+        where: { transactionId: transactionId }
+      });
     }
 
     if (!payment) {

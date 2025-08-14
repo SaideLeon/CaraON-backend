@@ -3,11 +3,9 @@ module.exports = [
     'files': ['**/*.js'],
     'languageOptions': {
       'ecmaVersion': 2021,
-      'sourceType': 'commonjs',
+      'sourceType': 'module',
       'globals': {
         'process': 'readonly',
-        'require': 'readonly',
-        'module': 'readonly',
         '__dirname': 'readonly'
       }
     },
@@ -18,11 +16,7 @@ module.exports = [
       ],
       'linebreak-style': [
         'error',
-        'windows'
-      ],
-      'quotes': [
-        'error',
-        'single'
+        'unix'
       ],
       'semi': [
         'error',

@@ -4,130 +4,33 @@ import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 
 extendZodWithOpenApi(z);
 
-const AgentTypeEnum = z.enum(['ROUTER', 'PARENT', 'CHILD']);
+const AriacToolSchema = z.object({
+  type: z.string(),
+  config: z.record(z.any()).optional().nullable(),
+}).openapi('AriacTool');
 
-const CreateAgentBody = z.object({
-  name: z.string().min(3, 'O nome do agente é obrigatório.'),
-  persona: z.string().min(10, 'A persona precisa ter no mínimo 10 caracteres.'),
-  type: AgentTypeEnum,
-  instanceId: z.string().regex(/^[0-9a-fA-F]{24}$/, 'ID de instância inválido').optional(),
-  organizationId: z.string().regex(/^[0-9a-fA-F]{24}$/, 'ID de organização inválido').optional(),
-  parentAgentId: z.string().regex(/^[0-9a-fA-F]{24}$/, 'ID de agente pai inválido').optional(),
-  toolIds: z.array(z.string().regex(/^[0-9a-fA-F]{24}$/, 'ID de ferramenta inválido')).optional(),
+const AriacAgentSchema = z.object({
+  name: z.string(),
+  role: z.string(),
+  model_provider: z.string(),
+  model_id: z.string(),
+  tools: z.array(AriacToolSchema).optional(),
+}).openapi('AriacAgent');
+
+const UpdateHierarchyBody = z.object({
+  instanceId: z.string().openapi({description: "O ID da instância a ser atualizada."}),
+  router_instructions: z.string(),
+  agents: z.array(AriacAgentSchema),
+}).openapi({refId: 'UpdateHierarchyBody'});
+
+const updateHierarchySchema = z.object({
+  body: UpdateHierarchyBody,
 });
 
-const createAgentSchema = z.object({
-    body: CreateAgentBody.openapi({refId: 'CreateAgentBody'}),
-}).superRefine((data, ctx) => {
-    if (data.body.type === 'ROUTER' && !data.body.instanceId) {
-        ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: 'instanceId é obrigatório para agentes do tipo ROUTER',
-            path: ['body', 'instanceId'],
-        });
-    }
-    if (data.body.type === 'PARENT' && (!data.body.instanceId || !data.body.organizationId)) {
-        ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: 'instanceId e organizationId são obrigatórios para agentes do tipo PARENT',
-            path: ['body', 'organizationId'],
-        });
-    }
-    if (data.body.type === 'CHILD' && !data.body.parentAgentId) {
-        ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: 'parentAgentId é obrigatório para agentes do tipo CHILD',
-            path: ['body', 'parentAgentId'],
-        });
-    }
-});
-
-
-const listChildAgentsSchema = z.object({
-  params: z.object({
-    parentAgentId: z.string().regex(/^[0-9a-fA-F]{24}$/, 'ID de agente pai inválido'),
-  }),
-});
-
-const UpdateAgentPersonaBody = z.object({
-  persona: z.string().min(20, 'A nova persona precisa ter no mínimo 20 caracteres.'),
-});
-
-const updateAgentPersonaSchema = z.object({
-  body: UpdateAgentPersonaBody.openapi({refId: 'UpdateAgentPersonaBody'}),
-  params: z.object({
-    agentId: z.string().regex(/^[0-9a-fA-F]{24}$/, 'ID de agente inválido'),
-  }),
-});
-
-const UpdateAgentBody = z.object({
-  name: z.string().min(3, 'O nome do agente é obrigatório.').optional(),
-  persona: z.string().min(20, 'A persona precisa ter no mínimo 20 caracteres.').optional(),
-  priority: z.number().int('A prioridade deve ser um número inteiro.').optional(),
-});
-
-const updateAgentSchema = z.object({
-  body: UpdateAgentBody.openapi({refId: 'UpdateAgentBody'}),
-  params: z.object({
-    agentId: z.string().regex(/^[0-9a-fA-F]{24}$/, 'ID de agente inválido'),
-  }),
-});
-
-const exportAgentAnalyticsSchema = z.object({
-  query: z.object({
-    instanceId: z.string().regex(/^[0-9a-fA-F]{24}$/, 'ID de instância inválido'),
-    organizationId: z.string().regex(/^[0-9a-fA-F]{24}$/, 'ID de organização inválido').optional(),
-  }),
-});
-
-const getAgentByIdSchema = z.object({
-  params: z.object({
-    agentId: z.string().regex(/^[0-9a-fA-F]{24}$/, 'ID de agente inválido'),
-  }),
-});
-
-const listParentAgentsSchema = z.object({
-  params: z.object({
-    instanceId: z.string().regex(/^[0-9a-fA-F]{24}$/, 'ID de instância inválido'),
-  }),
-});
-
-const deleteAgentSchema = z.object({
-  params: z.object({
-    agentId: z.string().regex(/^[0-9a-fA-F]{24}$/, 'ID de agente inválido'),
-  }),
-});
-
-const UpdateAgentConfigBody = z.object({
-  maxTokens: z.number().int().optional(),
-  temperature: z.number().min(0).max(1).optional(),
-  model: z.string().optional(),
-  systemPrompt: z.string().optional(),
-  fallbackMessage: z.string().optional(),
-}).openapi({refId: 'UpdateAgentConfigBody'});
-
-const updateAgentConfigSchema = z.object({
-  body: UpdateAgentConfigBody,
-  params: z.object({
-    agentId: z.string().regex(/^[0-9a-fA-F]{24}$/, 'ID de agente inválido'),
-  }),
-});
-
-
-registry.register('CreateAgentBody', CreateAgentBody);
-registry.register('UpdateAgentPersonaBody', UpdateAgentPersonaBody);
-registry.register('UpdateAgentBody', UpdateAgentBody);
-registry.register('UpdateAgentConfigBody', UpdateAgentConfigBody);
-
+registry.register('UpdateHierarchyBody', UpdateHierarchyBody);
+registry.register('AriacAgent', AriacAgentSchema);
+registry.register('AriacTool', AriacToolSchema);
 
 export {
-  createAgentSchema,
-  listChildAgentsSchema,
-  updateAgentPersonaSchema,
-  updateAgentSchema,
-  exportAgentAnalyticsSchema,
-  getAgentByIdSchema,
-  listParentAgentsSchema,
-  deleteAgentSchema,
-  updateAgentConfigSchema,
+  updateHierarchySchema,
 };

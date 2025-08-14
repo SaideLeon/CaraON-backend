@@ -1,53 +1,409 @@
-/root/.pm2/logs/caraon-api-out.log last 15 lines:
-18|caraon- | Status da instância 687d6b9e14ab6c1c2623ae4a-1753994425635 atualizado para: RECONNECTING
-18|caraon- | ✅ Instância WhatsApp 687d6b9e14ab6c1c2623ae4a-1753994425635 conectada!
-18|caraon- | Status da instância 687d6b9e14ab6c1c2623ae4a-1753994425635 atualizado para: CONNECTED
-18|caraon- | ✅ Instância WhatsApp 687d6b9e14ab6c1c2623ae4a-1753994425635 conectada!
-18|caraon- | Status da instância 687d6b9e14ab6c1c2623ae4a-1753994425635 atualizado para: CONNECTED
-18|caraon- | ✉️  Mensagem recebida para 687d6b9e14ab6c1c2623ae4a-1753994425635: Olá
-18|caraon- | ✅ Servidor WebSocket iniciado
-18|caraon- | ✅ Conectado ao MongoDB para sessões WhatsApp
-18|caraon- | 🔄 Verificando instâncias para reconexão automática...
-18|caraon- | 🚀 API e WebSocket rodando na porta 3030
-18|caraon- | 📚 Documentação da API disponível em: http://localhost:3030/api-docs
-18|caraon- | Found 1 instances to reconnect.
-18|caraon- | ▶️ Iniciando reconexão para a instância: Whats TI (687d6b9e14ab6c1c2623ae4a-1753994425635)
-18|caraon- | 🚀 Iniciando instância 687d6b9e14ab6c1c2623ae4a-1753994425635. É uma reconexão? true
-18|caraon- | Status da instância 687d6b9e14ab6c1c2623ae4a-1753994425635 atualizado para: RECONNECTING
-
-18|caraon-api  | ✅ Instância WhatsApp 687d6b9e14ab6c1c2623ae4a-1753994425635 conectada!
-18|caraon-api  | Status da instância 687d6b9e14ab6c1c2623ae4a-1753994425635 atualizado para: CONNECTED
-18|caraon-api  | ✅ Instância WhatsApp 687d6b9e14ab6c1c2623ae4a-1753994425635 conectada!
-18|caraon-api  | Status da instância 687d6b9e14ab6c1c2623ae4a-1753994425635 atualizado para: CONNECTED
-18|caraon-api  | ✉️  Mensagem recebida para 687d6b9e14ab6c1c2623ae4a-1753994425635: Ola
-18|caraon-api  | Erro no fluxo de execução do agente (Execution ID: 6890f250bb8b797680871b38): Error: Nenhum agente roteador principal ativo encontrado para a instância 688bd4b9516de24d08819190.
-18|caraon-api  |     at executeHierarchicalAgentFlow (file:///root/CaraON-backend/src/services/agent.execution.service.js:134:13)
-18|caraon-api  |     at async _handleIncomingWhatsAppMessage (file:///root/CaraON-backend/src/services/whatsapp.service.js:89:44)
-18|caraon-api  | Erro ao processar mensagem do WhatsApp: Error: Nenhum agente roteador principal ativo encontrado para a instância 688bd4b9516de24d08819190.
-18|caraon-api  |     at executeHierarchicalAgentFlow (file:///root/CaraON-backend/src/services/agent.execution.service.js:134:13)
-18|caraon-api  |     at async _handleIncomingWhatsAppMessage (file:///root/CaraON-backend/src/services/whatsapp.service.js:89:44) {
-18|caraon-api  |   executionId: '6890f250bb8b797680871b38'
-18|caraon-api  | }
+agent
 
 
+POST
+/agent/chat
+Chat With Agent
 
+Endpoint principal para conversar com a equipe de agentes.
 
+Parameters
+Cancel
+Reset
+No parameters
 
+Request body
 
+application/json
+Edit Value
+Schema
+{
+  "user_id": "sdfghjjh4345tgvccccc",
+  "instance_id": "whats43mddggdggds34",
+  "whatsapp_number": "258863304793",
+  "username": "Saide Omar Saide",
+  "message": "Ola, o que é Sabedoria espiritual?"
+}
+{
+  "user_id": "sdfghjjh4345tgvccccc",
+  "instance_id": "whats43mddggdggds34",
+  "whatsapp_number": "258863304793",
+  "username": "Saide Omar Saide",
+  "message": "Ola, o que é Sabedoria espiritual?"
+}​
+Execute
+Clear
+Responses
+Curl
 
+curl -X 'POST' \
+  'https://ariac.caraon.qzz.io/agent/chat' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "user_id": "sdfghjjh4345tgvccccc",
+  "instance_id": "whats43mddggdggds34",
+  "whatsapp_number": "258863304793",
+  "username": "Saide Omar Saide",
+  "message": "Ola, o que é Sabedoria espiritual?"
+}'
+Request URL
+https://ariac.caraon.qzz.io/agent/chat
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "response": "Para Saide Omar Saide:\n\nA sabedoria espiritual é um conceito amplo e pessoal, variando de acordo com as crenças e perspectivas individuais. Não existe uma única definição universalmente aceita.  No entanto, alguns aspectos comuns incluem:\n\n* **Conexão com algo maior:**  Experiência de conexão com um poder superior, seja através de uma religião, meditação, ou conexão com a natureza.  Essa conexão proporciona um sentido de propósito e significado na vida.\n\n* **Autoconhecimento e compreensão:** Entender a si mesmo profundamente, incluindo suas emoções, pensamentos, crenças e valores.  Isso envolve introspecção, auto-reflexão e a busca pelo autoaperfeiçoamento.\n\n* **Aceitação e compaixão:** Aceitar a si mesmo e aos outros, com suas imperfeições e dificuldades. Cultivar a compaixão por si mesmo e pelos demais.\n\n* **Transcendência do ego:**  Superar a necessidade de validação externa e o apego excessivo ao ego.  Concentrar-se em valores mais amplos do que apenas a satisfação pessoal.\n\n* **Sabedoria e discernimento:** Desenvolver a capacidade de julgar situações com clareza e discernimento, guiado por valores éticos e morais.\n\n* **Paz interior:**  Alcançar um estado de tranquilidade e serenidade interior, mesmo diante de desafios e dificuldades.\n\nÉ importante ressaltar que a busca pela sabedoria espiritual é um processo contínuo e pessoal.  Não existe um ponto final, mas sim uma jornada de aprendizado e crescimento.  Existem diversas práticas que podem auxiliar nesse caminho, como meditação, ioga, oração, estudo de textos religiosos ou filosóficos, e o cultivo da gratidão.\n",
+  "session_id": "258863304793",
+  "success": true
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ alt-svc: h3=":443"; ma=86400 
+ cf-cache-status: DYNAMIC 
+ cf-ray: 96e9a37abfaa4e9a-LHR 
+ content-encoding: zstd 
+ content-type: application/json 
+ date: Wed,13 Aug 2025 16:37:53 GMT 
+ nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800} 
+ report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=mCRfV6z%2BFyVwoL53S8DAgH0YWIhh%2FsIlrruTLbwG6pS9QY9gJHV48baIGN6ndTrJVMz3mGhwfJ5SiXB%2BgyKCXunSz1zKFMhS250PaVH96E1oUi4%3D"}]} 
+ server: cloudflare 
+Responses
+Code	Description	Links
+200	
+Successful Response
 
+Media type
 
+application/json
+Controls Accept header.
+Example Value
+Schema
+{
+  "response": "string",
+  "session_id": "string",
+  "success": true
+}
+No links
+422	
+Validation Error
 
+Media type
 
+application/json
+Example Value
+Schema
+{
+  "detail": [
+    {
+      "loc": [
+        "string",
+        0
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+No links
 
+PUT
+/agent/hierarchy
+Update Agent Hierarchy
 
+Parameters
+Cancel
+Reset
+No parameters
 
+Request body
 
+application/json
+Edit Value
+Schema
+{
+  "user_id": "sdfghjjh4345tgvccccc",
+  "instance_id": "whats43mddggdggds34",
+  "router_instructions": "string",
+  "agents": [
+    {
+      "name": "Analista Financeiro",
+      "role": "Especialista em análise de ações e dados financeiros.",
+      "model_provider": "GEMINI",
+      "model_id": "gemini-1.5-flash",
+      "tools": [
+        {
+          "type": "YFINANCE",
+          "config": {
+            "stock_price": true,
+            "company_news": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Pesquisador Web",
+      "role": "Especialista em buscar informações na web.",
+      "model_provider": "GEMINI",
+      "model_id": "gemini-1.5-flash",
+      "tools": [
+        {
+          "type": "DUCKDUCKGO"
+        }
+      ]
+    }
+  ]
+}
+{
+  "user_id": "sdfghjjh4345tgvccccc",
+  "instance_id": "whats43mddggdggds34",
+  "router_instructions": "string",
+  "agents": [
+    {
+      "name": "Analista Financeiro",
+      "role": "Especialista em análise de ações e dados financeiros.",
+      "model_provider": "GEMINI",
+      "model_id": "gemini-1.5-flash",
+      "tools": [
+        {
+          "type": "YFINANCE",
+          "config": {
+            "stock_price": true,
+            "company_news": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Pesquisador Web",
+      "role": "Especialista em buscar informações na web.",
+      "model_provider": "GEMINI",
+      "model_id": "gemini-1.5-flash",
+      "tools": [
+        {
+          "type": "DUCKDUCKGO"
+        }
+      ]
+    }
+  ]
+}​
+Execute
+Clear
+Responses
+Curl
 
+curl -X 'PUT' \
+  'https://ariac.caraon.qzz.io/agent/hierarchy' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "user_id": "sdfghjjh4345tgvccccc",
+  "instance_id": "whats43mddggdggds34",
+  "router_instructions": "string",
+  "agents": [
+    {
+      "name": "Analista Financeiro",
+      "role": "Especialista em análise de ações e dados financeiros.",
+      "model_provider": "GEMINI",
+      "model_id": "gemini-1.5-flash",
+      "tools": [
+        {
+          "type": "YFINANCE",
+          "config": {
+            "stock_price": true,
+            "company_news": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Pesquisador Web",
+      "role": "Especialista em buscar informações na web.",
+      "model_provider": "GEMINI",
+      "model_id": "gemini-1.5-flash",
+      "tools": [
+        {
+          "type": "DUCKDUCKGO"
+        }
+      ]
+    }
+  ]
+}'
+Request URL
+https://ariac.caraon.qzz.io/agent/hierarchy
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "message": "Hierarchy configuration updated successfully"
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ alt-svc: h3=":443"; ma=86400 
+ cf-cache-status: DYNAMIC 
+ cf-ray: 96e9a20729ae9436-LHR 
+ content-encoding: zstd 
+ content-type: application/json 
+ date: Wed,13 Aug 2025 16:36:43 GMT 
+ nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800} 
+ report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=KvdwwSnAW0eYBAnu25W0JBWqKqiXzDfUmHqMvj5TnRxO0ViWl01ydaW726Uxqm8E3cgP%2BPP1LoiNlpzr3p22AdefDwcJZLRm%2FYwGa4UL4S7VPGc%3D"}]} 
+ server: cloudflare 
+Responses
+Code	Description	Links
+200	
+Successful Response
 
+Media type
 
+application/json
+Controls Accept header.
+Example Value
+Schema
+"string"
+No links
+422	
+Validation Error
 
+Media type
 
+application/json
+Example Value
+Schema
+{
+  "detail": [
+    {
+      "loc": [
+        "string",
+        0
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+No links
 
+GET
+/agent/instances/{user_id}
+Get User Instances
 
+Lista todas as instâncias de um usuário.
+
+Parameters
+Cancel
+Name	Description
+user_id *
+string
+(path)
+sdfghjjh4345tgvccccc
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'GET' \
+  'https://ariac.caraon.qzz.io/agent/instances/sdfghjjh4345tgvccccc' \
+  -H 'accept: application/json'
+Request URL
+https://ariac.caraon.qzz.io/agent/instances/sdfghjjh4345tgvccccc
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "instances": [
+    {
+      "_id": "689b4402f096207515968632",
+      "user_id": "sdfghjjh4345tgvccccc",
+      "instance_id": "whats43mddggdggds34",
+      "router_instructions": "string",
+      "agents": [
+        {
+          "agent_id": "574a43f9-814b-434b-b629-c47f5862169f",
+          "name": "Analista Financeiro",
+          "role": "Especialista em análise de ações e dados financeiros.",
+          "model_provider": "gemini",
+          "model_id": "gemini-1.5-flash",
+          "tools": [
+            {
+              "type": "YFINANCE",
+              "config": {
+                "stock_price": true,
+                "company_news": true
+              }
+            }
+          ],
+          "parent_id": null
+        },
+        {
+          "agent_id": "6fbb007a-07a2-44b6-8060-ebc4f869d968",
+          "name": "Pesquisador Web",
+          "role": "Especialista em buscar informações na web.",
+          "model_provider": "gemini",
+          "model_id": "gemini-1.5-flash",
+          "tools": [
+            {
+              "type": "DUCKDUCKGO",
+              "config": null
+            }
+          ],
+          "parent_id": null
+        }
+      ],
+      "created_at": "2025-08-12T13:39:14.335000",
+      "updated_at": "2025-08-12T13:39:14.335000"
+    }
+  ]
+}
+Response headers
+ alt-svc: h3=":443"; ma=86400 
+ cf-cache-status: DYNAMIC 
+ cf-ray: 96e9a4b6abe65667-LHR 
+ content-encoding: zstd 
+ content-type: application/json 
+ date: Wed,13 Aug 2025 16:38:33 GMT 
+ nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800} 
+ report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=%2BqzJaL5lTtqrBTwknrguMcg8IowhD3%2FiGYULDKKvwkMNFLXnfEOntwkrM4m7NMPwZjCKfjU9fxft8Mr4VWmJHO4o9Wb9sXhx%2BUzWkwnTtS0tsAc%3D"}]} 
+ server: cloudflare 
+Responses
+Code	Description	Links
+200	
+Successful Response
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+"string"
+No links
+422	
+Validation Error
+
+Media type
+
+application/json
+Example Value
+Schema
+{
+  "detail": [
+    {
+      "loc": [
+        "string",
+        0
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+No links
 

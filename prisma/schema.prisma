@@ -41,8 +41,6 @@ model Instance {
 
   user          User             @relation(fields: [userId], references: [id])
   organizations Organization[]
-  agents        Agent[]
-  executions    AgentExecution[]
   contacts      Contact[] // Adicionado
   messages      Message[] // Adicionado
 
@@ -57,7 +55,6 @@ model Organization {
   updatedAt  DateTime @updatedAt
 
   instance Instance @relation(fields: [instanceId], references: [id], onDelete: Cascade)
-  agents   Agent[]
 
   @@map("organizations")
 }
@@ -93,105 +90,11 @@ model Message {
   sentAt      DateTime         @default(now())
   deliveredAt DateTime?
   readAt      DateTime?
-  agentExecutionId String?          @db.ObjectId // Adicionado
 
   instance       Instance        @relation(fields: [instanceId], references: [id], onDelete: Cascade)
   contact        Contact         @relation(fields: [contactId], references: [id], onDelete: Cascade)
-  agentExecution AgentExecution? @relation(fields: [agentExecutionId], references: [id], onDelete: SetNull)
 
   @@map("messages")
-}
-
-
-model Agent {
-  id             String    @id @default(auto()) @map("_id") @db.ObjectId
-  name           String
-  type           AgentType
-  persona        String?
-  instanceId     String    @db.ObjectId
-  organizationId String?   @db.ObjectId
-  parentAgentId  String?   @db.ObjectId
-  routerAgentId  String?   @db.ObjectId // Novo campo para identificar o agente roteador
-  isActive       Boolean   @default(true)
-  priority       Int       @default(0)
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
-
-  instance       Instance        @relation(fields: [instanceId], references: [id])
-  organization   Organization?   @relation(fields: [organizationId], references: [id])
-  parentAgent    Agent?          @relation("AgentHierarchy", fields: [parentAgentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  childAgents    Agent[]         @relation("AgentHierarchy")
-  routerAgent    Agent?          @relation("AgentRouter", fields: [routerAgentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  routingFor     Agent[]         @relation("AgentRouter")
-  tools          AgentTool[]
-  config         AgentConfig?
-  executions     AgentExecution[]
-
-  @@map("agents")
-}
-
-model Tool {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
-  name          String   @unique
-  description   String
-  type          ToolType
-  config        Json
-  isSystem      Boolean  @default(true)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
-  agentTools    AgentTool[]
-
-  @@map("tools")
-}
-
-model AgentTool {
-  id       String  @id @default(auto()) @map("_id") @db.ObjectId
-  agentId  String  @db.ObjectId
-  toolId   String  @db.ObjectId
-  config   Json?
-  isActive Boolean @default(true)
-
-  agent Agent @relation(fields: [agentId], references: [id], onDelete: Cascade)
-  tool  Tool  @relation(fields: [toolId], references: [id])
-
-  @@unique([agentId, toolId])
-  @@map("agent_tools")
-}
-
-model AgentConfig {
-  id              String  @id @default(auto()) @map("_id") @db.ObjectId
-  agentId         String  @unique @db.ObjectId
-  maxTokens       Int     @default(1000)
-  temperature     Float   @default(0.7)
-  model           String  @default("googleai/gemini-2.0-flash")
-  systemPrompt    String?
-  fallbackMessage String?
-  timeoutSeconds  Int     @default(30)
-  maxRetries      Int     @default(3)
-
-  agent Agent @relation(fields: [agentId], references: [id], onDelete: Cascade)
-
-  @@map("agent_configs")
-}
-
-model AgentExecution {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
-  agentId       String?  @db.ObjectId
-  instanceId    String   @db.ObjectId
-  userMessage   String
-  agentResponse String?
-  executionTime Int?
-  success       Boolean
-  errorMessage  String?
-  toolsUsed     Json?
-  createdAt     DateTime @default(now())
-
-  agent    Agent?   @relation(fields: [agentId], references: [id], onDelete: Cascade)
-  instance Instance @relation(fields: [instanceId], references: [id], onDelete: Cascade)
-  messages Message[] // Adicionado
-
-  @@map("agent_executions")
 }
 
 // ========== MODELOS DE ECOMMERCE ==========
@@ -685,23 +588,9 @@ model PaymentConfig {
 
 // ========== ENUMS ==========
 
-enum AgentType {
-  ROUTER
-  PARENT
-  CHILD
-}
-
 enum MessageDirection {
   INCOMING
   OUTGOING
-}
-
-enum ToolType {
-  DATABASE
-  API
-  WEBHOOK
-  GENKIT_FLOW
-  CUSTOM
 }
 
 enum Gender {
