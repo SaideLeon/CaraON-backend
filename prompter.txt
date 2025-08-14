@@ -195,45 +195,45 @@ Clear
 Responses
 Curl
 
-curl -X 'PUT' \
-  'https://ariac.caraon.qzz.io/agent/hierarchy' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
-  -d '{
-  "user_id": "sdfghjjh4345tgvccccc",
-  "instance_id": "whats43mddggdggds34",
-  "router_instructions": "string",
-  "agents": [
-    {
-      "name": "Analista Financeiro",
-      "role": "Especialista em análise de ações e dados financeiros.",
-      "model_provider": "GEMINI",
-      "model_id": "gemini-1.5-flash",
-      "tools": [
-        {
-          "type": "YFINANCE",
-          "config": {
-            "stock_price": true,
-            "company_news": true
-          }
-        }
-      ]
-    },
-    {
-      "name": "Pesquisador Web",
-      "role": "Especialista em buscar informações na web.",
-      "model_provider": "GEMINI",
-      "model_id": "gemini-1.5-flash",
-      "tools": [
-        {
-          "type": "DUCKDUCKGO"
-        }
-      ]
-    }
-  ]
+curl -X 'PUT' 
+  'https://app.caraon.qzz.io/api/v1/agents/hierarchy' 
+  -H 'accept: application/json' 
+  -H 'Authorization: Bearer <YOUR_AUTH_TOKEN>' 
+  -H 'Content-Type: application/json' 
+  -d '{ 
+  "instance_id": "whats43mddggdggds34", 
+  "router_instructions": "string", 
+  "agents": [ 
+    { 
+      "name": "Analista Financeiro", 
+      "role": "Especialista em análise de ações e dados financeiros.", 
+      "model_provider": "GEMINI", 
+      "model_id": "gemini-1.5-flash", 
+      "tools": [ 
+        { 
+          "type": "YFINANCE", 
+          "config": { 
+            "stock_price": true, 
+            "company_news": true 
+          } 
+        } 
+      ] 
+    }, 
+    { 
+      "name": "Pesquisador Web", 
+      "role": "Especialista em buscar informações na web.", 
+      "model_provider": "GEMINI", 
+      "model_id": "gemini-1.5-flash", 
+      "tools": [ 
+        { 
+          "type": "DUCKDUCKGO" 
+        } 
+      ] 
+    } 
+  ] 
 }'
 Request URL
-https://ariac.caraon.qzz.io/agent/hierarchy
+https://app.caraon.qzz.io/api/v1/agents/hierarchy
 Server response
 Code	Details
 200	
