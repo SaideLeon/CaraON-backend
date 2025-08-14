@@ -1,7 +1,7 @@
 import { WebSocketServer, WebSocket } from 'ws';
-import { executeHierarchicalAgentFlow } from './agent.execution.service.js';
 import { PrismaClient } from '@prisma/client';
 import * as agentHierarchyService from './agent.hierarchy.service.js';
+import * as ariacService from './ariac.service.js';
 
 const prisma = new PrismaClient();
 let wss;
@@ -49,17 +49,27 @@ function init(server) {
             console.log(`✅ Agente Roteador Principal criado automaticamente para a instância ${instance.name} via playground.`);
           }
 
-          // Chama a função de fluxo NÃO-streaming para obter a resposta completa
-          const { finalResponse, executionId } = await executeHierarchicalAgentFlow(
-            instanceId,
-            messageContent,
-            userPhone || `playground_user_${instanceId}`
-          );
+          const chatData = {
+            user_id: instance.userId,
+            instance_id: instance.id,
+            whatsapp_number: userPhone || `playground_user_${instanceId}`,
+            username: 'Playground User',
+            message: messageContent,
+          };
+    
+          const agentResponse = await ariacService.chatWithAgent(chatData);
+    
+          if (!agentResponse || !agentResponse.response) {
+            throw new Error("A resposta do agente Ariac estava vazia ou malformada.");
+          }
 
           // Envia a resposta completa de uma só vez
           ws.send(JSON.stringify({
             type: 'playground_response_complete',
-            response: { finalResponse, executionId },
+            response: { 
+              finalResponse: agentResponse.response, 
+              executionId: agentResponse.session_id 
+            },
           }));
         }
       } catch (error) {
