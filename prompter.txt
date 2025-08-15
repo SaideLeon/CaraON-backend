@@ -405,3 +405,193 @@ Schema
   ]
 }
 No links
+
+
+
+
+GET
+/agent/sessions
+Get Sessions
+
+Lista todas as sessões de conversa, com filtros.
+
+Parameters
+Cancel
+Name	Description
+instance_id *
+string
+(query)
+ID da instância para filtrar as sessões
+
+whats43mddggdggds34
+whatsapp_number
+string | (string | null)
+(query)
+Número do WhatsApp (session_id) para filtrar as sessões
+
+258863304793
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'GET' \
+  'https://ariac.caraon.qzz.io/agent/sessions?instance_id=whats43mddggdggds34&whatsapp_number=258863304793' \
+  -H 'accept: application/json'
+Request URL
+https://ariac.caraon.qzz.io/agent/sessions?instance_id=whats43mddggdggds34&whatsapp_number=258863304793
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "sessions": [
+    {
+      "session_id": "258863304793",
+      "user_id": "sdfghjjh4345tgvccccc",
+      "instance_id": "whats43mddggdggds34",
+      "message_count": 4,
+      "created_at": "2025-08-15T14:20:32.378000",
+      "updated_at": "2025-08-15T14:20:32.378000"
+    }
+  ]
+}
+Response headers
+ alt-svc: h3=":443"; ma=86400 
+ cf-cache-status: DYNAMIC 
+ cf-ray: 96f95a5b5b50d06b-LHR 
+ content-encoding: zstd 
+ content-type: application/json 
+ date: Fri,15 Aug 2025 14:23:59 GMT 
+ nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800} 
+ report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=48bHlWUlQNsrorF6nKNTowfTJSGYbPvwOV8SNX4TL%2Bh4RV0uoem6Un6XR7FEs0rbwSoQ4u4jACy5qUUMmOvzIGbFsIV5%2FH4puU1aHFcBVHTxNKA%3D"}]} 
+ server: cloudflare 
+Responses
+Code	Description	Links
+200	
+Successful Response
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+"string"
+No links
+422	
+Validation Error
+
+Media type
+
+application/json
+Example Value
+Schema
+{
+  "detail": [
+    {
+      "loc": [
+        "string",
+        0
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+No links
+
+GET
+/agent/sessions/{session_id}/conversation
+Get Conversation
+
+Obtém o histórico completo de mensagens de uma sessão específica.
+
+Parameters
+Cancel
+Name	Description
+session_id *
+string
+(path)
+258863304793
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'GET' \
+  'https://ariac.caraon.qzz.io/agent/sessions/258863304793/conversation' \
+  -H 'accept: application/json'
+Request URL
+https://ariac.caraon.qzz.io/agent/sessions/258863304793/conversation
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "conversation": [
+    {
+      "role": "user",
+      "content": "Eu posso ser?"
+    },
+    {
+      "role": "assistant",
+      "content": "Olá Saide Omar Saide,\n\nSim, você pode!  A busca pela sabedoria espiritual é um caminho individual e pessoal, e absolutamente acessível a você.  Não existem pré-requisitos especiais ou características necessárias para iniciar essa jornada.  A única condição é a sua vontade e disposição para se dedicar ao processo de autoconhecimento e crescimento pessoal.\n\nComo mencionado anteriormente, alguns passos importantes incluem:\n\n* **Reflexão:** Dedique tempo para refletir sobre seus valores, crenças e propósito na vida.\n* **Práticas:** Explore práticas como meditação, ioga, ou outras atividades que promovam a paz interior e a conexão consigo mesmo.\n* **Aprendizado:** Busque conhecimento através de livros, cursos, ou conversas com pessoas que te inspiram.\n* **Compaixão:** Pratique a empatia e a compaixão por si mesmo e pelos outros.\n\nLembre-se que essa é uma jornada contínua, sem um fim definido.  Cada passo que você der em direção ao autoconhecimento e à compreensão do seu lugar no mundo contribui para seu crescimento espiritual.  Você já está dando o primeiro passo, ao se questionar e buscar respostas. Continue explorando e você verá o progresso.\n"
+    },
+    {
+      "role": "user",
+      "content": "Será que eu começo por ser estoico?"
+    },
+    {
+      "role": "assistant",
+      "content": "Olá Saide Omar Saide,\n\nO Estoicismo pode ser um excelente ponto de partida para sua jornada de crescimento espiritual, mas não é o único caminho.  Ele oferece um conjunto de princípios e práticas que podem te auxiliar no desenvolvimento da sabedoria espiritual, mas é importante entender que ele é apenas uma ferramenta entre muitas.\n\nO Estoicismo enfatiza a virtude, a razão e a aceitação do que está além do nosso controle.  Isso pode ser muito benéfico para cultivar a paz interior e a resiliência, qualidades importantes no desenvolvimento espiritual.  Práticas estoicas como a meditação, a auto-reflexão e o foco na ação virtuosa podem te ajudar a:\n\n* **Desenvolver autocontrole:**  Controlar suas emoções e reações a eventos externos.\n* **Cultivar a resiliência:**  Superar desafios e adversidades com mais facilidade.\n* **Encontrar propósito:**  Concentrar-se em ações que contribuem para o bem comum.\n* **Aumentar a clareza mental:**  Pensar com mais clareza e objetividade.\n\n\nEntretanto, lembre-se que o Estoicismo é uma filosofia, e existem outras filosofias e práticas espirituais que podem ser igualmente ou até mais adequadas a sua personalidade e crenças.  A escolha do caminho ideal é pessoal e depende do que ressoa mais com você.  Experimente o Estoicismo e veja se ele se encaixa na sua jornada.  Se não, não se preocupe, explore outras alternativas até encontrar o que te ajuda a se conectar com sua espiritualidade.\n"
+    }
+  ]
+}
+Response headers
+ alt-svc: h3=":443"; ma=86400 
+ cf-cache-status: DYNAMIC 
+ cf-ray: 96f959cf0e921ed8-LHR 
+ content-encoding: zstd 
+ content-type: application/json 
+ date: Fri,15 Aug 2025 14:23:37 GMT 
+ nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800} 
+ report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=ido2KE2MIbcN1SXYTN%2Fv5aaE9P7rVr5zeg3rB9Vt6MgKbb0sY%2B2ZWL4Scv3qSNkdrgJwPXXDyjxKZ1yfQT9mUjcfu2YoGSIb0E2e9pXry4fdT4g%3D"}]} 
+ server: cloudflare 
+Responses
+Code	Description	Links
+200	
+Successful Response
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+"string"
+No links
+422	
+Validation Error
+
+Media type
+
+application/json
+Example Value
+Schema
+{
+  "detail": [
+    {
+      "loc": [
+        "string",
+        0
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+No links
+

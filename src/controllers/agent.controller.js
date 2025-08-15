@@ -41,7 +41,31 @@ const getUserInstancesController = async (req, res) => {
   }
 };
 
+const getSessionsController = async (req, res) => {
+  try {
+    const { instance_id, whatsapp_number } = req.validatedData.query;
+    const result = await ariacService.getSessions(instance_id, whatsapp_number);
+    res.status(200).json(result);
+  } catch (error) {
+    console.error('Failed to get sessions:', error);
+    res.status(500).json({ message: 'An error occurred while fetching sessions.', error: error.message });
+  }
+};
+
+const getConversationController = async (req, res) => {
+  try {
+    const { session_id } = req.validatedData.params;
+    const result = await ariacService.getConversation(session_id);
+    res.status(200).json(result);
+  } catch (error) {
+    console.error('Failed to get conversation:', error);
+    res.status(500).json({ message: 'An error occurred while fetching the conversation.', error: error.message });
+  }
+};
+
 export default {
   updateHierarchy,
   getUserInstancesController,
+  getSessionsController,
+  getConversationController,
 };

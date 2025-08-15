@@ -27,10 +27,25 @@ const updateHierarchySchema = z.object({
   body: UpdateHierarchyBody,
 });
 
+const getSessionsSchema = z.object({
+  query: z.object({
+    instance_id: z.string(),
+    whatsapp_number: z.string().optional(),
+  }),
+});
+
+const getConversationSchema = z.object({
+  params: z.object({
+    session_id: z.string(),
+  }),
+});
+
 registry.register('UpdateHierarchyBody', UpdateHierarchyBody);
 registry.register('AriacAgent', AriacAgentSchema);
 registry.register('AriacTool', AriacToolSchema);
 
 export {
   updateHierarchySchema,
+  getSessionsSchema,
+  getConversationSchema,
 };

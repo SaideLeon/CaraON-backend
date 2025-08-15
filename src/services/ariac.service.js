@@ -76,3 +76,27 @@ export const getUserInstances = async (userId) => {
     method: 'GET',
   });
 };
+
+/**
+ * Retrieves all conversation sessions, with optional filters.
+ * @param {string} instanceId - The ID of the instance to filter sessions by.
+ * @param {string} [whatsappNumber] - Optional. The WhatsApp number (session_id) to filter sessions by.
+ * @returns {Promise<object>} A list of conversation sessions.
+ */
+export const getSessions = async (instanceId, whatsappNumber) => {
+  const endpoint = `/agent/sessions?instance_id=${instanceId}${whatsappNumber ? `&whatsapp_number=${whatsappNumber}` : ''}`;
+  return fetchAriacAPI(endpoint, {
+    method: 'GET',
+  });
+};
+
+/**
+ * Retrieves the full message history for a specific session.
+ * @param {string} sessionId - The ID of the session (the user's WhatsApp number).
+ * @returns {Promise<object>} The conversation history.
+ */
+export const getConversation = async (sessionId) => {
+  return fetchAriacAPI(`/agent/sessions/${sessionId}/conversation`, {
+    method: 'GET',
+  });
+};

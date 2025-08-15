@@ -1,7 +1,7 @@
 import express from 'express';
 import agentController from '../controllers/agent.controller.js';
 import validate from '../middlewares/validate.middleware.js';
-import { updateHierarchySchema } from '../schemas/agent.schema.js';
+import { updateHierarchySchema, getSessionsSchema, getConversationSchema } from '../schemas/agent.schema.js';
 import auth from '../middlewares/auth.middleware.js';
 import { z } from 'zod';
 
@@ -66,5 +66,60 @@ router.put('/hierarchy', auth, validate(updateHierarchySchema), agentController.
  *         description: Falha ao buscar as instâncias.
  */
 router.get('/instances', auth, agentController.getUserInstancesController);
+
+/**
+ * @swagger
+ * /api/v1/agents/sessions:
+ *   get:
+ *     summary: Lista todas as sessões de conversa
+ *     tags: [Agentes (Ariac)]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: instance_id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: O ID da instância para filtrar as sessões.
+ *       - in: query
+ *         name: whatsapp_number
+ *         schema:
+ *           type: string
+ *         description: (Opcional) O número do WhatsApp (session_id) para filtrar as sessões.
+ *     responses:
+ *       200:
+ *         description: Lista de sessões retornada com sucesso.
+ *       401:
+ *         description: Não autorizado.
+ *       500:
+ *         description: Falha ao buscar as sessões.
+ */
+router.get('/sessions', auth, validate(getSessionsSchema), agentController.getSessionsController);
+
+/**
+ * @swagger
+ * /api/v1/agents/sessions/{session_id}/conversation:
+ *   get:
+ *     summary: Obtém o histórico de mensagens de uma sessão
+ *     tags: [Agentes (Ariac)]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: session_id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: O ID da sessão (número do WhatsApp).
+ *     responses:
+ *       200:
+ *         description: Histórico da conversa retornado com sucesso.
+ *       401:
+ *         description: Não autorizado.
+ *       500:
+ *         description: Falha ao buscar a conversa.
+ */
+router.get('/sessions/:session_id/conversation', auth, validate(getConversationSchema), agentController.getConversationController);
 
 export default router;
