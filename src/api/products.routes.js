@@ -407,4 +407,7 @@ router.get('/products/:id', productController.getProductById);
 router.put('/products/:id', auth, validate(updateProductSchema), productController.updateProduct);
 router.delete('/products/:id', auth, productController.deleteProduct);
 
+// Rota pública para buscar produtos
+router.get('/public/products/search', productController.searchPublicProducts);
+
 export default router;

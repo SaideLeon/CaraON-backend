@@ -18,6 +18,7 @@ model User {
   updatedAt DateTime @updatedAt
 
   instances Instance[]
+  products  Product[]
   // Relacionamentos com ecommerce
   customer  Customer?
   addresses Address[]
@@ -215,12 +216,14 @@ model Product {
   featured    Boolean       @default(false)
   categoryId  String        @db.ObjectId
   brandId     String?       @db.ObjectId
+  userId      String        @db.ObjectId
   tags        String[]
   seoTitle    String?
   seoDescription String?
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
+  user       User               @relation(fields: [userId], references: [id])
   category   Category           @relation(fields: [categoryId], references: [id])
   brand      Brand?             @relation(fields: [brandId], references: [id])
   images     ProductImage[]

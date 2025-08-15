@@ -7,6 +7,7 @@ import {  productSchema, ProductListResponseSchema } from '../schemas/product.sc
 
 const createProduct = async (req, res) => {
   const { ...productData } = req.body;
+  const { userId } = req.user;
 
   try {
     // Verificar se a categoria existe
@@ -28,7 +29,7 @@ const createProduct = async (req, res) => {
     }
 
     const product = await prisma.product.create({
-      data: productData,
+      data: { ...productData, userId },
     });
 
     res.status(201).json(product);
@@ -206,10 +207,53 @@ const deleteProduct = async (req, res) => {
   }
 };
 
+const searchPublicProducts = async (req, res) => {
+  try {
+    const { userId, name, price, sku } = req.query;
+
+    const where = {
+      status: 'ACTIVE', // Only search for active products
+    };
+
+    if (userId) {
+      where.userId = userId;
+    }
+
+    if (name) {
+      where.name = { contains: name, mode: 'insensitive' };
+    }
+
+    if (price) {
+      const priceFloat = parseFloat(price);
+      if (!isNaN(priceFloat)) {
+        where.price = priceFloat;
+      }
+    }
+
+    if (sku) {
+      where.sku = { contains: sku, mode: 'insensitive' };
+    }
+
+    const products = await prisma.product.findMany({
+      where,
+      include: {
+        category: true,
+        brand: true,
+      },
+    });
+
+    res.status(200).json({ data: products });
+  } catch (error) {
+    console.error('Erro ao buscar produtos publicamente:', error);
+    res.status(500).json({ error: 'Falha ao buscar os produtos.' });
+  }
+};
+
 export default {
   createProduct,
   getProducts,
   getProductById,
   updateProduct,
   deleteProduct,
+  searchPublicProducts,
 };
