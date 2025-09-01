@@ -1,11 +1,13 @@
 import express from 'express';
 import agentController from '../controllers/agent.controller.js';
 import validate from '../middlewares/validate.middleware.js';
-import { updateHierarchySchema, getSessionsSchema, getConversationSchema } from '../schemas/agent.schema.js';
+import { updateHierarchySchema, getSessionsSchema, getConversationSchema, uploadPdfSchema } from '../schemas/agent.schema.js';
 import auth from '../middlewares/auth.middleware.js';
+import multer from 'multer';
 import { z } from 'zod';
 
 const router = express.Router();
+const upload = multer({ storage: multer.memoryStorage() });
 
 /**
  * @swagger
@@ -121,5 +123,43 @@ router.get('/sessions', auth, validate(getSessionsSchema), agentController.getSe
  *         description: Falha ao buscar a conversa.
  */
 router.get('/sessions/:session_id/conversation', auth, validate(getConversationSchema), agentController.getConversationController);
+
+/**
+ * @swagger
+ * /api/v1/agents/knowledge/upload-pdf/{organizationId}:
+ *   post:
+ *     summary: Upload de PDF para a base de conhecimento
+ *     tags: [Agentes (Ariac)]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: organizationId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: O ID da organização.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: PDF enviado com sucesso.
+ *       400:
+ *         description: Nenhum arquivo enviado.
+ *       401:
+ *         description: Não autorizado.
+ *       500:
+ *         description: Falha ao enviar o PDF.
+ */
+router.post('/knowledge/upload-pdf/:organizationId', auth, upload.single('file'), validate(uploadPdfSchema), agentController.uploadKnowledgePdf);
+
 
 export default router;

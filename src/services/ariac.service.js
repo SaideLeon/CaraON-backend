@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import FormData from 'form-data';
 
 const ARIAC_API_URL = process.env.ARIAC_API_URL;
 
@@ -99,4 +100,47 @@ export const getConversation = async (sessionId) => {
   return fetchAriacAPI(`/agent/sessions/${sessionId}/conversation`, {
     method: 'GET',
   });
+};
+
+/**
+ * Uploads a PDF file to the Ariac knowledge base.
+ * @param {string} userId - The ID of the user.
+ * @param {string} organizationId - The ID of the organization.
+ * @param {object} file - The file object from multer.
+ * @returns {Promise<object>} The result of the upload operation.
+ */
+export const uploadPdfToKnowledgeBase = async (userId, organizationId, file) => {
+  if (!ARIAC_API_URL) {
+    throw new Error('Cannot make API call: ARIAC_API_URL is not configured.');
+  }
+
+  const form = new FormData();
+  form.append('file', file.buffer, {
+    filename: file.originalname,
+    contentType: file.mimetype,
+  });
+
+  const endpoint = `/knowledge/upload-pdf/${userId}/${organizationId}`;
+  const url = `${ARIAC_API_URL}${endpoint}`;
+
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      body: form,
+      headers: {
+        ...form.getHeaders(),
+        'Accept': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      const errorBody = await response.text();
+      console.error(`Ariac PDF upload failed with status ${response.status}: ${errorBody}`);
+      throw new Error(`API request to ${endpoint} failed with status ${response.status}`);
+    }
+    return response.json();
+  } catch (error) {
+    console.error(`Error uploading PDF to Ariac endpoint ${endpoint}:`, error);
+    throw error;
+  }
 };

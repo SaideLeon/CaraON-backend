@@ -40,6 +40,12 @@ const getConversationSchema = z.object({
   }),
 });
 
+const uploadPdfSchema = z.object({
+  params: z.object({
+    organizationId: z.string(),
+  }),
+});
+
 registry.register('UpdateHierarchyBody', UpdateHierarchyBody);
 registry.register('AriacAgent', AriacAgentSchema);
 registry.register('AriacTool', AriacToolSchema);
@@ -48,4 +54,5 @@ export {
   updateHierarchySchema,
   getSessionsSchema,
   getConversationSchema,
+  uploadPdfSchema,
 };
