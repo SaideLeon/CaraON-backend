@@ -65,15 +65,38 @@ const getConversationController = async (req, res) => {
 
 const uploadKnowledgePdf = async (req, res) => {
   try {
-    const { organizationId } = req.params;
-    const { userId } = req.user;
+    const { user_id, instance_id } = req.params;
+    const { userId: authenticatedUserId } = req.user;
     const file = req.file;
+
+    if (user_id !== authenticatedUserId) {
+      return res.status(403).json({ message: 'User ID in URL does not match authenticated user.' });
+    }
 
     if (!file) {
       return res.status(400).json({ message: 'No file uploaded.' });
     }
 
-    const result = await ariacService.uploadPdfToKnowledgeBase(userId, organizationId, file);
+    const instance = await prisma.instance.findUnique({
+      where: { id: instance_id },
+      include: { organizations: true },
+    });
+
+    if (!instance) {
+      return res.status(404).json({ message: 'Instance not found.' });
+    }
+
+    if (instance.userId !== authenticatedUserId) {
+      return res.status(403).json({ message: 'Instance does not belong to the authenticated user.' });
+    }
+
+    if (!instance.organizations || instance.organizations.length === 0) {
+      return res.status(404).json({ message: 'No organizations found for this instance.' });
+    }
+
+    const organizationId = instance.organizations[0].id;
+
+    const result = await ariacService.uploadPdfToKnowledgeBase(user_id, organizationId, file);
     res.status(200).json(result);
   } catch (error) {
     console.error('Failed to upload PDF to knowledge base:', error);

@@ -42,7 +42,8 @@ const getConversationSchema = z.object({
 
 const uploadPdfSchema = z.object({
   params: z.object({
-    organizationId: z.string(),
+    user_id: z.string(),
+    instance_id: z.string(),
   }),
 });
 

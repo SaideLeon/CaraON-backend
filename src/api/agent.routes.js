@@ -126,7 +126,7 @@ router.get('/sessions/:session_id/conversation', auth, validate(getConversationS
 
 /**
  * @swagger
- * /api/v1/agents/knowledge/upload-pdf/{organizationId}:
+ * /api/v1/agents/knowledge/upload-pdf/{user_id}/{instance_id}:
  *   post:
  *     summary: Upload de PDF para a base de conhecimento
  *     tags: [Agentes (Ariac)]
@@ -134,11 +134,17 @@ router.get('/sessions/:session_id/conversation', auth, validate(getConversationS
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: organizationId
+ *         name: user_id
  *         required: true
  *         schema:
  *           type: string
- *         description: O ID da organização.
+ *         description: O ID do usuário.
+ *       - in: path
+ *         name: instance_id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: O ID da instância.
  *     requestBody:
  *       required: true
  *       content:
@@ -159,7 +165,7 @@ router.get('/sessions/:session_id/conversation', auth, validate(getConversationS
  *       500:
  *         description: Falha ao enviar o PDF.
  */
-router.post('/knowledge/upload-pdf/:organizationId', auth, upload.single('file'), validate(uploadPdfSchema), agentController.uploadKnowledgePdf);
+router.post('/knowledge/upload-pdf/:user_id/:instance_id', auth, upload.single('file'), validate(uploadPdfSchema), agentController.uploadKnowledgePdf);
 
 
 export default router;
