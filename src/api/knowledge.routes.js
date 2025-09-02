@@ -17,7 +17,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 /**
  * @swagger
- * /api/v1/knowledge/upload-pdf/{organizationId}:
+ * /api/v1/knowledge/upload-pdf/{userId}/{instanceId}:
  *   post:
  *     summary: Upload de PDF para a base de conhecimento
  *     tags: [Knowledge Base]
@@ -25,11 +25,17 @@ const upload = multer({ storage: multer.memoryStorage() });
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: organizationId
+ *         name: userId
  *         required: true
  *         schema:
  *           type: string
- *         description: O ID da organização.
+ *         description: O ID do usuário.
+ *       - in: path
+ *         name: instanceId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: O ID da instância.
  *     requestBody:
  *       required: true
  *       content:
@@ -50,6 +56,6 @@ const upload = multer({ storage: multer.memoryStorage() });
  *       500:
  *         description: Falha ao enviar o PDF.
  */
-router.post('/knowledge/upload-pdf/:organizationId', auth, upload.single('file'), validate(uploadPdfSchema), knowledgeController.uploadPdf);
+router.post('/knowledge/upload-pdf/:userId/:instanceId', auth, upload.single('file'), validate(uploadPdfSchema), knowledgeController.uploadPdf);
 
 export default router;

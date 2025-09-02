@@ -6,7 +6,8 @@ extendZodWithOpenApi(z);
 
 const uploadPdfSchema = z.object({
   params: z.object({
-    organizationId: z.string(),
+    userId: z.string(),
+    instanceId: z.string(),
   }),
 });
 
