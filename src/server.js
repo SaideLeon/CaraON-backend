@@ -15,6 +15,7 @@ import brandRoutes from './api/brand.routes.js';
 import healthRoutes from './api/health.routes.js';
 import messageRoutes from './api/message.routes.js';
 import contactRoutes from './api/contact.routes.js';
+import knowledgeRoutes from './api/knowledge.routes.js';
 import * as webSocketService from './services/websocket.service.js';
 import generateOpenApi from './docs/openapi.js';
 
@@ -79,6 +80,7 @@ app.use('/api/v1', categoryRoutes);
 app.use('/api/v1', brandRoutes);
 app.use('/api/v1', messageRoutes);
 app.use('/api/v1', contactRoutes);
+app.use('/api/v1', knowledgeRoutes);
 
 const server = http.createServer(app);
 webSocketService.init(server);

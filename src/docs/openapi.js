@@ -25,6 +25,7 @@ import '../schemas/tool.schema.js';
 import '../schemas/user.schema.js';
 import '../schemas/message.schema.js';
 import '../schemas/contact.schema.js';
+import '../schemas/knowledge.schema.js';
 
 /**
  * Gera a documentação OpenAPI e monta o middleware Swagger.
