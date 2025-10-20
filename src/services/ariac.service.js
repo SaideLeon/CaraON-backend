@@ -25,6 +25,7 @@ const fetchAriacAPI = async (endpoint, options = {}) => {
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
+      'X-CSRFTOKEN': 'ONDoEfAzbRyOn3u0WTGImU5NfE2un2x0IFHWTl1DPer1yVt6kXGGZEjfqmulgoqX',
       ...options.headers,
     },
   };
@@ -120,6 +121,7 @@ export const uploadPdfToKnowledgeBase = async (userId, organizationId, file) => 
       headers: {
         ...form.getHeaders(),
         'Accept': '*/*',
+        'X-CSRFTOKEN': 'ONDoEfAzbRyOn3u0WTGImU5NfE2un2x0IFHWTl1DPer1yVt6kXGGZEjfqmulgoqX'
       },
     });
 
