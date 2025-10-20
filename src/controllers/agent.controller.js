@@ -1,31 +1,6 @@
 import * as ariacService from '../services/ariac.service.js';
 
 /**
- * @summary Update the agent hierarchy for a specific instance.
- * @description This endpoint receives the agent hierarchy configuration and passes it to the Ariac service.
- * The user ID is extracted from the authenticated user's session.
- */
-const updateHierarchy = async (req, res) => {
-  try {
-    const { instance_id, router_instructions, agents } = req.validatedData.body;
-    const { userId } = req.user; // Extracted from auth middleware
-
-    const hierarchyData = {
-      user_id: userId,
-      instance_id,
-      router_instructions,
-      agents,
-    };
-
-    const result = await ariacService.updateAgentHierarchy(hierarchyData);
-    res.status(200).json(result);
-  } catch (error) {
-    console.error('Failed to update agent hierarchy:', error);
-    res.status(500).json({ message: 'An error occurred while updating the hierarchy.', error: error.message });
-  }
-};
-
-/**
  * @summary Get all agent instances for the authenticated user.
  * @description Retrieves a list of all agent instances associated with the user ID from the authenticated session.
  */
@@ -105,7 +80,6 @@ const uploadKnowledgePdf = async (req, res) => {
 };
 
 export default {
-  updateHierarchy,
   getUserInstancesController,
   getSessionsController,
   getConversationController,

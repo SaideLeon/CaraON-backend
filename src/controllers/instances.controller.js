@@ -16,52 +16,15 @@ const createInstance = async (req, res) => {
       },
     });
 
-    const hierarchyData = {
-      user_id: userId,
-      instance_id: instance.id,
-      router_instructions: "Analise cada mensagem do usuário e escolha o agente mais adequado com base no objetivo da solicitação. Se a mensagem envolver análise de ações, preços de ações, notícias de empresas ou informações financeiras, encaminhe para o 'Analista Financeiro'. Se a mensagem envolver busca geral de informações, fatos, notícias não relacionadas a finanças ou pesquisa na web, encaminhe para o 'Pesquisador Web'. Caso o pedido seja ambíguo, use o bom senso para decidir qual agente trará mais valor ao usuário. Nunca use mais de um agente ao mesmo tempo para a mesma solicitação.",
-      agents: [
-        {
-          name: "Analista Financeiro",
-          role: "Especialista em análise de ações e dados financeiros.",
-          model_provider: "GEMINI",
-          model_id: "gemini-1.5-flash",
-          tools: [
-            {
-              type: "YFINANCE",
-              config: {
-                stock_price: true,
-                company_news: true
-              }
-            }
-          ]
-        },
-        {
-          name: "Pesquisador Web",
-          role: "Especialista em buscar informações na web.",
-          model_provider: "GEMINI",
-          model_id: "gemini-1.5-flash",
-          tools: [
-            {
-              type: "DUCKDUCKGO"
-            }
-          ]
-        }
-      ]
-    };
-
-    await ariacService.updateAgentHierarchy(hierarchyData);
-
-
     // Inicia a instância do WhatsApp em segundo plano
     whatsappService.startInstance(instance.clientId);
 
     res.status(201).json({
-      message: 'Instância e roteador padrão criados com sucesso. Aguarde o QR Code via WebSocket.',
+      message: 'Instância criada com sucesso. Aguarde o QR Code via WebSocket.',
       instance,
     });
   } catch (error) {
-    console.error('Erro ao criar instância e roteador padrão:', error);
+    console.error('Erro ao criar instância:', error);
     res.status(500).json({ error: 'Falha ao criar a instância.' });
   }
 };

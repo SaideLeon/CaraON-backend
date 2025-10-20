@@ -1,80 +1,102 @@
-agent
-
-POST
-/agent/chat
-Chat With Agent
-
-Endpoint principal para conversar com a equipe de agentes.
-
-Parameters
-Cancel
-Reset
-No parameters
-
-Request body
-
-application/json
-Edit Value
-Schema
-{
-  "user_id": "sdfghjjh4345tgvccccc",
-  "instance_id": "whats43mddggdggds34",
-  "whatsapp_number": "258863304793",
-  "username": "Saide Omar Saide",
-  "message": "Ola, o que é Sabedoria espiritual?"
-}
-{
-  "user_id": "sdfghjjh4345tgvccccc",
-  "instance_id": "whats43mddggdggds34",
-  "whatsapp_number": "258863304793",
-  "username": "Saide Omar Saide",
-  "message": "Ola, o que é Sabedoria espiritual?"
-}​
-Execute
-Clear
 Responses
 Curl
 
 curl -X 'POST' \
-  'https://ariac.caraon.qzz.io/agent/chat' \
+  'https://agent.cognick.qzz.io/api/knowledge/upload-pdf/saide236/departamento12345' \
+  -H 'accept: */*' \
+  -H 'Content-Type: multipart/form-data' \
+  -H 'X-CSRFTOKEN: ONDoEfAzbRyOn3u0WTGImU5NfE2un2x0IFHWTl1DPer1yVt6kXGGZEjfqmulgoqX' \
+  -F 'file=@Manual de Fiscalidade.pdf;type=application/pdf'
+Request URL
+https://agent.cognick.qzz.io/api/knowledge/upload-pdf/saide236/departamento12345
+Server response
+Code	Details
+201	
+Response body
+Download
+{
+  "info": "file 'Manual de Fiscalidade.pdf' saved at '/app/data/pdfs/saide236/departamento12345/Manual de Fiscalidade.pdf'"
+}
+Response headers
+ allow: POST,OPTIONS 
+ alt-svc: h3=":443"; ma=2592000 
+ content-length: 122 
+ content-type: application/json 
+ cross-origin-opener-policy: same-origin 
+ date: Mon,20 Oct 2025 06:48:09 GMT 
+ referrer-policy: same-origin 
+ server: daphne 
+ vary: Accept-Encoding,Accept,Cookie 
+ x-content-type-options: nosniff 
+ x-frame-options: DENY 
+Responses
+Code	Description	Links
+201	
+Arquivo salvo com sucesso.
+
+No links
+400	
+Nenhum arquivo fornecido ou tipo de arquivo inválido.
+
+No links
+404	
+Instância não encontrada.
+
+
+Request body
+
+application/json
+Example Value
+Schema
+{
+  "user_id": "saide236",
+  "instance_id": "departamento12345",
+  "session_id": "258863304793",
+  "username": "Saide Omar",
+  "message": "O que direito fiscal"
+}
+Responses
+Curl
+
+curl -X 'POST' \
+  'https://agent.cognick.qzz.io/api/chat' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
+  -H 'X-CSRFTOKEN: ONDoEfAzbRyOn3u0WTGImU5NfE2un2x0IFHWTl1DPer1yVt6kXGGZEjfqmulgoqX' \
   -d '{
-  "user_id": "sdfghjjh4345tgvccccc",
-  "instance_id": "whats43mddggdggds34",
-  "whatsapp_number": "258863304793",
-  "username": "Saide Omar Saide",
-  "message": "Ola, o que é Sabedoria espiritual?"
+  "user_id": "saide236",
+  "instance_id": "departamento12345",
+  "session_id": "258863304793",
+  "username": "Saide Omar",
+  "message": "O que direito fiscal"
 }'
 Request URL
-https://ariac.caraon.qzz.io/agent/chat
+https://agent.cognick.qzz.io/api/chat
 Server response
 Code	Details
 200	
 Response body
 Download
 {
-  "response": "Para Saide Omar Saide:\n\nA sabedoria espiritual é um conceito amplo e pessoal, variando de acordo com as crenças e perspectivas individuais. Não existe uma única definição universalmente aceita.  No entanto, alguns aspectos comuns incluem:\n\n* **Conexão com algo maior:**  Experiência de conexão com um poder superior, seja através de uma religião, meditação, ou conexão com a natureza.  Essa conexão proporciona um sentido de propósito e significado na vida.\n\n* **Autoconhecimento e compreensão:** Entender a si mesmo profundamente, incluindo suas emoções, pensamentos, crenças e valores.  Isso envolve introspecção, auto-reflexão e a busca pelo autoaperfeiçoamento.\n\n* **Aceitação e compaixão:** Aceitar a si mesmo e aos outros, com suas imperfeições e dificuldades. Cultivar a compaixão por si mesmo e pelos demais.\n\n* **Transcendência do ego:**  Superar a necessidade de validação externa e o apego excessivo ao ego.  Concentrar-se em valores mais amplos do que apenas a satisfação pessoal.\n\n* **Sabedoria e discernimento:** Desenvolver a capacidade de julgar situações com clareza e discernimento, guiado por valores éticos e morais.\n\n* **Paz interior:**  Alcançar um estado de tranquilidade e serenidade interior, mesmo diante de desafios e dificuldades.\n\nÉ importante ressaltar que a busca pela sabedoria espiritual é um processo contínuo e pessoal.  Não existe um ponto final, mas sim uma jornada de aprendizado e crescimento.  Existem diversas práticas que podem auxiliar nesse caminho, como meditação, ioga, oração, estudo de textos religiosos ou filosóficos, e o cultivo da gratidão.\n",
+  "response": "O direito fiscal é definido como o conjunto de normas que disciplinam as relações estabelecidas entre o Estado e os outros entes públicos, por um lado, e os particulares, por outro, por via do imposto.\n\nMais especificamente, o direito fiscal é o conjunto de normas que regulam o imposto desde a incidência, lançamento, liquidação e cobrança.\n\nQuanto à sua natureza, o Direito fiscal é um ramo do direito público e se circunscreve ao estrito âmbito das receitas coativas, máxime (principalmente) o imposto.",
   "session_id": "258863304793",
   "success": true
 }
 Response headers
- access-control-allow-credentials: true 
- access-control-allow-origin: * 
- alt-svc: h3=":443"; ma=86400 
- cf-cache-status: DYNAMIC 
- cf-ray: 96e9a37abfaa4e9a-LHR 
- content-encoding: zstd 
+ allow: POST,OPTIONS 
+ alt-svc: h3=":443"; ma=2592000 
+ content-length: 582 
  content-type: application/json 
- date: Wed,13 Aug 2025 16:37:53 GMT 
- nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
- report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=mCRfV6z%2BFyVwoL53S8DAgH0YWIhh%2FsIlrruTLbwG6pS9QY9gJHV48baIGN6ndTrJVMz3mGhwfJ5SiXB%2BgyKCXunSz1zKFMhS250PaVH96E1oUi4%3D"}]}
- server: cloudflare 
+ cross-origin-opener-policy: same-origin 
+ date: Mon,20 Oct 2025 06:52:23 GMT 
+ referrer-policy: same-origin 
+ server: daphne 
+ vary: Accept-Encoding,Accept,Cookie 
+ x-content-type-options: nosniff 
+ x-frame-options: DENY 
 Responses
 Code	Description	Links
 200	
-Successful Response
-
 Media type
 
 application/json
@@ -87,36 +109,17 @@ Schema
   "success": true
 }
 No links
-422	
-Validation Error
+400	
+Dados de requisição inválidos.
 
-Media type
-
-application/json
-Example Value
-Schema
-{
-  "detail": [
-    {
-      "loc": [
-        "string",
-        0
-      ],
-      "msg": "string",
-      "type": "string"
-    }
-  ]
-}
 No links
+404	
+Instância não encontrada.
 
-PUT
-/agent/hierarchy
-Update Agent Hierarchy
+No links
+500	
+Erro interno do servidor.
 
-Parameters
-Cancel
-Reset
-No parameters
 
 Request body
 
@@ -124,474 +127,75 @@ application/json
 Edit Value
 Schema
 {
-  "user_id": "sdfghjjh4345tgvccccc",
-  "instance_id": "whats43mddggdggds34",
-  "router_instructions": "string",
-  "agents": [
-    {
-      "name": "Analista Financeiro",
-      "role": "Especialista em análise de ações e dados financeiros.",
-      "model_provider": "GEMINI",
-      "model_id": "gemini-1.5-flash",
-      "tools": [
-        {
-          "type": "YFINANCE",
-          "config": {
-            "stock_price": true,
-            "company_news": true
-          }
-        }
-      ]
-    },
-    {
-      "name": "Pesquisador Web",
-      "role": "Especialista em buscar informações na web.",
-      "model_provider": "GEMINI",
-      "model_id": "gemini-1.5-flash",
-      "tools": [
-        {
-          "type": "DUCKDUCKGO"
-        }
-      ]
-    }
-  ]
+  "user_id": "saide236",
+  "instance_id": "departamento12345",
+  "session_id": "258863304793",
+  "username": "Saide Omar",
+  "message": "para quem foi concebido esse Módulo"
 }
-{
-  "user_id": "sdfghjjh4345tgvccccc",
-  "instance_id": "whats43mddggdggds34",
-  "router_instructions": "string",
-  "agents": [
-    {
-      "name": "Analista Financeiro",
-      "role": "Especialista em análise de ações e dados financeiros.",
-      "model_provider": "GEMINI",
-      "model_id": "gemini-1.5-flash",
-      "tools": [
-        {
-          "type": "YFINANCE",
-          "config": {
-            "stock_price": true,
-            "company_news": true
-          }
-        }
-      ]
-    },
-    {
-      "name": "Pesquisador Web",
-      "role": "Especialista em buscar informações na web.",
-      "model_provider": "GEMINI",
-      "model_id": "gemini-1.5-flash",
-      "tools": [
-        {
-          "type": "DUCKDUCKGO"
-        }
-      ]
-    }
-  ]
-}​
 Execute
 Clear
 Responses
 Curl
 
-curl -X 'PUT' \
-  'https://app.caraon.qzz.io/api/v1/agents/hierarchy' \
+curl -X 'POST' \
+  'https://agent.cognick.qzz.io/api/chat' \
   -H 'accept: application/json' \
-  -H 'Authorization: Bearer <YOUR_AUTH_TOKEN>' \
   -H 'Content-Type: application/json' \
+  -H 'X-CSRFTOKEN: ONDoEfAzbRyOn3u0WTGImU5NfE2un2x0IFHWTl1DPer1yVt6kXGGZEjfqmulgoqX' \
   -d '{
-  "instance_id": "whats43mddggdggds34",
-  "router_instructions": "string",
-  "agents": [
-    {
-      "name": "Analista Financeiro",
-      "role": "Especialista em análise de ações e dados financeiros.",
-      "model_provider": "GEMINI",
-      "model_id": "gemini-1.5-flash",
-      "tools": [
-        {
-          "type": "YFINANCE",
-          "config": {
-            "stock_price": true,
-            "company_news": true
-          }
-        }
-      ]
-    },
-    {
-      "name": "Pesquisador Web",
-      "role": "Especialista em buscar informações na web.",
-      "model_provider": "GEMINI",
-      "model_id": "gemini-1.5-flash",
-      "tools": [
-        {
-          "type": "DUCKDUCKGO"
-        }
-      ]
-    }
-  ]
+  "user_id": "saide236",
+  "instance_id": "departamento12345",
+  "session_id": "258863304793",
+  "username": "Saide Omar",
+  "message": "para quem foi concebido esse Módulo"
 }'
 Request URL
-https://app.caraon.qzz.io/api/v1/agents/hierarchy
+https://agent.cognick.qzz.io/api/chat
 Server response
 Code	Details
 200	
 Response body
 Download
 {
-  "message": "Hierarchy configuration updated successfully"
+  "response": "O Módulo de Fiscalidade foi concebido para estudantes do 2º ano do curso de licenciatura em Gestão de Recursos Humanos do ISCED.\n\nContudo, o contexto também menciona que leitores que queiram se atualizar e consolidar seus conhecimentos nessa disciplina serão bem-vindos.",
+  "session_id": "258863304793",
+  "success": true
 }
 Response headers
- access-control-allow-credentials: true 
- access-control-allow-origin: * 
- alt-svc: h3=":443"; ma=86400 
- cf-cache-status: DYNAMIC 
- cf-ray: 96e9a20729ae9436-LHR 
- content-encoding: zstd 
+ allow: POST,OPTIONS 
+ alt-svc: h3=":443"; ma=2592000 
+ content-length: 335 
  content-type: application/json 
- date: Wed,13 Aug 2025 16:36:43 GMT 
- nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
- report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=KvdwwSnAW0eYBAnu25W0JBWqKqiXzDfUmHqMvj5TnRxO0ViWl01ydaW726Uxqm8E3cgP%2BPP1LoiNlpzr3p22AdefDwcJZLRm%2FYwGa4UL4S7VPGc%3D"}]}
- server: cloudflare 
+ cross-origin-opener-policy: same-origin 
+ date: Mon,20 Oct 2025 07:07:32 GMT 
+ referrer-policy: same-origin 
+ server: daphne 
+ vary: Accept-Encoding,Accept,Cookie 
+ x-content-type-options: nosniff 
+ x-frame-options: DENY 
 Responses
 Code	Description	Links
 200	
-Successful Response
-
 Media type
 
 application/json
 Controls Accept header.
 Example Value
 Schema
-"string"
-No links
-422	
-Validation Error
-
-Media type
-
-application/json
-Example Value
-Schema
 {
-  "detail": [
-    {
-      "loc": [
-        "string",
-        0
-      ],
-      "msg": "string",
-      "type": "string"
-    }
-  ]
+  "response": "string",
+  "session_id": "string",
+  "success": true
 }
 No links
+400	
+Dados de requisição inválidos.
 
-GET
-/agent/instances/{user_id}
-Get User Instances
-
-Lista todas as instâncias de um usuário.
-
-Parameters
-Cancel
-Name	Description
-user_id *
-string
-(path)
-sdfghjjh4345tgvccccc
-Execute
-Clear
-Responses
-Curl
-
-curl -X 'GET' \
-  'https://ariac.caraon.qzz.io/agent/instances/sdfghjjh4345tgvccccc' \
-  -H 'accept: application/json'
-Request URL
-https://ariac.caraon.qzz.io/agent/instances/sdfghjjh4345tgvccccc
-Server response
-Code	Details
-200	
-Response body
-Download
-{
-  "instances": [
-    {
-      "_id": "689b4402f096207515968632",
-      "user_id": "sdfghjjh4345tgvccccc",
-      "instance_id": "whats43mddggdggds34",
-      "router_instructions": "string",
-      "agents": [
-        {
-          "agent_id": "574a43f9-814b-434b-b629-c47f5862169f",
-          "name": "Analista Financeiro",
-          "role": "Especialista em análise de ações e dados financeiros.",
-          "model_provider": "gemini",
-          "model_id": "gemini-1.5-flash",
-          "tools": [
-            {
-              "type": "YFINANCE",
-              "config": {
-                "stock_price": true,
-                "company_news": true
-              }
-            }
-          ],
-          "parent_id": null
-        },
-        {
-          "agent_id": "6fbb007a-07a2-44b6-8060-ebc4f869d968",
-          "name": "Pesquisador Web",
-          "role": "Especialista em buscar informações na web.",
-          "model_provider": "gemini",
-          "model_id": "gemini-1.5-flash",
-          "tools": [
-            {
-              "type": "DUCKDUCKGO",
-              "config": null
-            }
-          ],
-          "parent_id": null
-        }
-      ],
-      "created_at": "2025-08-12T13:39:14.335000",
-      "updated_at": "2025-08-12T13:39:14.335000"
-    }
-  ]
-}
-Response headers
- alt-svc: h3=":443"; ma=86400 
- cf-cache-status: DYNAMIC 
- cf-ray: 96e9a4b6abe65667-LHR 
- content-encoding: zstd 
- content-type: application/json 
- date: Wed,13 Aug 2025 16:38:33 GMT 
- nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
- report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=%2BqzJaL5lTtqrBTwknrguMcg8IowhD3%2FiGYULDKKvwkMNFLXnfEOntwkrM4m7NMPwZjCKfjU9fxft8Mr4VWmJHO4o9Wb9sXhx%2BUzWkwnTtS0tsAc%3D"}]}
- server: cloudflare 
-Responses
-Code	Description	Links
-200	
-Successful Response
-
-Media type
-
-application/json
-Controls Accept header.
-Example Value
-Schema
-"string"
 No links
-422	
-Validation Error
+404	
+Instância não encontrada.
 
-Media type
-
-application/json
-Example Value
-Schema
-{
-  "detail": [
-    {
-      "loc": [
-        "string",
-        0
-      ],
-      "msg": "string",
-      "type": "string"
-    }
-  ]
-}
 No links
-
-
-
-
-GET
-/agent/sessions
-Get Sessions
-
-Lista todas as sessões de conversa, com filtros.
-
-Parameters
-Cancel
-Name	Description
-instance_id *
-string
-(query)
-ID da instância para filtrar as sessões
-
-whats43mddggdggds34
-whatsapp_number
-string | (string | null)
-(query)
-Número do WhatsApp (session_id) para filtrar as sessões
-
-258863304793
-Execute
-Clear
-Responses
-Curl
-
-curl -X 'GET' \
-  'https://ariac.caraon.qzz.io/agent/sessions?instance_id=whats43mddggdggds34&whatsapp_number=258863304793' \
-  -H 'accept: application/json'
-Request URL
-https://ariac.caraon.qzz.io/agent/sessions?instance_id=whats43mddggdggds34&whatsapp_number=258863304793
-Server response
-Code	Details
-200	
-Response body
-Download
-{
-  "sessions": [
-    {
-      "session_id": "258863304793",
-      "user_id": "sdfghjjh4345tgvccccc",
-      "instance_id": "whats43mddggdggds34",
-      "message_count": 4,
-      "created_at": "2025-08-15T14:20:32.378000",
-      "updated_at": "2025-08-15T14:20:32.378000"
-    }
-  ]
-}
-Response headers
- alt-svc: h3=":443"; ma=86400 
- cf-cache-status: DYNAMIC 
- cf-ray: 96f95a5b5b50d06b-LHR 
- content-encoding: zstd 
- content-type: application/json 
- date: Fri,15 Aug 2025 14:23:59 GMT 
- nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800} 
- report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=48bHlWUlQNsrorF6nKNTowfTJSGYbPvwOV8SNX4TL%2Bh4RV0uoem6Un6XR7FEs0rbwSoQ4u4jACy5qUUMmOvzIGbFsIV5%2FH4puU1aHFcBVHTxNKA%3D"}]} 
- server: cloudflare 
-Responses
-Code	Description	Links
-200	
-Successful Response
-
-Media type
-
-application/json
-Controls Accept header.
-Example Value
-Schema
-"string"
-No links
-422	
-Validation Error
-
-Media type
-
-application/json
-Example Value
-Schema
-{
-  "detail": [
-    {
-      "loc": [
-        "string",
-        0
-      ],
-      "msg": "string",
-      "type": "string"
-    }
-  ]
-}
-No links
-
-GET
-/agent/sessions/{session_id}/conversation
-Get Conversation
-
-Obtém o histórico completo de mensagens de uma sessão específica.
-
-Parameters
-Cancel
-Name	Description
-session_id *
-string
-(path)
-258863304793
-Execute
-Clear
-Responses
-Curl
-
-curl -X 'GET' \
-  'https://ariac.caraon.qzz.io/agent/sessions/258863304793/conversation' \
-  -H 'accept: application/json'
-Request URL
-https://ariac.caraon.qzz.io/agent/sessions/258863304793/conversation
-Server response
-Code	Details
-200	
-Response body
-Download
-{
-  "conversation": [
-    {
-      "role": "user",
-      "content": "Eu posso ser?"
-    },
-    {
-      "role": "assistant",
-      "content": "Olá Saide Omar Saide,\n\nSim, você pode!  A busca pela sabedoria espiritual é um caminho individual e pessoal, e absolutamente acessível a você.  Não existem pré-requisitos especiais ou características necessárias para iniciar essa jornada.  A única condição é a sua vontade e disposição para se dedicar ao processo de autoconhecimento e crescimento pessoal.\n\nComo mencionado anteriormente, alguns passos importantes incluem:\n\n* **Reflexão:** Dedique tempo para refletir sobre seus valores, crenças e propósito na vida.\n* **Práticas:** Explore práticas como meditação, ioga, ou outras atividades que promovam a paz interior e a conexão consigo mesmo.\n* **Aprendizado:** Busque conhecimento através de livros, cursos, ou conversas com pessoas que te inspiram.\n* **Compaixão:** Pratique a empatia e a compaixão por si mesmo e pelos outros.\n\nLembre-se que essa é uma jornada contínua, sem um fim definido.  Cada passo que você der em direção ao autoconhecimento e à compreensão do seu lugar no mundo contribui para seu crescimento espiritual.  Você já está dando o primeiro passo, ao se questionar e buscar respostas. Continue explorando e você verá o progresso.\n"
-    },
-    {
-      "role": "user",
-      "content": "Será que eu começo por ser estoico?"
-    },
-    {
-      "role": "assistant",
-      "content": "Olá Saide Omar Saide,\n\nO Estoicismo pode ser um excelente ponto de partida para sua jornada de crescimento espiritual, mas não é o único caminho.  Ele oferece um conjunto de princípios e práticas que podem te auxiliar no desenvolvimento da sabedoria espiritual, mas é importante entender que ele é apenas uma ferramenta entre muitas.\n\nO Estoicismo enfatiza a virtude, a razão e a aceitação do que está além do nosso controle.  Isso pode ser muito benéfico para cultivar a paz interior e a resiliência, qualidades importantes no desenvolvimento espiritual.  Práticas estoicas como a meditação, a auto-reflexão e o foco na ação virtuosa podem te ajudar a:\n\n* **Desenvolver autocontrole:**  Controlar suas emoções e reações a eventos externos.\n* **Cultivar a resiliência:**  Superar desafios e adversidades com mais facilidade.\n* **Encontrar propósito:**  Concentrar-se em ações que contribuem para o bem comum.\n* **Aumentar a clareza mental:**  Pensar com mais clareza e objetividade.\n\n\nEntretanto, lembre-se que o Estoicismo é uma filosofia, e existem outras filosofias e práticas espirituais que podem ser igualmente ou até mais adequadas a sua personalidade e crenças.  A escolha do caminho ideal é pessoal e depende do que ressoa mais com você.  Experimente o Estoicismo e veja se ele se encaixa na sua jornada.  Se não, não se preocupe, explore outras alternativas até encontrar o que te ajuda a se conectar com sua espiritualidade.\n"
-    }
-  ]
-}
-Response headers
- alt-svc: h3=":443"; ma=86400 
- cf-cache-status: DYNAMIC 
- cf-ray: 96f959cf0e921ed8-LHR 
- content-encoding: zstd 
- content-type: application/json 
- date: Fri,15 Aug 2025 14:23:37 GMT 
- nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800} 
- report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=ido2KE2MIbcN1SXYTN%2Fv5aaE9P7rVr5zeg3rB9Vt6MgKbb0sY%2B2ZWL4Scv3qSNkdrgJwPXXDyjxKZ1yfQT9mUjcfu2YoGSIb0E2e9pXry4fdT4g%3D"}]} 
- server: cloudflare 
-Responses
-Code	Description	Links
-200	
-Successful Response
-
-Media type
-
-application/json
-Controls Accept header.
-Example Value
-Schema
-"string"
-No links
-422	
-Validation Error
-
-Media type
-
-application/json
-Example Value
-Schema
-{
-  "detail": [
-    {
-      "loc": [
-        "string",
-        0
-      ],
-      "msg": "string",
-      "type": "string"
-    }
-  ]
-}
-No links
-
+500	
+Erro interno do servidor.

@@ -55,17 +55,7 @@ export const chatWithAgent = async (chatData) => {
   });
 };
 
-/**
- * Updates the hierarchy of agents for a given instance.
- * @param {object} hierarchyData - The data for updating the hierarchy.
- * @returns {Promise<object>} The result of the update operation.
- */
-export const updateAgentHierarchy = async (hierarchyData) => {
-  return fetchAriacAPI('/agent/hierarchy', {
-    method: 'PUT',
-    body: JSON.stringify(hierarchyData),
-  });
-};
+
 
 /**
  * Retrieves all agent instances associated with a user.

@@ -1,7 +1,7 @@
 import express from 'express';
 import agentController from '../controllers/agent.controller.js';
 import validate from '../middlewares/validate.middleware.js';
-import { updateHierarchySchema, getSessionsSchema, getConversationSchema, uploadPdfSchema } from '../schemas/agent.schema.js';
+import { getSessionsSchema, getConversationSchema, uploadPdfSchema } from '../schemas/agent.schema.js';
 import auth from '../middlewares/auth.middleware.js';
 import multer from 'multer';
 import { z } from 'zod';
@@ -15,32 +15,6 @@ const upload = multer({ storage: multer.memoryStorage() });
  *   name: Agentes (Ariac)
  *   description: Gerenciamento de agentes de IA através do serviço Ariac.
  */
-
-/**
- * @swagger
- * /api/v1/agents/hierarchy:
- *   put:
- *     summary: Configura a hierarquia de agentes para uma instância
- *     tags: [Agentes (Ariac)]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/UpdateHierarchyBody'
- *     responses:
- *       200:
- *         description: Hierarquia de agentes configurada com sucesso.
- *       400:
- *         description: Requisição inválida.
- *       401:
- *         description: Não autorizado.
- *       500:
- *         description: Falha ao configurar a hierarquia.
- */
-router.put('/hierarchy', auth, validate(updateHierarchySchema), agentController.updateHierarchy);
 
 /**
  * @swagger
