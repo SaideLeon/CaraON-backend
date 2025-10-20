@@ -80,7 +80,7 @@ app.use('/api/v1', categoryRoutes);
 app.use('/api/v1', brandRoutes);
 app.use('/api/v1', messageRoutes);
 app.use('/api/v1', contactRoutes);
-app.use('/api/v1', knowledgeRoutes);
+app.use('/api/v1/knowledge', knowledgeRoutes);
 
 const server = http.createServer(app);
 webSocketService.init(server);

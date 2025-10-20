@@ -56,6 +56,6 @@ const upload = multer({ storage: multer.memoryStorage() });
  *       500:
  *         description: Falha ao enviar o PDF.
  */
-router.post('/knowledge/upload-pdf/:userId/:instanceId', auth, upload.single('file'), validate(uploadPdfSchema), knowledgeController.uploadPdf);
+router.post('/upload-pdf/:userId/:instanceId', auth, upload.single('file'), validate(uploadPdfSchema), knowledgeController.uploadPdf);
 
 export default router;
