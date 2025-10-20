@@ -34,7 +34,7 @@ const fetchAriacAPI = async (endpoint, options = {}) => {
     if (!response.ok) {
       const errorBody = await response.text();
       console.error(`Ariac API request failed with status ${response.status}: ${errorBody}`);
-      throw new Error(`API request to ${endpoint} failed with status ${response.status}`);
+      throw new Error(`API request to ${endpoint} failed with status ${response.status}: ${errorBody}`);
     }
     return response.json();
   } catch (error) {
@@ -49,7 +49,7 @@ const fetchAriacAPI = async (endpoint, options = {}) => {
  * @returns {Promise<object>} The agent's response.
  */
 export const chatWithAgent = async (chatData) => {
-  return fetchAriacAPI('/agent/chat', {
+  return fetchAriacAPI('agent/chat', {
     method: 'POST',
     body: JSON.stringify(chatData),
   });
@@ -63,7 +63,7 @@ export const chatWithAgent = async (chatData) => {
  * @returns {Promise<object>} A list of agent instances.
  */
 export const getUserInstances = async (userId) => {
-  return fetchAriacAPI(`/agent/instances/${userId}`, {
+  return fetchAriacAPI(`agent/instances/${userId}`, {
     method: 'GET',
   });
 };
@@ -75,7 +75,7 @@ export const getUserInstances = async (userId) => {
  * @returns {Promise<object>} A list of conversation sessions.
  */
 export const getSessions = async (instanceId, whatsappNumber) => {
-  const endpoint = `/agent/sessions?instance_id=${instanceId}${whatsappNumber ? `&whatsapp_number=${whatsappNumber}` : ''}`;
+  const endpoint = `agent/sessions?instance_id=${instanceId}${whatsappNumber ? `&whatsapp_number=${whatsappNumber}` : ''}`;
   return fetchAriacAPI(endpoint, {
     method: 'GET',
   });
@@ -87,7 +87,7 @@ export const getSessions = async (instanceId, whatsappNumber) => {
  * @returns {Promise<object>} The conversation history.
  */
 export const getConversation = async (sessionId) => {
-  return fetchAriacAPI(`/agent/sessions/${sessionId}/conversation`, {
+  return fetchAriacAPI(`agent/sessions/${sessionId}/conversation`, {
     method: 'GET',
   });
 };
@@ -110,7 +110,7 @@ export const uploadPdfToKnowledgeBase = async (userId, organizationId, file) => 
     contentType: file.mimetype,
   });
 
-  const endpoint = `/knowledge/upload-pdf/${userId}/${organizationId}`;
+  const endpoint = `knowledge/upload-pdf/${userId}/${organizationId}`;
   const url = `${ARIAC_API_URL}${endpoint}`;
 
   try {
@@ -126,7 +126,7 @@ export const uploadPdfToKnowledgeBase = async (userId, organizationId, file) => 
     if (!response.ok) {
       const errorBody = await response.text();
       console.error(`Ariac PDF upload failed with status ${response.status}: ${errorBody}`);
-      throw new Error(`API request to ${endpoint} failed with status ${response.status}`);
+      throw new Error(`API request to ${endpoint} failed with status ${response.status}: ${errorBody}`);
     }
     return response.json();
   } catch (error) {
