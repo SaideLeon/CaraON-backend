@@ -119,7 +119,7 @@ export const uploadPdfToKnowledgeBase = async (userId, organizationId, file) => 
       body: form,
       headers: {
         ...form.getHeaders(),
-        'Accept': 'application/json',
+        'Accept': '*/*',
       },
     });
 
