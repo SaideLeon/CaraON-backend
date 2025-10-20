@@ -53,10 +53,36 @@ const fetchAriacAPI = async (endpoint, options = {}) => {
  * @returns {Promise<object>} The agent's response.
  */
 export const chatWithAgent = async (chatData) => {
-  return fetchAriacAPI('agent/chat', {
+  const url = 'https://agent.cognick.qzz.io/api/chat';
+  const payload = {
+    user_id: chatData.user_id,
+    instance_id: chatData.instance_id,
+    session_id: chatData.whatsapp_number,
+    username: chatData.username,
+    message: chatData.message,
+  };
+  const config = {
     method: 'POST',
-    body: JSON.stringify(chatData),
-  });
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'X-CSRFTOKEN': CSRF_TOKEN,
+    },
+    body: JSON.stringify(payload),
+  };
+
+  try {
+    const response = await fetch(url, config);
+    if (!response.ok) {
+      const errorBody = await response.text();
+      console.error(`Cognick API request failed with status ${response.status}: ${errorBody}`);
+      throw new Error(`API request to ${url} failed with status ${response.status}: ${errorBody}`);
+    }
+    return response.json();
+  } catch (error) {
+    console.error(`Error calling Cognick API:`, error);
+    throw error;
+  }
 };
 
 
