@@ -1,6 +1,7 @@
 import express from 'express';
 const router = express.Router();
 import authController from '../controllers/auth.controller.js'; 
+import auth from '../middlewares/auth.middleware.js';
 
 /**
  * @swagger
@@ -58,5 +59,27 @@ router.post('/register', authController.register);
  *         description: Usuário não encontrado.
  */
 router.post('/login', authController.login);
+
+/**
+ * @swagger
+ * /api/v1/auth/me:
+ *   get:
+ *     summary: Retorna os dados do usuário autenticado
+ *     tags: [Autenticação]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Dados do usuário retornados com sucesso.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserResponse'
+ *       401:
+ *         description: Não autorizado.
+ *       404:
+ *         description: Usuário não encontrado.
+ */
+router.get('/me', auth, authController.getMe);
 
 export default router;

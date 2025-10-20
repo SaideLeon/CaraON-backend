@@ -103,8 +103,8 @@ export const getConversation = async (sessionId) => {
  * @param {string} pdfPath - The path to the PDF file.
  * @returns {Promise<object>} The result of the upload operation.
  */
-export async function uploadPdfToKnowledgeBase(userId, organizationId, pdfPath) {
-  const url = `${ARIAC_BASE_URL}/knowledge/upload-pdf/${userId}/${organizationId}`;
+export async function uploadPdfToKnowledgeBase(userId, instanceId, pdfPath) {
+  const url = `${ARIAC_BASE_URL}/knowledge/upload-pdf/${userId}/${instanceId}`;
 
   try {
     const formData = new FormData();

@@ -19,7 +19,6 @@ const uploadPdf = async (req, res) => {
 
     const instance = await prisma.instance.findUnique({
       where: { id: instanceId },
-      include: { organizations: true },
     });
 
     if (!instance) {
@@ -30,12 +29,6 @@ const uploadPdf = async (req, res) => {
       return res.status(403).json({ message: 'Instance does not belong to the specified user.' });
     }
 
-    if (!instance.organizations || instance.organizations.length === 0) {
-      return res.status(404).json({ message: 'No organizations found for this instance.' });
-    }
-
-    const organizationId = instance.organizations[0].id;
-
     // Cria um caminho temporário para salvar o arquivo
     const tempDir = path.join(__dirname, "../../tmp");
     if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir, { recursive: true });
@@ -44,7 +37,7 @@ const uploadPdf = async (req, res) => {
     fs.writeFileSync(tempPath, file.buffer);
 
     // Chama o serviço Ariac
-    const result = await ariacService.uploadPdfToKnowledgeBase(userId, organizationId, tempPath);
+    const result = await ariacService.uploadPdfToKnowledgeBase(userId, instanceId, tempPath);
 
     // Remove o arquivo temporário
     fs.unlinkSync(tempPath);
