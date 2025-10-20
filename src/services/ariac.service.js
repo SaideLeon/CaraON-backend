@@ -1,9 +1,12 @@
 import 'dotenv/config';
 import FormData from 'form-data';
+import axios from "axios";
+import fs from "fs";
 
-const ARIAC_API_URL = process.env.ARIAC_API_URL;
+const ARIAC_BASE_URL = process.env.ARIAC_API_URL;
+const CSRF_TOKEN = "ONDoEfAzbRyOn3u0WTGImU5NfE2un2x0IFHWTl1DPer1yVt6kXGGZEjfqmulgoqX";
 
-if (!ARIAC_API_URL) {
+if (!ARIAC_BASE_URL) {
   // In a production environment, you might want to handle this more gracefully
   console.error('ARIAC_API_URL is not defined in the environment variables. Service will not work.');
 }
@@ -15,17 +18,17 @@ if (!ARIAC_API_URL) {
  * @returns {Promise<object>} The JSON response from the API.
  */
 const fetchAriacAPI = async (endpoint, options = {}) => {
-  if (!ARIAC_API_URL) {
+  if (!ARIAC_BASE_URL) {
     throw new Error('Cannot make API call: ARIAC_API_URL is not configured.');
   }
 
-  const url = `${ARIAC_API_URL}${endpoint}`;
+  const url = `${ARIAC_BASE_URL}${endpoint}`;
   const config = {
     ...options,
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
-      'X-CSRFTOKEN': 'ONDoEfAzbRyOn3u0WTGImU5NfE2un2x0IFHWTl1DPer1yVt6kXGGZEjfqmulgoqX',
+      'X-CSRFTOKEN': CSRF_TOKEN,
       ...options.headers,
     },
   };
@@ -97,42 +100,31 @@ export const getConversation = async (sessionId) => {
  * Uploads a PDF file to the Ariac knowledge base.
  * @param {string} userId - The ID of the user.
  * @param {string} organizationId - The ID of the organization.
- * @param {object} file - The file object from multer.
+ * @param {string} pdfPath - The path to the PDF file.
  * @returns {Promise<object>} The result of the upload operation.
  */
-export const uploadPdfToKnowledgeBase = async (userId, organizationId, file) => {
-  if (!ARIAC_API_URL) {
-    throw new Error('Cannot make API call: ARIAC_API_URL is not configured.');
-  }
-
-  const form = new FormData();
-  form.append('file', file.buffer, {
-    filename: file.originalname,
-    contentType: file.mimetype,
-  });
-
-  const endpoint = `knowledge/upload-pdf/${userId}/${organizationId}`;
-  const url = `${ARIAC_API_URL}${endpoint}`;
+export async function uploadPdfToKnowledgeBase(userId, organizationId, pdfPath) {
+  const url = `${ARIAC_BASE_URL}knowledge/upload-pdf/${userId}/${organizationId}`;
 
   try {
-    const response = await fetch(url, {
-      method: 'POST',
-      body: form,
-      headers: {
-        ...form.getHeaders(),
-        'Accept': '*/*',
-        'X-CSRFTOKEN': 'ONDoEfAzbRyOn3u0WTGImU5NfE2un2x0IFHWTl1DPer1yVt6kXGGZEjfqmulgoqX'
-      },
+    const formData = new FormData();
+    formData.append("file", fs.createReadStream(pdfPath), {
+      filename: pdfPath.split("/").pop(),
+      contentType: "application/pdf",
     });
 
-    if (!response.ok) {
-      const errorBody = await response.text();
-      console.error(`Ariac PDF upload failed with status ${response.status}: ${errorBody}`);
-      throw new Error(`API request to ${endpoint} failed with status ${response.status}: ${errorBody}`);
-    }
-    return response.json();
+    const response = await axios.post(url, formData, {
+      headers: {
+        ...formData.getHeaders(),
+        "X-CSRFTOKEN": CSRF_TOKEN,
+      },
+      maxBodyLength: Infinity,
+      maxContentLength: Infinity,
+    });
+
+    return response.data;
   } catch (error) {
-    console.error(`Error uploading PDF to Ariac endpoint ${endpoint}:`, error);
+    console.error("Erro ao enviar PDF para Ariac:", error.response?.data || error.message);
     throw error;
   }
-};
+}

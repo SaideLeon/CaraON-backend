@@ -1,6 +1,12 @@
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 import * as ariacService from '../services/ariac.service.js';
 import { PrismaClient } from '@prisma/client';
+
 const prisma = new PrismaClient();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const uploadPdf = async (req, res) => {
   try {
@@ -8,7 +14,7 @@ const uploadPdf = async (req, res) => {
     const file = req.file;
 
     if (!file) {
-      return res.status(400).json({ message: 'No file uploaded.' });
+      return res.status(400).json({ error: "Nenhum arquivo enviado." });
     }
 
     const instance = await prisma.instance.findUnique({
@@ -30,13 +36,31 @@ const uploadPdf = async (req, res) => {
 
     const organizationId = instance.organizations[0].id;
 
-    const result = await ariacService.uploadPdfToKnowledgeBase(userId, organizationId, file);
-    res.status(200).json(result);
+    // Cria um caminho temporário para salvar o arquivo
+    const tempDir = path.join(__dirname, "../../tmp");
+    if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir, { recursive: true });
+
+    const tempPath = path.join(tempDir, file.originalname);
+    fs.writeFileSync(tempPath, file.buffer);
+
+    // Chama o serviço Ariac
+    const result = await ariacService.uploadPdfToKnowledgeBase(userId, organizationId, tempPath);
+
+    // Remove o arquivo temporário
+    fs.unlinkSync(tempPath);
+
+    res.status(200).json({
+      message: "PDF enviado com sucesso para a base de conhecimento Ariac.",
+      result,
+    });
   } catch (error) {
-    console.error('Failed to upload PDF to knowledge base:', error);
-    res.status(500).json({ message: 'An error occurred while uploading the PDF.', error: error.message });
+    console.error("Erro no upload de PDF:", error.response?.data || error);
+    res.status(400).json({
+      error: "Falha ao enviar PDF para Ariac.",
+      details: error.response?.data || error.message,
+    });
   }
-};
+}
 
 export default {
   uploadPdf,
