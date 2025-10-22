@@ -1,3 +1,5 @@
+// src/services/whatsapp.service.js
+
 import 'dotenv/config';
 import pkg from 'whatsapp-web.js';
 const { Client, RemoteAuth } = pkg;
@@ -6,7 +8,7 @@ import mongoose from 'mongoose';
 import qrcode from 'qrcode';
 import * as webSocketService from './websocket.service.js';
 import * as ariacService from './ariac.service.js'; // Importar o novo serviço Ariac
-import { generateGeminiReply } from "./gemini.service.js";
+import { callGemini, defaultPersona } from "./gemini.service.js";
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 const activeClients = {};
@@ -31,7 +33,8 @@ async function updateInstanceStatus(clientId, status, message = null) {
 
 
 async function responderMensagem(incomingText, contextSummary) {
-  const userPrompt = `
+  const systemPrompt = defaultPersona;
+  const userPrompt = `Você recebeu o seguinte contexto de conhecimento do sistema Ariac:
 Contexto:
 ${contextSummary || "Sem contexto relevante."}
 
@@ -41,23 +44,21 @@ Mensagem do usuário:
 Responda de forma natural, curta e útil.
 `;
 
-  const resposta = await generateGeminiReply(userPrompt);
+  const resposta = await callGemini({
+    system: systemPrompt,
+    user: userPrompt,
+    temperature: 0.3,
+    stream: false, // pode mudar para true se quiser simular digitação
+  });
 
-  console.log("🤖 Resposta Gemini:", resposta);
-  return resposta;
+  console.log("🤖 Resposta Gemini:", resposta.text);
+  return resposta.text;
 }
 
 async function _handleIncomingWhatsAppMessage(client, message) {
   console.log(`✉️  Mensagem recebida para ${client.options.authStrategy.clientId}: ${message.body}`);
 
   if (message.isStatus || message.from.includes('@g.us')) return;
-
-  try {
-    const chat = await message.getChat();
-    await chat.sendStateTyping();
-  } catch (e) {
-    console.log("Could not send typing state", e);
-  }
 
   const clientId = client.options.authStrategy.clientId;
 
