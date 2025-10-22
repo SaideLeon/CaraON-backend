@@ -35,6 +35,7 @@ export async function callGemini({
     } else {
       const result = await chat.sendMessage(user);
       const response = result.response;
+      console.log("🤖 Resposta do Gemini:", response);
       const text = response.candidates[0].content.parts[0].text;
       return { text: text.trim() };
     }
