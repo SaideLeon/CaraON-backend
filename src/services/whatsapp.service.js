@@ -6,7 +6,7 @@ import mongoose from 'mongoose';
 import qrcode from 'qrcode';
 import * as webSocketService from './websocket.service.js';
 import * as ariacService from './ariac.service.js'; // Importar o novo serviço Ariac
-import { callGemini, defaultPersona } from "./gemini.service.js";
+import { generateGeminiReply } from "./gemini.service.js";
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 const activeClients = {};
@@ -31,7 +31,6 @@ async function updateInstanceStatus(clientId, status, message = null) {
 
 
 async function responderMensagem(incomingText, contextSummary) {
-  const systemPrompt = defaultPersona;
   const userPrompt = `
 Contexto:
 ${contextSummary || "Sem contexto relevante."}
@@ -42,15 +41,10 @@ Mensagem do usuário:
 Responda de forma natural, curta e útil.
 `;
 
-  const resposta = await callGemini({
-    system: systemPrompt,
-    user: userPrompt,
-    temperature: 0.3,
-    stream: false, // pode mudar para true se quiser simular digitação
-  });
+  const resposta = await generateGeminiReply(userPrompt);
 
-  console.log("🤖 Resposta Gemini:", resposta.text);
-  return resposta.text;
+  console.log("🤖 Resposta Gemini:", resposta);
+  return resposta;
 }
 
 async function _handleIncomingWhatsAppMessage(client, message) {
