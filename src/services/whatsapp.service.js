@@ -7,7 +7,7 @@ import { MongoStore } from 'wwebjs-mongo';
 import mongoose from 'mongoose';
 import qrcode from 'qrcode';
 import * as webSocketService from './websocket.service.js';
-import * as ariacService from './ariac.service.js'; // Importar o novo serviço Ariac
+import * as ariacService from './ariac.service.js';
 import { callGemini, defaultPersona } from "./gemini.service.js";
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
@@ -31,32 +31,97 @@ async function updateInstanceStatus(clientId, status, message = null) {
   }
 }
 
-
-async function responderMensagem(incomingText, contextSummary) {
+// 🧠 Função com memória conversacional
+async function responderMensagem(incomingText, contextSummary, instanceId, contactId) {
   const systemPrompt = defaultPersona;
-  const userPrompt = `Você recebeu o seguinte contexto de conhecimento do sistema Ariac:
-Contexto:
-${contextSummary || "Sem contexto relevante."}
 
-Mensagem do usuário:
+  // 🔹 Recupera últimas 5 mensagens trocadas
+  const recentMessages = await prisma.message.findMany({
+    where: { instanceId, contactId },
+    orderBy: { createdAt: 'desc' },
+    take: 5,
+  });
+
+  const chatHistory = recentMessages
+    .reverse()
+    .map(msg => (msg.direction === 'INCOMING'
+      ? `Usuário: ${msg.content}`
+      : `Assistente: ${msg.content}`))
+    .join('\n');
+
+  // 🔹 Recupera memória anterior
+  const lastMemory = await prisma.memory.findFirst({
+    where: { instanceId, contactId },
+    orderBy: { createdAt: 'desc' },
+  });
+
+  const memoryContext = lastMemory ? lastMemory.summary : "Sem memória registrada.";
+
+  // 🔹 Prompt unificado
+  const userPrompt = `
+Você é um assistente do sistema Ariac.
+
+Memória acumulada do diálogo:
+${memoryContext}
+
+Últimas mensagens trocadas:
+${chatHistory || "Nenhuma conversa recente."}
+
+Contexto adicional:
+${contextSummary || "Sem contexto adicional."}
+
+Mensagem atual do usuário:
 "${incomingText}"
 
-Responda de forma natural, curta e útil.
+Responda de forma natural, breve e útil, mantendo coerência com a conversa e a memória.
 `;
 
+  // 🔹 Chamada ao modelo Gemini
   const resposta = await callGemini({
     system: systemPrompt,
     user: userPrompt,
-    temperature: 0.3,
-    stream: false, // pode mudar para true se quiser simular digitação
+    temperature: 0.4,
+    stream: false,
   });
 
-  console.log("🤖 Resposta Gemini:", resposta.text);
-  return resposta.text;
+  const respostaTexto = resposta.text?.trim() || "Desculpe, não consegui gerar uma resposta no momento.";
+  console.log("🤖 Resposta Gemini:", respostaTexto);
+
+  // 🔹 Atualiza memória contextual
+  const memoryUpdatePrompt = `
+Resuma o que o assistente aprendeu sobre o usuário e o contexto com base nesta conversa.
+Histórico:
+${chatHistory}
+
+Mensagem atual: ${incomingText}
+Resposta do assistente: ${respostaTexto}
+Crie um resumo curto e útil, evitando repetições.
+`;
+
+  const memoryUpdate = await callGemini({
+    system: "Você é um sintetizador de memória conversacional. Produza um resumo consistente e objetivo.",
+    user: memoryUpdatePrompt,
+    temperature: 0.3,
+    stream: false,
+  });
+
+  const newSummary = memoryUpdate.text?.trim();
+  if (newSummary && newSummary.length > 10) {
+    await prisma.memory.create({
+      data: {
+        instanceId,
+        contactId,
+        summary: newSummary,
+      },
+    });
+    console.log("🧠 Memória atualizada com novo resumo contextual.");
+  }
+
+  return respostaTexto;
 }
 
 async function _handleIncomingWhatsAppMessage(client, message) {
-  console.log(`✉️  Mensagem recebida para ${client.options.authStrategy.clientId}: ${message.body}`);
+  console.log(`✉️ Mensagem recebida para ${client.options.authStrategy.clientId}: ${message.body}`);
 
   if (message.isStatus || message.from.includes('@g.us')) return;
 
@@ -71,7 +136,12 @@ async function _handleIncomingWhatsAppMessage(client, message) {
 
     const wppContact = await message.getContact();
     const contact = await prisma.contact.upsert({
-      where: { instanceId_phoneNumber: { instanceId: instance.id, phoneNumber: `+${message.from.split('@')[0]}` } },
+      where: {
+        instanceId_phoneNumber: {
+          instanceId: instance.id,
+          phoneNumber: `+${message.from.split('@')[0]}`,
+        },
+      },
       update: {
         name: wppContact.name,
         pushName: wppContact.pushname,
@@ -84,7 +154,7 @@ async function _handleIncomingWhatsAppMessage(client, message) {
       },
     });
 
-    // Salva a mensagem recebida (INCOMING)
+    // 💾 Salva mensagem recebida
     await prisma.message.create({
       data: {
         instanceId: instance.id,
@@ -97,7 +167,7 @@ async function _handleIncomingWhatsAppMessage(client, message) {
       },
     });
 
-    // Chama o serviço Ariac para obter a resposta do agente
+    // 🔹 Chama o agente Ariac
     const chatData = {
       user_id: instance.userId,
       instance_id: instance.id,
@@ -107,15 +177,21 @@ async function _handleIncomingWhatsAppMessage(client, message) {
     };
 
     const agentResponse = await ariacService.chatWithAgent(chatData);
-
     if (!agentResponse || !agentResponse.response) {
       throw new Error("A resposta do agente Ariac estava vazia ou malformada.");
     }
 
     const middleResponse = agentResponse.response;
-    const finalResponse = await responderMensagem(message.body, middleResponse);
 
-    // Envia a resposta e a salva no banco de dados (OUTGOING)
+    // 🔹 Chama o Gemini com memória
+    const finalResponse = await responderMensagem(
+      message.body,
+      middleResponse,
+      instance.id,
+      contact.id
+    );
+
+    // 💬 Envia e salva resposta
     const sentMessage = await client.sendMessage(message.from, finalResponse);
     await prisma.message.create({
       data: {
@@ -125,7 +201,6 @@ async function _handleIncomingWhatsAppMessage(client, message) {
         direction: 'OUTGOING',
         content: finalResponse,
         status: 'sent',
-        // O agentExecutionId não é mais gerado localmente
       },
     });
 
@@ -134,7 +209,6 @@ async function _handleIncomingWhatsAppMessage(client, message) {
     client.sendMessage(message.from, 'Ocorreu um erro ao processar sua mensagem. Por favor, tente novamente mais tarde.');
   }
 }
-
 
 async function startInstance(clientId, isReconnection = false) {
   if (activeClients[clientId]) {
@@ -160,7 +234,9 @@ async function startInstance(clientId, isReconnection = false) {
   activeClients[clientId] = client;
 
   const initialStatus = isReconnection ? 'RECONNECTING' : 'PENDING_QR';
-  const initialMessage = isReconnection ? `Reconectando instância ${clientId}...` : `Aguardando leitura do QR Code para a instância ${clientId}.`;
+  const initialMessage = isReconnection
+    ? `Reconectando instância ${clientId}...`
+    : `Aguardando leitura do QR Code para a instância ${clientId}.`;
   updateInstanceStatus(clientId, initialStatus, initialMessage);
 
   client.on('qr', async (qr) => {

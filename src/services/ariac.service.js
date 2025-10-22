@@ -2,6 +2,7 @@ import 'dotenv/config';
 import FormData from 'form-data';
 import axios from "axios";
 import fs from "fs";
+import { subDays } from 'date-fns';
 
 const ARIAC_BASE_URL = process.env.ARIAC_API_URL;
 const CSRF_TOKEN = "ONDoEfAzbRyOn3u0WTGImU5NfE2un2x0IFHWTl1DPer1yVt6kXGGZEjfqmulgoqX";
@@ -152,5 +153,24 @@ export async function uploadPdfToKnowledgeBase(userId, instanceId, pdfPath) {
   } catch (error) {
     console.error("Erro ao enviar PDF para Ariac:", error.response?.data || error.message);
     throw error;
+  }
+}
+
+
+// 🔹 Função para limpar memórias antigas (com mais de 30 dias)
+export async function limparMemoriasAntigas() {
+  try {
+    const limite = subDays(new Date(), 30); // memórias com mais de 30 dias
+    const removidas = await prisma.memory.deleteMany({
+      where: { createdAt: { lt: limite } },
+    });
+
+    if (removidas.count > 0) {
+      console.log(`🧹 ${removidas.count} memórias antigas foram removidas.`);
+    } else {
+      console.log("✅ Nenhuma memória antiga para remover.");
+    }
+  } catch (erro) {
+    console.error("⚠️ Erro ao limpar memórias antigas:", erro);
   }
 }
