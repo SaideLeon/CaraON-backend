@@ -52,7 +52,12 @@ async function _handleIncomingWhatsAppMessage(client, message) {
 
   if (message.isStatus || message.from.includes('@g.us')) return;
 
-  client.sendPresenceUpdate("composing", message.from);
+  try {
+    const chat = await message.getChat();
+    await chat.sendStateTyping();
+  } catch (e) {
+    console.log("Could not send typing state", e);
+  }
 
   const clientId = client.options.authStrategy.clientId;
 
