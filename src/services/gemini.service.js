@@ -13,7 +13,7 @@ export async function callGemini({
   // O modelo 'gemini-1.5-flash' pode não estar disponível para a sua API key ou região.
   // 'gemini-pro' é um modelo estável e recomendado para a maioria dos casos de uso.
   const model = genAI.getGenerativeModel({
-    model: "gemini-pro", // <<-- Mude aqui
+    model: "gemini-flash-latest", // <<-- Mude aqui
     systemInstruction: system,
     generationConfig: { temperature },
   });
