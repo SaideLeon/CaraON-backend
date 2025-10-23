@@ -187,14 +187,23 @@ async function _handleIncomingWhatsAppMessage(client, message) {
     }
 
     const middleResponse = agentResponse.response;
+    function sanitizeForWhatsApp(text) {
+      return text
+        .replace(/\*\*(.*?)\*\*/g, '*$1*')   // negrito
+        .replace(/_(.*?)_/g, '_$1_')         // itálico
+        .replace(/~~(.*?)~~/g, '~$1~')       // tachado
+        .replace(/`(.*?)`/g, '`$1`');        // código
+    }
+    
 
     // 🔹 Chama o Gemini com memória
-    const finalResponse = await responderMensagem(
+    const finalResponse = sanitizeForWhatsApp(await responderMensagem(
       message.body,
       middleResponse,
       instance.id,
       contact.id
-    );
+    ));
+    
 
     // 💬 Envia e salva resposta
     const sentMessage = await client.sendMessage(message.from, finalResponse);
