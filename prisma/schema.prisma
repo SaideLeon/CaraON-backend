@@ -99,17 +99,17 @@ model Message {
 
   @@map("messages")
 }
-
 model Memory {
-  id          String   @id @map("_id") @default(cuid())
-  instanceId  String
-  contactId   String
-  content     String
-  createdAt   DateTime @default(now())
-
-  instance    Instance @relation(fields: [instanceId], references: [id])
-  contact     Contact  @relation(fields: [contactId], references: [id])
+  id         String   @id @map("_id") @default(auto()) @db.ObjectId
+  instanceId String   @db.ObjectId
+  contactId  String   @db.ObjectId
+  content    String
+  summary    String?  // ⚠️ Campo adicionado
+  createdAt  DateTime @default(now())
+  instance   Instance @relation(fields: [instanceId], references: [id])
+  contact    Contact  @relation(fields: [contactId], references: [id])
 }
+
 
 // ========== MODELOS DE ECOMMERCE ==========
 
