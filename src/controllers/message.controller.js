@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 const listMessages = async (req, res) => {
+  console.log('listMessages called with:', { params: req.params, query: req.query });
   const { instanceId } = req.params;
   const { contactId, page, limit } = req.query;
   const pageNum = parseInt(page, 10);
