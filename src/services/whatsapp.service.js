@@ -35,10 +35,10 @@ async function updateInstanceStatus(clientId, status, message = null) {
 async function responderMensagem(incomingText, contextSummary, instanceId, contactId) {
   const systemPrompt = defaultPersona;
 
-  // 🔹 Recupera últimas 5 mensagens trocadas
+  // 🔹 Recupera últimas 5 mensagens (ordenadas por ID, já que createdAt não existe)
   const recentMessages = await prisma.message.findMany({
     where: { instanceId, contactId },
-    orderBy: { createdAt: 'desc' },
+    orderBy: { id: 'desc' },
     take: 5,
   });
 
@@ -49,10 +49,10 @@ async function responderMensagem(incomingText, contextSummary, instanceId, conta
       : `Assistente: ${msg.content}`))
     .join('\n');
 
-  // 🔹 Recupera memória anterior
+  // 🔹 Recupera última memória (ordenada por ID também)
   const lastMemory = await prisma.memory.findFirst({
     where: { instanceId, contactId },
-    orderBy: { createdAt: 'desc' },
+    orderBy: { id: 'desc' },
   });
 
   const memoryContext = lastMemory ? lastMemory.summary : "Sem memória registrada.";
