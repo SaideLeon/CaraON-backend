@@ -44,6 +44,7 @@ model Instance {
   organizations Organization[]
   contacts      Contact[] // Adicionado
   messages      Message[] // Adicionado
+  memories     Memory[]   // <── Adicionado
 
   @@map("instances")
 }
@@ -74,6 +75,7 @@ model Contact {
 
   instance Instance @relation(fields: [instanceId], references: [id], onDelete: Cascade)
   messages Message[]
+  memories Memory[]  // <── Adicionado
 
   @@unique([instanceId, phoneNumber])
   @@map("contacts")
@@ -99,12 +101,11 @@ model Message {
 }
 
 model Memory {
-  id          String   @id @default(cuid())
+  id          String   @id @map("_id") @default(cuid())
   instanceId  String
   contactId   String
-  summary     String
+  content     String
   createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
 
   instance    Instance @relation(fields: [instanceId], references: [id])
   contact     Contact  @relation(fields: [contactId], references: [id])
