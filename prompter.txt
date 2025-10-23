@@ -57,7 +57,7 @@ Schema
 }
 Responses
 Curl
-
+ k
 curl -X 'POST' \
   'https://agent.cognick.qzz.io/api/chat' \
   -H 'accept: application/json' \
