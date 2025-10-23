@@ -32,10 +32,11 @@ async function updateInstanceStatus(clientId, status, message = null) {
 }
 
 // 🧠 Função com memória conversacional
+// 🧠 Função com memória conversacional
 async function responderMensagem(incomingText, contextSummary, instanceId, contactId) {
   const systemPrompt = defaultPersona;
 
-  // 🔹 Recupera últimas 5 mensagens (ordenadas por ID, já que createdAt não existe)
+  // 🔹 Recupera últimas 5 mensagens
   const recentMessages = await prisma.message.findMany({
     where: { instanceId, contactId },
     orderBy: { id: 'desc' },
@@ -49,7 +50,7 @@ async function responderMensagem(incomingText, contextSummary, instanceId, conta
       : `Assistente: ${msg.content}`))
     .join('\n');
 
-  // 🔹 Recupera última memória (ordenada por ID também)
+  // 🔹 Recupera última memória
   const lastMemory = await prisma.memory.findFirst({
     where: { instanceId, contactId },
     orderBy: { id: 'desc' },
@@ -106,20 +107,23 @@ Crie um resumo curto e útil, evitando repetições.
   });
 
   const newSummary = memoryUpdate.text?.trim();
+
   if (newSummary && newSummary.length > 10) {
     await prisma.memory.create({
       data: {
         instanceId,
         contactId,
-        content: messageText || 'Sem conteúdo detectado',
-        summary
+        content: incomingText || 'Sem conteúdo detectado',
+        summary: newSummary
       }
-    })
+    });
     console.log("🧠 Memória atualizada com novo resumo contextual.");
   }
 
   return respostaTexto;
 }
+
+
 
 async function _handleIncomingWhatsAppMessage(client, message) {
   console.log(`✉️ Mensagem recebida para ${client.options.authStrategy.clientId}: ${message.body}`);
