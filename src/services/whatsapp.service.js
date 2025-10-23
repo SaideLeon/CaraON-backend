@@ -111,9 +111,10 @@ Crie um resumo curto e útil, evitando repetições.
       data: {
         instanceId,
         contactId,
-        summary: newSummary,
-      },
-    });
+        content: messageText || 'Sem conteúdo detectado',
+        summary
+      }
+    })
     console.log("🧠 Memória atualizada com novo resumo contextual.");
   }
 
