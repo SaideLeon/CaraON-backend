@@ -18,14 +18,27 @@ const store = new MongoStore({ mongoose });
 
 async function updateInstanceStatus(clientId, status, message = null) {
   try {
+    const instance = await prisma.instance.findUnique({
+      where: { clientId },
+      include: { user: true },
+    });
+
+    if (!instance) {
+      console.error(`Instância com clientId ${clientId} não encontrada.`);
+      return;
+    }
+
     await prisma.instance.update({ where: { clientId }, data: { status } });
+
+    const name = instance.user.name;
+
     webSocketService.broadcast({
       type: 'instance_status',
       clientId,
       status,
       message: message || `Instância ${clientId} agora está ${status}`,
     });
-    console.log(`Status da instância ${clientId} atualizado para: ${status}`);
+    console.log(`Status da instância ${clientId} pertencente a ${name} atualizado para: ${status}`);
   } catch (error) {
     console.error(`Falha ao atualizar o status da instância ${clientId}:`, error);
   }
