@@ -69,7 +69,25 @@ const deleteMessage = async (req, res) => {
   }
 };
 
+const listMessagesWithContacts = async (req, res) => {
+  try {
+    const messages = await prisma.message.findMany({
+      include: {
+        contact: true,
+      },
+      orderBy: {
+        sentAt: 'desc',
+      },
+    });
+    res.status(200).json({ data: messages });
+  } catch (error) {
+    console.error('Erro ao listar mensagens com contatos:', error);
+    res.status(500).json({ error: 'Falha ao buscar mensagens com contatos.' });
+  }
+};
+
 export default {
   listMessages,
   deleteMessage,
+  listMessagesWithContacts,
 };

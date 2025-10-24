@@ -75,4 +75,21 @@ router.get('/instances/:instanceId/messages', auth, validate(listMessagesSchema)
  */
 router.delete('/messages/:messageId', auth, validate(deleteMessageSchema), messageController.deleteMessage);
 
+
+/**
+ * @swagger
+ * /api/v1/messages/with-contacts:
+ *   get:
+ *     summary: Lista todas as mensagens com informações de contato
+ *     tags: [Mensagens]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Lista de mensagens com contatos.
+ *       401:
+ *         description: Não autorizado.
+ */
+router.get('/messages/with-contacts', auth, messageController.listMessagesWithContacts);
+
 export default router;
