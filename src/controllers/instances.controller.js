@@ -8,6 +8,14 @@ const createInstance = async (req, res) => {
   const { userId } = req.user; // Obtém o userId do token
 
   try {
+    const instanceCount = await prisma.instance.count({
+      where: { userId: userId },
+    });
+
+    if (instanceCount >= 7) {
+      return res.status(403).json({ error: 'Você atingiu o limite de 7 instâncias.' });
+    }
+
     const instance = await prisma.instance.create({
       data: {
         name,
