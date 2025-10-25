@@ -23,16 +23,7 @@ const listMessages = async (req, res) => {
         sentAt: 'desc',
       },
       include: {
-        contact: true,
-        agentExecution: {
-          include: {
-            agent: {
-              select: {
-                name: true,
-              },
-            },
-          },
-        },
+        contact: true
       },
     });
 
